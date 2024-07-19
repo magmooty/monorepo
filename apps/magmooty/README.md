@@ -1,38 +1,61 @@
-# create-svelte
+# Magmooty Desktop App
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
+## Development
 
-## Creating a project
+### Installing dependencies
 
-If you're seeing this, you've probably already done this step. Congrats!
+- [Install Rust](https://www.rust-lang.org/)
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
+### Running the app for development
 
-# create a new project in my-app
-npm create svelte@latest my-app
-```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+```shell
+yarn tauri dev
 ```
 
 ## Building
 
-To create a production version of your app:
+### Building on Mac
 
-```bash
-npm run build
+> Make sure Wine is installed.
+
+Install the MinGW-w64 toolchain
+
+```shell
+brew install mingw-w64
 ```
 
-You can preview the production build with `npm run preview`.
+Install NSIS
 
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+```shell
+brew install nsis
+```
+
+Linkers are defined in `.cargo/config` to use MinGW-w64 on MacOS
+
+**Compiling for Windows 64-bit**
+
+Add Windows 32-bit target
+
+```
+rustup target add i686-pc-windows-gnu
+```
+
+Run Tauri builder
+
+```shell
+yarn tauri build --target=i686-pc-windows-gnu
+```
+
+**Compiling for Windows 32-bit**
+
+Add Windows 64-bit target
+
+```
+rustup target add x86_64-pc-windows-gnu
+```
+
+Run Tauri builder
+
+```shell
+yarn tauri build --target=x86_64-pc-windows-gnu
+```
