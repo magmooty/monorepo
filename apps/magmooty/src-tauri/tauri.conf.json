@@ -1,5 +1,5 @@
 {
-	"$schema": "../../../node_modules/@tauri-apps/cli/schema.json",
+	"$schema": "../node_modules/@tauri-apps/cli/schema.json",
 	"build": {
 		"beforeBuildCommand": "yarn build",
 		"beforeDevCommand": "yarn dev",
@@ -16,8 +16,8 @@
 		},
 		"bundle": {
 			"active": true,
-			"category": "DeveloperTool",
-			"copyright": "",
+			"category": "Education",
+			"copyright": "Magmooty",
 			"deb": {
 				"depends": []
 			},
@@ -55,9 +55,10 @@
 		},
 		"windows": [
 			{
-				"fullscreen": true,
 				"resizable": true,
-				"title": "Magmooty"
+				"title": "Magmooty",
+				"width": 800,
+				"height": 600
 			}
 		]
 	}

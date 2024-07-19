@@ -257,4 +257,4 @@ fastlane/test_output
 iOSInjectionProject/
 
 # Monorepo
-.next
+target
