@@ -6,9 +6,15 @@
 
 - [Install Rust](https://www.rust-lang.org/)
 
+Install using PNPM
+
+```sh
+pnpm install
+```
+
 ### Running the app for development
 
-```shell
+```sh
 yarn tauri dev
 ```
 
@@ -20,13 +26,13 @@ yarn tauri dev
 
 Install the MinGW-w64 toolchain
 
-```shell
+```sh
 brew install mingw-w64
 ```
 
 Install NSIS
 
-```shell
+```sh
 brew install nsis
 ```
 
@@ -42,7 +48,7 @@ rustup target add i686-pc-windows-gnu
 
 Run Tauri builder
 
-```shell
+```sh
 yarn tauri build --target=i686-pc-windows-gnu
 ```
 
@@ -56,6 +62,6 @@ rustup target add x86_64-pc-windows-gnu
 
 Run Tauri builder
 
-```shell
+```sh
 yarn tauri build --target=x86_64-pc-windows-gnu
 ```
