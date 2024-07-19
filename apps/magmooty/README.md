@@ -49,7 +49,7 @@ rustup target add i686-pc-windows-gnu
 Run Tauri builder
 
 ```sh
-yarn tauri build --target=i686-pc-windows-gnu
+TAURI_FIPS_COMPLIANT="true" yarn tauri build --target=i686-pc-windows-gnu
 ```
 
 **Compiling for Windows 32-bit**
@@ -63,5 +63,5 @@ rustup target add x86_64-pc-windows-gnu
 Run Tauri builder
 
 ```sh
-yarn tauri build --target=x86_64-pc-windows-gnu
+TAURI_FIPS_COMPLIANT="true" yarn tauri build --target=x86_64-pc-windows-gnu
 ```
