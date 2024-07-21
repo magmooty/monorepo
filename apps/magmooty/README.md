@@ -14,6 +14,20 @@ pnpm install
 
 ### Running the app for development
 
+Install sccache for faster builds
+
+```sh
+cargo install sccache
+```
+
+Modify your `.bashrc` or `.zshrc` to use sccache
+
+```sh
+export RUSTC_WRAPPER=sccache
+```
+
+Run the app
+
 ```sh
 yarn tauri dev
 ```

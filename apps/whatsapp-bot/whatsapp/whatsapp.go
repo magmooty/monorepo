@@ -35,6 +35,7 @@ const (
 	SignedOut            ConnectionStatus = "signed_out"
 	QRCodeGenerated      ConnectionStatus = "qr_code_generated"
 	WhatsAppLibraryError ConnectionStatus = "whatsapp_library_error"
+	TargetNotOnWhatsApp  ConnectionStatus = "target_not_on_whatsapp"
 )
 
 func (wb *WhatsAppBot) IsSignedIn() (ConnectionStatus, string) {
@@ -54,45 +55,51 @@ func (wb *WhatsAppBot) IsSignedIn() (ConnectionStatus, string) {
 	}
 }
 
-func (wb *WhatsAppBot) SendMessage(phoneNumber string, message string) bool {
+func (wb *WhatsAppBot) SendMessage(phoneNumber string, message string) (bool, ConnectionStatus, string) {
 	responses, err := wb.client.IsOnWhatsApp([]string{phoneNumber})
+
 	if err != nil {
-		return false
+		return false, WhatsAppLibraryError, err.Error()
 	}
+
+	if len(responses) <= 0 {
+		return false, TargetNotOnWhatsApp, "Target is not on WhatsApp"
+	}
+
 	for _, response := range responses {
 		_, err = wb.client.SendMessage(context.Background(), response.JID, &waProto.Message{
 			Conversation: proto.String(message),
 		})
 		if err != nil {
-			return false
+			return false, WhatsAppLibraryError, err.Error()
 		}
 	}
-	return true
+	return true, SignedIn, ""
 }
 
-func (wb *WhatsAppBot) InitializeClient() bool {
+func (wb *WhatsAppBot) InitializeClient() (ConnectionStatus, string) {
 	deviceStore, err := wb.container.GetFirstDevice()
 	if err != nil {
-		panic(err)
+		return WhatsAppLibraryError, err.Error()
 	}
 	clientLog := waLog.Stdout("Client", "DEBUG", true)
 	client := whatsmeow.NewClient(deviceStore, clientLog)
 	if client.Store.ID == nil {
-		return false
+		return SignedOut, ""
 	} else {
 		err = client.Connect()
 		if err != nil {
-			panic(err)
+			return WhatsAppLibraryError, err.Error()
 		}
 	}
 	wb.client = client
-	return true
+	return SignedIn, ""
 }
 
-func (wb *WhatsAppBot) StartConnect() (string, ConnectionStatus) {
+func (wb *WhatsAppBot) StartConnect() (string, ConnectionStatus, string) {
 	devices, err := wb.container.GetAllDevices()
 	if err != nil {
-		panic(err)
+		return "", WhatsAppLibraryError, err.Error()
 	}
 
 	for _, device := range devices {
@@ -105,7 +112,7 @@ func (wb *WhatsAppBot) StartConnect() (string, ConnectionStatus) {
 
 	deviceStore, err := wb.container.GetFirstDevice()
 	if err != nil {
-		panic(err)
+		return "", WhatsAppLibraryError, err.Error()
 	}
 
 	clientLog := waLog.Stdout("Client", "INFO", true)
@@ -113,17 +120,20 @@ func (wb *WhatsAppBot) StartConnect() (string, ConnectionStatus) {
 	if client.Store.ID == nil {
 		qrChan, _ := client.GetQRChannel(context.Background())
 		err = client.Connect()
+
 		if err != nil {
-			panic(err)
+			return "", WhatsAppLibraryError, err.Error()
 		}
+
 		for evt := range qrChan {
 			if evt.Event == "code" {
 				wb.client = client
-				return evt.Code, QRCodeGenerated
+				return evt.Code, QRCodeGenerated, ""
 			}
 		}
-		return "", WhatsAppLibraryError
+
+		return "", WhatsAppLibraryError, "Unable to consume QR code channel"
 	} else {
-		return "", SignedIn
+		return "", SignedIn, ""
 	}
 }
