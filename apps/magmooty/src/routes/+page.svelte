@@ -1,36 +1,37 @@
 <script>
 	import { Button } from 'flowbite-svelte';
-	import { invoke } from '@tauri-apps/api/tauri';
+	import { whatsappGetInfo, whatsappSendMessage, whatsappStartConnection } from '$lib/bindings';
 
 	let info = '';
 
 	async function fetchInfo() {
-		const response = await invoke('query', {
-			path: '/whatsapp/info',
-			body: {}
-		});
-		info = response;
+		try {
+			const response = await whatsappGetInfo();
+			info = JSON.stringify(response);
+		} catch (error) {
+			console.error(error);
+		}
 	}
 
 	async function startConnection() {
-		const response = await invoke('query', {
-			path: '/whatsapp/start_connection',
-			body: {}
-		});
-		console.log(response);
-		info = response;
+		try {
+			const response = await whatsappStartConnection();
+			info = JSON.stringify(response);
+		} catch (error) {
+			console.error(error);
+		}
 	}
 
 	async function sendMessage() {
-		const response = await invoke('query', {
-			path: '/whatsapp/send_message',
-			body: {
+		try {
+			const response = await whatsappSendMessage({
 				phone_number: '+201070671580',
 				message: 'Hello world!'
-			}
-		});
-		console.log(response);
-		info = response;
+			});
+			info = JSON.stringify(response);
+		} catch (error) {
+			console.error(error);
+		}
 	}
 </script>
 

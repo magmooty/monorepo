@@ -1,7 +1,6 @@
 extern crate libc;
 use std::ffi::CStr;
 use std::ffi::CString;
-use std::ptr;
 
 // Define the structs that will be used in C
 #[repr(C)]

@@ -1,28 +1,11 @@
-use crate::router;
+use super::AppError;
 use serde::Serialize;
 use serde::{self, Deserialize};
 use serde_json::Value;
+use specta::Type;
+use tokio::task;
 
-use super::{AppError, AppResponse};
-
-#[derive(Serialize)]
-pub struct WhatsAppInfoResponse {
-    pub connection_status: WhatsAppConnectionStatus,
-}
-
-#[derive(Serialize)]
-pub struct WhatsAppStartConnectionResponse {
-    pub code: String,
-    pub connection_status: WhatsAppConnectionStatus,
-}
-
-#[derive(Serialize)]
-pub struct WhatsAppSendMessageResponse {
-    pub message_status: WhatsAppMessageStatus,
-    pub connection_status: WhatsAppConnectionStatus,
-}
-
-#[derive(Deserialize, Serialize)]
+#[derive(Deserialize, Serialize, Type)]
 #[serde(rename_all = "snake_case")]
 pub enum WhatsAppConnectionStatus {
     SignedIn,
@@ -35,7 +18,7 @@ pub enum WhatsAppConnectionStatus {
     TargetNotOnWhatsApp,
 }
 
-fn parse_connection_status(connection_status: String) -> WhatsAppConnectionStatus {
+fn __parse_connection_status(connection_status: String) -> WhatsAppConnectionStatus {
     match connection_status.as_str() {
         "signed_in" => WhatsAppConnectionStatus::SignedIn,
         "signed_out" => WhatsAppConnectionStatus::SignedOut,
@@ -46,14 +29,74 @@ fn parse_connection_status(connection_status: String) -> WhatsAppConnectionStatu
     }
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Serialize, Type)]
+pub struct WhatsAppInfoResponse {
+    pub connection_status: WhatsAppConnectionStatus,
+}
+
+#[tauri::command]
+#[specta::specta]
+pub async fn whatsapp_get_info() -> Result<WhatsAppInfoResponse, AppError> {
+    let wa_response = task::spawn_blocking(move || crate::whatsapp::get_info())
+        .await
+        .expect("Paniced while communicating with WhatsApp library");
+
+    let connection_status = __parse_connection_status(wa_response.connection_status);
+
+    match connection_status {
+        WhatsAppConnectionStatus::WhatsAppLibraryError => {
+            Err(AppError::InternalError(wa_response.error_message))
+        }
+        _ => Ok(WhatsAppInfoResponse { connection_status }),
+    }
+}
+
+#[derive(Serialize, Type)]
+pub struct WhatsAppStartConnectionResponse {
+    pub code: String,
+    pub connection_status: WhatsAppConnectionStatus,
+}
+
+#[tauri::command]
+#[specta::specta]
+pub async fn whatsapp_start_connection() -> Result<WhatsAppStartConnectionResponse, AppError> {
+    let wa_response = task::spawn_blocking(move || crate::whatsapp::start_connection())
+        .await
+        .expect("Paniced while communicating with WhatsApp library");
+
+    let connection_status = __parse_connection_status(wa_response.connection_status);
+
+    match connection_status {
+        WhatsAppConnectionStatus::WhatsAppLibraryError => {
+            Err(AppError::InternalError(wa_response.error_message))
+        }
+        _ => Ok(WhatsAppStartConnectionResponse {
+            code: wa_response.code,
+            connection_status,
+        }),
+    }
+}
+
+#[derive(Deserialize, Type)]
+pub struct SendMessageBody {
+    phone_number: String,
+    message: String,
+}
+
+#[derive(Serialize, Type)]
+pub struct WhatsAppSendMessageResponse {
+    pub message_status: WhatsAppMessageStatus,
+    pub connection_status: WhatsAppConnectionStatus,
+}
+
+#[derive(Deserialize, Serialize, Type)]
 #[serde(rename_all = "snake_case")]
 pub enum WhatsAppMessageStatus {
     Successful,
     Failed,
 }
 
-fn parse_message_status(message_status: String) -> WhatsAppMessageStatus {
+fn __parse_message_status(message_status: String) -> WhatsAppMessageStatus {
     match message_status.as_str() {
         "successful" => WhatsAppMessageStatus::Successful,
         "failed" => WhatsAppMessageStatus::Failed,
@@ -61,86 +104,29 @@ fn parse_message_status(message_status: String) -> WhatsAppMessageStatus {
     }
 }
 
-pub fn get_whatsapp_info(_: Value) -> Result<AppResponse, AppError> {
-    let wa_response = crate::whatsapp::get_info();
-
-    let connection_status = parse_connection_status(wa_response.connection_status);
-
-    match connection_status {
-        WhatsAppConnectionStatus::WhatsAppLibraryError => {
-            Err(AppError::InternalError(wa_response.error_message))
-        }
-        _ => Ok(AppResponse::WhatsAppInfoResponse(WhatsAppInfoResponse {
-            connection_status,
-        })),
-    }
-}
-
-pub fn start_connection(_: Value) -> Result<AppResponse, AppError> {
-    let wa_response = crate::whatsapp::start_connection();
-
-    let connection_status = parse_connection_status(wa_response.connection_status);
-
-    match connection_status {
-        WhatsAppConnectionStatus::WhatsAppLibraryError => {
-            Err(AppError::InternalError(wa_response.error_message))
-        }
-        _ => Ok(AppResponse::WhatsAppStartConnectionResponse(
-            WhatsAppStartConnectionResponse {
-                code: wa_response.code,
-                connection_status,
-            },
-        )),
-    }
-}
-
-#[derive(Deserialize)]
-pub struct SendMessageBody {
-    phone_number: String,
-    message: String,
-}
-
-pub fn send_message(body: Value) -> Result<AppResponse, AppError> {
+#[tauri::command]
+#[specta::specta]
+pub async fn whatsapp_send_message(body: Value) -> Result<WhatsAppSendMessageResponse, AppError> {
     let SendMessageBody {
         phone_number,
         message,
     }: SendMessageBody = serde_json::from_value(body).unwrap();
 
-    let wa_response = crate::whatsapp::send_message(phone_number, message);
+    let wa_response =
+        task::spawn_blocking(move || crate::whatsapp::send_message(phone_number, message))
+            .await
+            .expect("Paniced while communicating with WhatsApp library");
 
-    let connection_status = parse_connection_status(wa_response.connection_status);
-    let message_status = parse_message_status(wa_response.message_status);
+    let connection_status = __parse_connection_status(wa_response.connection_status);
+    let message_status = __parse_message_status(wa_response.message_status);
 
     match connection_status {
         WhatsAppConnectionStatus::WhatsAppLibraryError => {
             Err(AppError::InternalError(wa_response.error_message))
         }
-        _ => Ok(AppResponse::WhatsAppSendMessageResponse(
-            WhatsAppSendMessageResponse {
-                message_status,
-                connection_status,
-            },
-        )),
+        _ => Ok(WhatsAppSendMessageResponse {
+            message_status,
+            connection_status,
+        }),
     }
-}
-
-pub fn get_router() -> router::Router<AppResponse, AppError> {
-    let mut router = router::Router::for_child("whatsapp".to_string());
-
-    router.add_route(router::Route {
-        path: "info".to_string(),
-        handler: get_whatsapp_info,
-    });
-
-    router.add_route(router::Route {
-        path: "start_connection".to_string(),
-        handler: start_connection,
-    });
-
-    router.add_route(router::Route {
-        path: "send_message".to_string(),
-        handler: send_message,
-    });
-
-    router
 }
