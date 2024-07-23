@@ -26,6 +26,8 @@ surrealdb = { version = "1.0.0-beta.8", features = [
 ] }
 tokio = { version = "1.29.1", features = ["macros", "rt-multi-thread"] }
 libc = "0.2.155"
+specta = "1"
+tauri-specta = { version = "1", features = ["javascript", "typescript"] }
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem and the built-in dev server is disabled.
