@@ -22,9 +22,17 @@ export function whatsappSendMessage(body: SendMessageBody) {
     return invoke()<WhatsAppSendMessageResponse>("whatsapp_send_message", { body })
 }
 
-export type WhatsAppMessageStatus = "successful" | "failed"
-export type WhatsAppInfoResponse = { connection_status: WhatsAppConnectionStatus }
-export type WhatsAppStartConnectionResponse = { code: string; connection_status: WhatsAppConnectionStatus }
-export type WhatsAppSendMessageResponse = { message_status: WhatsAppMessageStatus; connection_status: WhatsAppConnectionStatus }
+export function createStudent() {
+    return invoke()<null>("create_student")
+}
+
+export function getStudents() {
+    return invoke()<null>("get_students")
+}
+
 export type WhatsAppConnectionStatus = "signed_in" | "signed_out" | "qr_code_generated" | "whatsapp_library_error" | "target_not_on_whatsapp"
+export type WhatsAppInfoResponse = { connection_status: WhatsAppConnectionStatus }
 export type SendMessageBody = { phone_number: string; message: string }
+export type WhatsAppSendMessageResponse = { message_status: WhatsAppMessageStatus; connection_status: WhatsAppConnectionStatus }
+export type WhatsAppMessageStatus = "successful" | "failed"
+export type WhatsAppStartConnectionResponse = { code: string; connection_status: WhatsAppConnectionStatus }

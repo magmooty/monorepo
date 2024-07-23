@@ -1,7 +1,6 @@
 use super::AppError;
 use serde::Serialize;
 use serde::{self, Deserialize};
-use serde_json::Value;
 use specta::Type;
 use tokio::task;
 

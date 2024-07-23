@@ -10,7 +10,7 @@ mod app;
 mod database;
 mod whatsapp;
 
-struct AppState {
+pub struct AppState {
     database: Arc<Surreal<Db>>,
 }
 
@@ -20,15 +20,13 @@ async fn main() {
 
     let database = database::create_database().await.unwrap();
 
-    let state = AppState {
-        database: Arc::new(database),
-    };
-
     ts::export(
         collect_types![
             app::whatsapp::whatsapp_get_info,
             app::whatsapp::whatsapp_start_connection,
             app::whatsapp::whatsapp_send_message,
+            app::students::create_student,
+            app::students::get_students,
         ],
         "../src/lib/bindings.ts",
     )
@@ -39,8 +37,12 @@ async fn main() {
             app::whatsapp::whatsapp_get_info,
             app::whatsapp::whatsapp_start_connection,
             app::whatsapp::whatsapp_send_message,
+            app::students::create_student,
+            app::students::get_students,
         ])
-        .manage(state)
+        .manage(AppState {
+            database: Arc::new(database),
+        })
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
