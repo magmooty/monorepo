@@ -106,16 +106,14 @@ fn __parse_message_status(message_status: String) -> WhatsAppMessageStatus {
 
 #[tauri::command]
 #[specta::specta]
-pub async fn whatsapp_send_message(body: Value) -> Result<WhatsAppSendMessageResponse, AppError> {
-    let SendMessageBody {
-        phone_number,
-        message,
-    }: SendMessageBody = serde_json::from_value(body).unwrap();
-
-    let wa_response =
-        task::spawn_blocking(move || crate::whatsapp::send_message(phone_number, message))
-            .await
-            .expect("Paniced while communicating with WhatsApp library");
+pub async fn whatsapp_send_message(
+    body: SendMessageBody,
+) -> Result<WhatsAppSendMessageResponse, AppError> {
+    let wa_response = task::spawn_blocking(move || {
+        crate::whatsapp::send_message(body.phone_number, body.message)
+    })
+    .await
+    .expect("Paniced while communicating with WhatsApp library");
 
     let connection_status = __parse_connection_status(wa_response.connection_status);
     let message_status = __parse_message_status(wa_response.message_status);

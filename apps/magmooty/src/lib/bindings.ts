@@ -18,7 +18,7 @@ export function whatsappStartConnection() {
     return invoke()<WhatsAppStartConnectionResponse>("whatsapp_start_connection")
 }
 
-export function whatsappSendMessage(body: any) {
+export function whatsappSendMessage(body: SendMessageBody) {
     return invoke()<WhatsAppSendMessageResponse>("whatsapp_send_message", { body })
 }
 
@@ -27,3 +27,4 @@ export type WhatsAppInfoResponse = { connection_status: WhatsAppConnectionStatus
 export type WhatsAppStartConnectionResponse = { code: string; connection_status: WhatsAppConnectionStatus }
 export type WhatsAppSendMessageResponse = { message_status: WhatsAppMessageStatus; connection_status: WhatsAppConnectionStatus }
 export type WhatsAppConnectionStatus = "signed_in" | "signed_out" | "qr_code_generated" | "whatsapp_library_error" | "target_not_on_whatsapp"
+export type SendMessageBody = { phone_number: string; message: string }
