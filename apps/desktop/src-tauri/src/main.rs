@@ -11,8 +11,14 @@ use std::process::Stdio;
 use tokio::io::{AsyncBufReadExt, BufReader};
 use tokio::process::Command;
 
+use std::env;
+use std::path::PathBuf;
+
 async fn run_surrealdb(verbose: bool) {
-    let mut surrealdb_process = Command::new("surreal")
+    let current_dir = env::current_dir().expect("Failed to get current directory");
+    let surreal_db_path: PathBuf = current_dir.join("surreal");
+
+    let mut surrealdb_process = Command::new(surreal_db_path)
         .args([
             "start",
             "--log",
