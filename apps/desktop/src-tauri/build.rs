@@ -1,4 +1,5 @@
 use std::env;
+use std::fs;
 use std::path::PathBuf;
 
 struct WhatsAppLinkingInfo<'a> {
@@ -66,7 +67,25 @@ fn link_whatsapp_library(whatsapp_linker_info: WhatsAppLinkingInfo) {
     println!("cargo:rustc-link-lib=static=whatsapp");
 }
 
+fn copy_surreal_db() {
+    let current_dir = env::current_dir().expect("Failed to get current directory");
+
+    let surreal_build_path: PathBuf = current_dir.join("../../../surrealdb/target/release/surreal");
+    let surreal_exec_path: PathBuf = current_dir.join("surreal");
+
+    match fs::copy(surreal_build_path, surreal_exec_path) {
+        Ok(_) => println!("File copied successfully!"),
+        Err(e) => panic!(
+            "Couldn't find surreal, please make sure to build surrealdb: {}",
+            e
+        ),
+    }
+}
+
 fn main() {
+    println!("cargo:rustc-link-lib=framework=Security");
+    println!("cargo:rustc-env=MACOSX_DEPLOYMENT_TARGET=11.0");
     link_whatsapp_library(get_whatsapp_linking_info());
+    copy_surreal_db();
     tauri_build::build()
 }
