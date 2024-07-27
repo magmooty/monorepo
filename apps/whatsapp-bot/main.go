@@ -1,9 +1,10 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
 	"net/http"
 	whatsapp "whatsapp-bot/whatsapp"
+
+	"github.com/gin-gonic/gin"
 )
 
 var whatsappBot *whatsapp.WhatsAppBot
@@ -79,6 +80,7 @@ func main() {
 	whatsappBot.InitializeClient()
 
 	// Initialize routes
+	gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
 	router.GET("/info", info)
 	router.POST("/send_message", sendMessage)
