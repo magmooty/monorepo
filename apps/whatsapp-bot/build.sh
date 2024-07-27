@@ -18,12 +18,12 @@ case $1 in
   windows-x86_64)
     echo "Building WhatsApp Bot for Windows x86_64..."
     mkdir -p target/windows-x86_64
-    CGO_ENABLED=1 GOOS=windows GOARCH=amd64 go build -o target/windows-x86_64/whatsapp-bot.exe main.go
+    CGO_ENABLED=1 GOOS=windows GOARCH=amd64 CC=x86_64-w64-mingw32-gcc CXX=x86_64-w64-mingw32-g++ go build -o target/windows-x86_64/whatsapp-bot.exe main.go
     ;;
   windows-i686)
     echo "Building WhatsApp Bot for Windows i686..."
     mkdir -p target/windows-i686
-    CGO_ENABLED=1 GOOS=windows GOARCH=386 go build -o target/windows-i686/whatsapp-bot.exe main.go
+    CGO_ENABLED=1 GOOS=windows GOARCH=386 CC=i686-w64-mingw32-gcc CXX=i686-w64-mingw32-g++ go build -o target/windows-i686/whatsapp-bot.exe main.go
     ;;
   *)
     echo "Error: Invalid argument. Please specify one of the following: macos-arm64, macos-amd64, windows-amd64, windows-i686."
