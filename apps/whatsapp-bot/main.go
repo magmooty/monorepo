@@ -1,34 +1,74 @@
 package main
 
-// #include <stdlib.h>
-// #include <stdbool.h>
-// typedef struct {
-//     char* connection_status;
-//     char* error_message;
-// } InfoResponse;
-//
-// typedef struct {
-//     char* code;
-//     char* connection_status;
-//     char* error_message;
-// } StartConnectionResponse;
-//
-// typedef struct {
-//     char* message_status;
-//     char* connection_status;
-//     char* error_message;
-// } SendMessageResponse;
-import "C"
-
 import (
-	"unsafe"
+	"github.com/gin-gonic/gin"
+	"net/http"
 	whatsapp "whatsapp-bot/whatsapp"
 )
 
 var whatsappBot *whatsapp.WhatsAppBot
 
-//export wa_initialize
-func wa_initialize() {
+func info(c *gin.Context) {
+	signed_in := whatsappBot.IsSignedIn()
+	c.JSON(http.StatusOK, gin.H{
+		"signed_in": signed_in,
+	})
+}
+
+func sendMessage(c *gin.Context) {
+	if !whatsappBot.IsSignedIn() {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"signed_in": false,
+			"sent":      false,
+		})
+		return
+	}
+
+	var requestBody struct {
+		Message     string `json:"message"`
+		PhoneNumber string `json:"phone_number"`
+	}
+
+	if err := c.ShouldBindJSON(&requestBody); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"signed_in": true,
+			"sent":      false,
+		})
+		return
+	}
+
+	sent := whatsappBot.SendMessage(requestBody.PhoneNumber, requestBody.Message)
+	c.JSON(http.StatusOK, gin.H{
+		"signed_in": true,
+		"sent":      sent,
+	})
+}
+
+func startConnection(c *gin.Context) {
+	code, status := whatsappBot.StartConnect()
+	switch status {
+	case whatsapp.CodeGenerated:
+		c.JSON(http.StatusOK, gin.H{
+			"code":      code,
+			"signed_in": false,
+			"error":     false,
+		})
+	case whatsapp.SignedIn:
+		c.JSON(http.StatusOK, gin.H{
+			"code":      nil,
+			"signed_in": true,
+			"error":     false,
+		})
+	case whatsapp.Error:
+		c.JSON(http.StatusBadRequest, gin.H{
+			"code":      nil,
+			"signed_in": false,
+			"error":     true,
+		})
+	}
+}
+
+func main() {
 	bot, err := whatsapp.New()
 	if err != nil {
 		panic(err)
@@ -37,75 +77,11 @@ func wa_initialize() {
 	// Set global variable
 	whatsappBot = bot
 	whatsappBot.InitializeClient()
+
+	// Initialize routes
+	router := gin.Default()
+	router.GET("/info", info)
+	router.POST("/send_message", sendMessage)
+	router.POST("/start_connection", startConnection)
+	router.Run("localhost:5003")
 }
-
-//export wa_info
-func wa_info() *C.InfoResponse {
-	connectionStatus, errorMessage := whatsappBot.IsSignedIn()
-
-	cConnectionStatus := C.CString(string(connectionStatus))
-	cErrorMessage := C.CString(string(errorMessage))
-
-	response := C.InfoResponse{
-		connection_status: cConnectionStatus,
-		error_message:     cErrorMessage,
-	}
-
-	// Allocate memory for the struct in C and copy the struct into it
-	pResponse := (*C.InfoResponse)(C.malloc(C.size_t(unsafe.Sizeof(response))))
-	*pResponse = response
-
-	return pResponse
-}
-
-//export wa_start_connection
-func wa_start_connection() *C.StartConnectionResponse {
-	code, connectionStatus, errorMessage := whatsappBot.StartConnect()
-
-	cCode := C.CString(string(code))
-	cConnectionStatus := C.CString(string(connectionStatus))
-	cErrorMessage := C.CString(string(errorMessage))
-
-	response := C.StartConnectionResponse{
-		code:              cCode,
-		connection_status: cConnectionStatus,
-		error_message:     cErrorMessage,
-	}
-
-	// Allocate memory for the struct in C and copy the struct into it
-	pResponse := (*C.StartConnectionResponse)(C.malloc(C.size_t(unsafe.Sizeof(response))))
-	*pResponse = response
-
-	return pResponse
-}
-
-//export wa_send_message
-func wa_send_message(phoneNumber *C.char, message *C.char) *C.SendMessageResponse {
-	sent, connectionStatus, errorMessage := whatsappBot.SendMessage(C.GoString(phoneNumber), C.GoString(message))
-
-	messageStatus := ""
-
-	if sent {
-		messageStatus = "successful"
-	} else {
-		messageStatus = "failed"
-	}
-
-	cMessageStatus := C.CString(messageStatus)
-	cConnectionStatus := C.CString(string(connectionStatus))
-	cErrorMessage := C.CString(string(errorMessage))
-
-	response := C.SendMessageResponse{
-		message_status:    cMessageStatus,
-		connection_status: cConnectionStatus,
-		error_message:     cErrorMessage,
-	}
-
-	// Allocate memory for the struct in C and copy the struct into it
-	pResponse := (*C.SendMessageResponse)(C.malloc(C.size_t(unsafe.Sizeof(response))))
-	*pResponse = response
-
-	return pResponse
-}
-
-func main() {}

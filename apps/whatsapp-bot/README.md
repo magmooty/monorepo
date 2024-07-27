@@ -13,7 +13,7 @@ brew install mingw-w64
 Run build script
 
 ```
-sh build.sh
+sh build.sh <arch>
 ```
 
 It should output a Windows 32-bit executable in the `dist` folder.
