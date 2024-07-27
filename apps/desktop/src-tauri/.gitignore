@@ -3,5 +3,3 @@
 /target/
 whatsapp.db
 rocksdb
-rocksdb_secondary
-surreal
