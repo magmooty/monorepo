@@ -3,7 +3,8 @@ use serde::Deserialize;
 
 #[derive(Debug, Default, Deserialize, PartialEq, Eq)]
 pub struct AppSettings {
-    surrealdb_endpoint: String,
+    pub surrealdb_endpoint: String,
+    pub port: i32,
 }
 
 pub fn extract_settings() -> AppSettings {
