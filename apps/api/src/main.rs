@@ -20,6 +20,7 @@ pub mod app;
 pub mod database;
 pub mod settings;
 pub mod validation;
+pub mod whatsapp;
 
 static APP_SETTINGS: OnceCell<AppSettings> = OnceCell::new();
 static DB: Lazy<Surreal<Client>> = Lazy::new(Surreal::init);
@@ -52,7 +53,9 @@ async fn main() {
     env_logger::Builder::from_env(Env::default().default_filter_or("debug")).init();
     debug!("Starting the application");
 
-    // Initialize the app settings and environment variables
+    debug!("Initializing WhatsApp");
+    whatsapp::initialize_whatsapp();
+
     debug!("Parsing environment variables");
     dotenv().ok();
     APP_SETTINGS.get_or_init(|| settings::extract_settings());
