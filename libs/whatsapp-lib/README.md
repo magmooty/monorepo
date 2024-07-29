@@ -4,6 +4,16 @@ This service exposes an API that allows a user to connect private WhatsApp accou
 
 ## Building
 
+### Building for Linux
+
+Install MUSL cross-compiler
+
+```shell
+brew install FiloSottile/musl-cross/musl-cross
+```
+
+### Building for Windows
+
 Install mingw-w64
 
 ```shell
@@ -13,10 +23,8 @@ brew install mingw-w64
 Run build script
 
 ```
-sh build.sh
+sh build.sh <arch>
 ```
-
-It should output a Windows 32-bit executable in the `dist` folder.
 
 ## API documentation
 
