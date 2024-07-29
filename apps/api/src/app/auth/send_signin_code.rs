@@ -1,7 +1,8 @@
 use crate::app::validate_payload;
 use crate::database::{Record, SigninCode, User};
 use crate::validation::validate_phone_number;
-use crate::DB;
+use crate::whatsapp::WhatsAppConnectionStatus;
+use crate::{whatsapp, DB};
 use axum::{debug_handler, http::StatusCode, Json};
 use log::info;
 use rand::Rng;
@@ -113,7 +114,35 @@ pub async fn send_signin_code(
     delete_previous_signin_codes(&payload.phone_number).await;
 
     info!("Creating new signin code for {}", &payload.phone_number);
-    create_signin_code(&payload.phone_number, 0).await;
+    let code = create_signin_code(&payload.phone_number, 0).await;
+
+    info!("Sending new signin code to {}", &payload.phone_number);
+    let response = whatsapp::send_message(
+        payload.phone_number.clone(),
+        format!("Your signin code is: {}", code),
+    )
+    .await
+    .unwrap();
+
+    match response.connection_status {
+        WhatsAppConnectionStatus::TargetNotOnWhatsApp => {
+            return (
+                StatusCode::BAD_REQUEST,
+                Json(SendSigninCodeResponse {
+                    status: "target_not_on_whatsapp".to_string(),
+                }),
+            );
+        }
+        WhatsAppConnectionStatus::SignedIn => {}
+        _ => {
+            return (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                Json(SendSigninCodeResponse {
+                    status: "whatsapp_error".to_string(),
+                }),
+            );
+        }
+    };
 
     info!("Signin code created for {}", payload.phone_number);
     (

@@ -5,6 +5,7 @@ use serde::Deserialize;
 pub struct AppSettings {
     pub surrealdb_endpoint: String,
     pub port: i32,
+    pub admin_public_key: String,
 }
 
 pub fn extract_settings() -> AppSettings {
