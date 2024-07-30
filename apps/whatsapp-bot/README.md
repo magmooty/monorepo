@@ -4,10 +4,24 @@ This service exposes an API that allows a user to connect private WhatsApp accou
 
 ## Building
 
+Building on MacOS
+
+### Windows
+
 Install mingw-w64
 
 ```shell
 brew install mingw-w64
+```
+
+### Linux
+
+Install [macos-cross-toolchains](https://github.com/messense/homebrew-macos-cross-toolchains)
+
+```sh
+brew tap messense/macos-cross-toolchains
+brew install x86_64-unknown-linux-gnu
+brew install aarch64-unknown-linux-gnu
 ```
 
 Run build script

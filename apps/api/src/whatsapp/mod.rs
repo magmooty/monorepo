@@ -23,7 +23,7 @@ pub struct CSendMessageResponse {
     error_message: *mut libc::c_char,
 }
 
-#[link(name = "whatsapp")]
+#[link(name = "whatsapp", kind = "static")]
 extern "C" {
     fn wa_initialize() -> ();
     fn wa_info(handle: libc::uintptr_t) -> *mut CInfoResponse;
