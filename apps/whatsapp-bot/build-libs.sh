@@ -23,12 +23,14 @@ build() {
     linux-x86_64)
       echo "Building WhatsApp Bot for Linux x86_64..."
       mkdir -p target/lib/linux-x86_64
-      CGO_ENABLED=1 GOOS=linux GOARCH=amd64 CC=x86_64-linux-musl-gcc go build -o target/lib/linux-x86_64/libwhatsapp.a -buildmode=c-archive lib.go
+      docker build -t magmooty-whatsapp-bot-builder:linux-x86_64 -f linux-x86_64-dockerfile .
+      docker run -it --name magmooty-whatsapp-bot-builder-linux-x86_64 --rm -v $(pwd):/app magmooty-whatsapp-bot-builder:linux-x86_64
       ;;
     linux-arm64)
       echo "Building WhatsApp Bot for Linux arm64..."
       mkdir -p target/lib/linux-arm64
-      CGO_ENABLED=1 GOOS=linux GOARCH=arm64 CC=aarch64-linux-musl-gcc go build -o target/lib/linux-arm64/libwhatsapp.a -buildmode=c-archive lib.go
+      docker build -t magmooty-whatsapp-bot-builder:linux-arm64 -f linux-arm64-dockerfile .
+      docker run -it --name magmooty-whatsapp-bot-builder-linux-arm64 --rm -v $(pwd):/app magmooty-whatsapp-bot-builder:linux-arm64
       ;;
     *)
       echo "Error: Invalid argument. Please specify one of the following: darwin-arm64, windows-x86_64, linux-x86_64, linux-arm64."
