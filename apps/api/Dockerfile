@@ -3,7 +3,10 @@ FROM rust:latest
 
 WORKDIR /usr/local
 
-# Install MUSL target for Rust
+# Install the necessary tools for cross-compilation
+RUN apt-get update
+RUN apt-get install -y gcc-x86-64-linux-gnu
+
 RUN rustup target add x86_64-unknown-linux-gnu
 
 # Set the working directory inside the container
