@@ -1,7 +1,7 @@
 use crate::app::validate_payload;
 use crate::database::{Record, SigninCode, User};
 use crate::validation::validate_phone_number;
-use crate::whatsapp::WhatsAppConnectionStatus;
+use crate::whatsapp::WhatsAppStatus;
 use crate::{whatsapp, DB};
 use axum::{debug_handler, http::StatusCode, Json};
 use log::info;
@@ -121,11 +121,10 @@ pub async fn send_signin_code(
         payload.phone_number.clone(),
         format!("Your signin code is: {}", code),
     )
-    .await
-    .unwrap();
+    .await;
 
-    match response.connection_status {
-        WhatsAppConnectionStatus::TargetNotOnWhatsApp => {
+    match response.status {
+        WhatsAppStatus::TargetNotOnWhatsApp => {
             return (
                 StatusCode::BAD_REQUEST,
                 Json(SendSigninCodeResponse {
@@ -133,7 +132,7 @@ pub async fn send_signin_code(
                 }),
             );
         }
-        WhatsAppConnectionStatus::SignedIn => {}
+        WhatsAppStatus::MessageSent => {}
         _ => {
             return (
                 StatusCode::INTERNAL_SERVER_ERROR,

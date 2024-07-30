@@ -19,25 +19,30 @@ typedef struct { const char *p; ptrdiff_t n; } _GoString_;
 /* Start of preamble from import "C" comments.  */
 
 
-#line 3 "main.go"
- #include <stdlib.h>
- #include <stdbool.h>
- typedef struct {
-     char* connection_status;
-     char* error_message;
- } InfoResponse;
+#line 3 "lib.go"
 
- typedef struct {
-     char* code;
-     char* connection_status;
-     char* error_message;
- } StartConnectionResponse;
+#include <stdlib.h>
+#include <stdbool.h>
 
- typedef struct {
-     char* message_status;
-     char* connection_status;
-     char* error_message;
- } SendMessageResponse;
+typedef struct {
+    char* status;
+    char* error_message;
+} InfoResponse;
+
+typedef struct {
+    char* code;
+    char* status;
+    char* error_message;
+} StartConnectionResponse;
+
+typedef struct {
+    char* status;
+    char* error_message;
+} SendMessageResponse;
+
+extern void wa_info_callback(uintptr_t handle, InfoResponse* result);
+extern void wa_start_connection_callback(uintptr_t handle, StartConnectionResponse* result);
+extern void wa_send_message_callback(uintptr_t handle, SendMessageResponse* result);
 
 #line 1 "cgo-generated-wrapper"
 
@@ -96,9 +101,9 @@ extern "C" {
 #endif
 
 extern __declspec(dllexport) void wa_initialize();
-extern __declspec(dllexport) InfoResponse* wa_info();
-extern __declspec(dllexport) StartConnectionResponse* wa_start_connection();
-extern __declspec(dllexport) SendMessageResponse* wa_send_message(char* phoneNumber, char* message);
+extern __declspec(dllexport) void wa_info(uintptr_t handle);
+extern __declspec(dllexport) void wa_start_connection(uintptr_t handle);
+extern __declspec(dllexport) void wa_send_message(uintptr_t handle, char* phoneNumber, char* message);
 
 #ifdef __cplusplus
 }

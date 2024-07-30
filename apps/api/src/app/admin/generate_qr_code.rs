@@ -9,7 +9,7 @@ use qrcode_generator::{self, QrCodeEcc};
 pub async fn generate_whatsapp_qr_code() -> impl IntoResponse {
     info!("Generating new WhatsApp QR code");
 
-    let response = whatsapp::start_connection().await.unwrap();
+    let response = whatsapp::start_connection().await;
 
     let qr_input = response.code.clone();
     let qr_vec = tokio::task::spawn_blocking(move || {

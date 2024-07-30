@@ -1,185 +1,223 @@
 extern crate libc;
 use std::ffi::CStr;
 use std::ffi::CString;
-
-use tokio::task::JoinError;
+use tokio::sync::oneshot;
 
 // Define the structs that will be used in C
 #[repr(C)]
 pub struct CInfoResponse {
-    connection_status: *mut libc::c_char,
+    status: *mut libc::c_char,
     error_message: *mut libc::c_char,
 }
 
 #[repr(C)]
 pub struct CStartConnectionResponse {
     code: *mut libc::c_char,
-    connection_status: *mut libc::c_char,
+    status: *mut libc::c_char,
     error_message: *mut libc::c_char,
 }
 
 #[repr(C)]
 pub struct CSendMessageResponse {
-    message_status: *mut libc::c_char,
-    connection_status: *mut libc::c_char,
+    status: *mut libc::c_char,
     error_message: *mut libc::c_char,
 }
 
 #[link(name = "whatsapp")]
 extern "C" {
     fn wa_initialize() -> ();
-    fn wa_info() -> *mut CInfoResponse;
-    fn wa_start_connection() -> *mut CStartConnectionResponse;
+    fn wa_info(handle: libc::uintptr_t) -> *mut CInfoResponse;
+    fn wa_start_connection(handle: libc::uintptr_t) -> *mut CStartConnectionResponse;
     fn wa_send_message(
+        handle: libc::uintptr_t,
         phone_number: *const libc::c_char,
         message: *const libc::c_char,
     ) -> *mut CSendMessageResponse;
 }
 
-pub enum WhatsAppConnectionStatus {
+#[no_mangle]
+extern "C" fn wa_info_callback(handle: usize, result: *mut CInfoResponse) {
+    let tx = unsafe { Box::from_raw(handle as *mut oneshot::Sender<WAInfoResponse>) };
+
+    unsafe {
+        if !result.is_null() {
+            let status = CStr::from_ptr((*result).status).to_str().unwrap();
+            let error_message = CStr::from_ptr((*result).error_message).to_str().unwrap();
+
+            let info_response = WAInfoResponse {
+                status: parse_status(status),
+                error_message: error_message.to_string(),
+            };
+
+            let _ = tx
+                .send(info_response)
+                .expect("Failed to send back response from WhatsApp library");
+        } else {
+            let _ = tx
+                .send(WAInfoResponse {
+                    status: WhatsAppStatus::WhatsAppLibraryError,
+                    error_message: "Unhandled error while communicating with WhatsApp library"
+                        .to_string(),
+                })
+                .expect("Failed to send back response from WhatsApp library");
+        }
+    }
+}
+
+#[no_mangle]
+extern "C" fn wa_start_connection_callback(handle: usize, result: *mut CStartConnectionResponse) {
+    let tx = unsafe { Box::from_raw(handle as *mut oneshot::Sender<WAStartConnectionResponse>) };
+
+    unsafe {
+        if !result.is_null() {
+            let code = CStr::from_ptr((*result).code).to_str().unwrap();
+            let status = CStr::from_ptr((*result).status).to_str().unwrap();
+            let error_message = CStr::from_ptr((*result).error_message).to_str().unwrap();
+
+            let start_connection_response = WAStartConnectionResponse {
+                code: code.to_string(),
+                status: parse_status(status),
+                error_message: error_message.to_string(),
+            };
+
+            let _ = tx
+                .send(start_connection_response)
+                .expect("Failed to send back response from WhatsApp library");
+        } else {
+            let _ = tx
+                .send(WAStartConnectionResponse {
+                    code: "".to_string(),
+                    status: WhatsAppStatus::WhatsAppLibraryError,
+                    error_message: "Unhandled error while communicating with WhatsApp library"
+                        .to_string(),
+                })
+                .expect("Failed to send back response from WhatsApp library");
+        }
+    }
+}
+
+#[no_mangle]
+extern "C" fn wa_send_message_callback(handle: usize, result: *mut CSendMessageResponse) {
+    let tx = unsafe { Box::from_raw(handle as *mut oneshot::Sender<WASendMessageResponse>) };
+
+    unsafe {
+        if !result.is_null() {
+            let status = CStr::from_ptr((*result).status).to_str().unwrap();
+            let error_message = CStr::from_ptr((*result).error_message).to_str().unwrap();
+
+            let send_message_response = WASendMessageResponse {
+                status: parse_status(status),
+                error_message: error_message.to_string(),
+            };
+
+            let _ = tx
+                .send(send_message_response)
+                .expect("Failed to send back response from WhatsApp library");
+        } else {
+            let _ = tx
+                .send(WASendMessageResponse {
+                    status: WhatsAppStatus::WhatsAppLibraryError,
+                    error_message: "Unhandled error while communicating with WhatsApp library"
+                        .to_string(),
+                })
+                .expect("Failed to send back response from WhatsApp library");
+        }
+    }
+}
+
+#[derive(Debug)]
+pub enum WhatsAppStatus {
     SignedIn,
     SignedOut,
     QRCodeGenerated,
     WhatsAppLibraryError,
     TargetNotOnWhatsApp,
+    MessageSent,
 }
 
-fn parse_connection_status(connection_status: &str) -> WhatsAppConnectionStatus {
-    match connection_status {
-        "signed_in" => WhatsAppConnectionStatus::SignedIn,
-        "signed_out" => WhatsAppConnectionStatus::SignedOut,
-        "qr_code_generated" => WhatsAppConnectionStatus::QRCodeGenerated,
-        "whatsapp_library_error" => WhatsAppConnectionStatus::WhatsAppLibraryError,
-        "target_not_on_whatsapp" => WhatsAppConnectionStatus::TargetNotOnWhatsApp,
-        _ => WhatsAppConnectionStatus::WhatsAppLibraryError,
+fn parse_status(status: &str) -> WhatsAppStatus {
+    match status {
+        "signed_in" => WhatsAppStatus::SignedIn,
+        "signed_out" => WhatsAppStatus::SignedOut,
+        "qr_code_generated" => WhatsAppStatus::QRCodeGenerated,
+        "whatsapp_library_error" => WhatsAppStatus::WhatsAppLibraryError,
+        "target_not_on_whatsapp" => WhatsAppStatus::TargetNotOnWhatsApp,
+        "message_sent" => WhatsAppStatus::MessageSent,
+        _ => WhatsAppStatus::WhatsAppLibraryError,
     }
 }
 
 pub fn initialize_whatsapp() {
     unsafe {
+        // Leave it as a blocking function because it is run on initialization, we need it to be blocking
         wa_initialize();
     }
 }
 
+#[derive(Debug)]
 pub struct WAInfoResponse {
-    pub connection_status: WhatsAppConnectionStatus,
+    pub status: WhatsAppStatus,
     pub error_message: String,
 }
 
-pub fn get_info() -> WAInfoResponse {
+pub async fn get_info() -> WAInfoResponse {
+    let (tx, rx) = oneshot::channel();
+    let boxed_tx = Box::new(tx);
+    let handle = Box::into_raw(boxed_tx) as usize;
+
     unsafe {
-        let response = wa_info();
-
-        if !response.is_null() {
-            let connection_status = CStr::from_ptr((*response).connection_status)
-                .to_str()
-                .unwrap();
-            let error_message = CStr::from_ptr((*response).error_message).to_str().unwrap();
-
-            let info_response = WAInfoResponse {
-                connection_status: parse_connection_status(connection_status),
-                error_message: error_message.to_string(),
-            };
-
-            libc::free((*response).connection_status as *mut libc::c_void);
-            libc::free((*response).error_message as *mut libc::c_void);
-
-            info_response
-        } else {
-            WAInfoResponse {
-                connection_status: WhatsAppConnectionStatus::WhatsAppLibraryError,
-                error_message: "Unhandled error while communicating with WhatsApp library"
-                    .to_string(),
-            }
-        }
+        wa_info(handle as libc::uintptr_t);
     }
+
+    rx.await
+        .expect("Failed to communicate with WhatsApp library")
 }
 
+#[derive(Debug)]
 pub struct WAStartConnectionResponse {
     pub code: String,
-    pub connection_status: WhatsAppConnectionStatus,
+    pub status: WhatsAppStatus,
     pub error_message: String,
 }
 
-pub async fn start_connection() -> Result<WAStartConnectionResponse, JoinError> {
-    tokio::task::spawn_blocking(move || unsafe {
-        let response = wa_start_connection();
+pub async fn start_connection() -> WAStartConnectionResponse {
+    let (tx, rx) = oneshot::channel();
+    let boxed_tx = Box::new(tx);
+    let handle = Box::into_raw(boxed_tx) as usize;
 
-        if !response.is_null() {
-            let code = CStr::from_ptr((*response).code).to_str().unwrap();
-            let connection_status = CStr::from_ptr((*response).connection_status)
-                .to_str()
-                .unwrap();
-            let error_message = CStr::from_ptr((*response).error_message).to_str().unwrap();
+    unsafe {
+        wa_start_connection(handle as libc::uintptr_t);
+    }
 
-            let start_connection_response = WAStartConnectionResponse {
-                code: code.to_string(),
-                connection_status: parse_connection_status(connection_status),
-                error_message: error_message.to_string(),
-            };
+    let result = rx
+        .await
+        .expect("Failed to communicate with WhatsApp library");
 
-            libc::free((*response).code as *mut libc::c_void);
-            libc::free((*response).connection_status as *mut libc::c_void);
-            libc::free((*response).error_message as *mut libc::c_void);
-
-            start_connection_response
-        } else {
-            WAStartConnectionResponse {
-                code: "".to_string(),
-                connection_status: WhatsAppConnectionStatus::WhatsAppLibraryError,
-                error_message: "Unhandled error while communicating with WhatsApp library"
-                    .to_string(),
-            }
-        }
-    })
-    .await
+    result
 }
 
+#[derive(Debug)]
 pub struct WASendMessageResponse {
-    pub message_status: String,
-    pub connection_status: WhatsAppConnectionStatus,
+    pub status: WhatsAppStatus,
     pub error_message: String,
 }
 
-pub async fn send_message(
-    phone_number: String,
-    message: String,
-) -> Result<WASendMessageResponse, JoinError> {
-    tokio::task::spawn_blocking(move || {
-        unsafe {
-            // Create CStrings from Rust strings
-            let c_phone_number = CString::new(phone_number).unwrap();
-            let c_message = CString::new(message).unwrap();
+pub async fn send_message(phone_number: String, message: String) -> WASendMessageResponse {
+    let (tx, rx) = oneshot::channel();
+    let boxed_tx = Box::new(tx);
+    let handle = Box::into_raw(boxed_tx) as usize;
 
-            let response = wa_send_message(c_phone_number.as_ptr(), c_message.as_ptr());
+    unsafe {
+        let c_phone_number = CString::new(phone_number).unwrap();
+        let c_message = CString::new(message).unwrap();
 
-            if !response.is_null() {
-                let message_status = CStr::from_ptr((*response).message_status).to_str().unwrap();
-                let connection_status = CStr::from_ptr((*response).connection_status)
-                    .to_str()
-                    .unwrap();
-                let error_message = CStr::from_ptr((*response).error_message).to_str().unwrap();
+        wa_send_message(
+            handle as libc::uintptr_t,
+            c_phone_number.as_ptr(),
+            c_message.as_ptr(),
+        );
+    }
 
-                let send_message_response = WASendMessageResponse {
-                    message_status: message_status.to_string(),
-                    connection_status: parse_connection_status(connection_status),
-                    error_message: error_message.to_string(),
-                };
-
-                libc::free((*response).message_status as *mut libc::c_void);
-                libc::free((*response).connection_status as *mut libc::c_void);
-                libc::free((*response).error_message as *mut libc::c_void);
-
-                send_message_response
-            } else {
-                WASendMessageResponse {
-                    message_status: "failed".to_string(),
-                    connection_status: WhatsAppConnectionStatus::WhatsAppLibraryError,
-                    error_message: "Unhandled error while communicating with WhatsApp library"
-                        .to_string(),
-                }
-            }
-        }
-    })
-    .await
+    rx.await
+        .expect("Failed to communicate with WhatsApp library")
 }
