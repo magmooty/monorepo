@@ -6,7 +6,7 @@ use tauri::api::process::{Command, CommandEvent};
 use tauri_specta::ts;
 
 mod app;
-mod processes;
+mod network_discovery;
 
 fn generate_typescript_bindings() {
     ts::export(
@@ -61,6 +61,8 @@ fn run_surreal_sidecar() {
 #[tokio::main]
 async fn main() {
     generate_typescript_bindings();
+
+    tokio::spawn(network_discovery::start_network_discovery_receiver());
 
     run_whatsapp_sidecar();
     run_surreal_sidecar();
