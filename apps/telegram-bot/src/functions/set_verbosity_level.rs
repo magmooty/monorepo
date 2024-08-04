@@ -1,10 +1,10 @@
+use crate::tdlib::ClientId;
+use crate::{requests::TdLibType, TelegramClient, TelegramRequest};
 use serde::{Deserialize, Serialize};
-
-use crate::telegram::tdlib::ClientId;
-use crate::telegram::{requests::TdLibType, TelegramClient, TelegramRequest};
+use telegram_macros::TelegramRequest;
 
 #[derive(Serialize, Deserialize, Debug, Clone, TelegramRequest)]
-pub struct GetAuthorizationState {
+pub struct SetLogVerbosityLevel {
     #[serde(rename = "@type")]
     td_type: TdLibType,
 
@@ -17,10 +17,10 @@ pub struct GetAuthorizationState {
     new_verbosity_level: i32,
 }
 
-impl GetAuthorizationState {
+impl SetLogVerbosityLevel {
     pub fn new(client: &TelegramClient, new_verbosity_level: i32) -> Self {
         Self {
-            td_type: TdLibType::GetAuthorizationState,
+            td_type: TdLibType::SetLogVerbosityLevel,
             client_id: client.client_id,
             extra: client.generate_extra_handle(),
             new_verbosity_level,

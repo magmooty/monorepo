@@ -15,12 +15,11 @@ use surrealdb::opt::auth::Root;
 use surrealdb::Surreal;
 use tower::ServiceBuilder;
 use tower_http::catch_panic::CatchPanicLayer;
+use telegram_bot;
 
 pub mod app;
 pub mod database;
-pub mod proc_macros;
 pub mod settings;
-pub mod telegram;
 pub mod validation;
 pub mod whatsapp;
 
@@ -63,7 +62,7 @@ async fn main() {
     whatsapp::initialize_whatsapp();
 
     debug!("Initializing Telegram");
-    telegram::initialize_telegram().await;
+    telegram_bot::initialize_telegram().await;
 
     debug!("Connecting to the database");
     let connection = DB

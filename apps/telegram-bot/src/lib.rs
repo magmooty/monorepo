@@ -2,10 +2,8 @@ mod functions;
 mod requests;
 mod tdlib;
 
-use functions::SetLogVerbosityLevel;
 use log::{debug, error};
 use requests::{TDLibResponse, TelegramRequest};
-use serde::Serialize;
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 use std::time::{SystemTime, UNIX_EPOCH};
