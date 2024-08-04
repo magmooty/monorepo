@@ -1,5 +1,5 @@
-use std::env;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
+use std::{env, fs};
 
 #[cfg(all(target_arch = "aarch64", target_os = "macos"))]
 static BINARIES_DIRECTORY: &str = "./binaries/darwin-arm64";
@@ -11,14 +11,10 @@ static BINARIES_DIRECTORY: &str = "./binaries/linux-arm64";
 static BINARIES_DIRECTORY: &str = "./binaries/linux-x86_64";
 
 #[cfg(all(target_arch = "x86_64", target_os = "windows"))]
-static BINARIES_DIRECTORY: &str = "./binaries/windows-x86_64";
+static BINARIES_DIRECTORY: &str = r"binaries\windows-x86_64";
 
-static TDLIB_LIBRARY_NAME: &str = "tdjson";
-
-static WHATSAPP_LIBRARY_FILE_NAME: &str = "libwhatsapp.a";
-static WHATSAPP_LIBRARY_NAME: &str = "whatsapp";
-
-fn link_whatsapp_library() {
+fn link_libraries() {
+    // Compiler logs
     #[cfg(all(target_arch = "aarch64", target_os = "macos"))]
     println!("cargo:warning=Compiling for Apple Silicon");
 
@@ -31,6 +27,7 @@ fn link_whatsapp_library() {
     #[cfg(all(target_arch = "x86_64", target_os = "windows"))]
     println!("cargo:warning=Compiling for Windows x86_64");
 
+    // MacOS specific flags
     #[cfg(all(target_arch = "aarch64", target_os = "macos"))]
     println!("cargo:rustc-link-lib=framework=Security");
 
@@ -40,30 +37,42 @@ fn link_whatsapp_library() {
     let current_dir = env::current_dir().expect("Failed to get current directory");
     let relative_path: PathBuf = current_dir.join(BINARIES_DIRECTORY);
 
-    let libraries_file_names = [WHATSAPP_LIBRARY_FILE_NAME];
+    let out_path = env::var("OUT_DIR").expect("OUT_DIR not set");
+    let out_path = Path::new(&out_path)
+        .ancestors()
+        .nth(3)
+        .unwrap()
+        .to_path_buf();
 
-    for library_file_name in libraries_file_names {
-        let library_file_path = relative_path.join(library_file_name);
+    println!("cargo:warning=Build directory: {}", &out_path.to_str().unwrap());
 
-        // Check if the file exists
-        if !library_file_path.exists() {
-            panic!(
-                "Linked library file not found: {}",
-                library_file_path.display()
-            );
-        }
-    }
-
+    // Find binaries search path
     let link_search_path = relative_path
         .to_str()
         .expect("Failed to convert path to string");
 
+    // Set binaries search path
     println!("cargo:warning=Libraries search path: {}", link_search_path);
     println!("cargo:rustc-link-search=native={}", link_search_path);
-    println!("cargo:rustc-link-lib=static={}", WHATSAPP_LIBRARY_NAME);
-    println!("cargo:rustc-link-lib=static={}", TDLIB_LIBRARY_NAME);
+
+    // Select binaries to statically link
+    println!("cargo:rustc-link-lib=static={}", "whatsapp");
+
+    // Select binaries to dynamically link
+    println!("cargo:rustc-link-lib=dylib={}", "tdjson");
+
+    // Copy dynamically linked tdjson
+    #[cfg(target_os = "windows")]
+    let tdjson_path = relative_path.join("tdjson.dll");
+
+    #[cfg(target_os = "macos")]
+    let tdjson_path = relative_path.join("libtdjson.1.8.34.dylib");
+
+    println!("cargo:warning=tdjson dynamic library: {}", &tdjson_path.to_str().unwrap());
+
+    fs::copy(tdjson_path, out_path).unwrap_or_default();
 }
 
 fn main() {
-    link_whatsapp_library();
+    link_libraries();
 }
