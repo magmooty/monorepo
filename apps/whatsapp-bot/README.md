@@ -16,13 +16,7 @@ brew install mingw-w64
 
 ### Linux
 
-Install [macos-cross-toolchains](https://github.com/messense/homebrew-macos-cross-toolchains)
-
-```sh
-brew tap messense/macos-cross-toolchains
-brew install x86_64-unknown-linux-gnu
-brew install aarch64-unknown-linux-gnu
-```
+Just use Docker.
 
 Run build script
 

@@ -1,3 +1,7 @@
 [workspace]
 resolver = "2"
-members = [ "apps/api","apps/desktop/src-tauri"]
+members = [
+    "apps/api",
+    "apps/bluetooth-advert-receiver",
+    "apps/desktop/src-tauri",
+]
