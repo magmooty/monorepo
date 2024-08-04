@@ -6,6 +6,8 @@ pub struct AppSettings {
     pub surrealdb_endpoint: String,
     pub port: i32,
     pub admin_public_key: String,
+    pub telegram_api_id: String,
+    pub telegram_api_hash: String,
 }
 
 pub fn extract_settings() -> AppSettings {

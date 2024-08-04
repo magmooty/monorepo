@@ -18,7 +18,9 @@ use tower_http::catch_panic::CatchPanicLayer;
 
 pub mod app;
 pub mod database;
+pub mod proc_macros;
 pub mod settings;
+pub mod telegram;
 pub mod validation;
 pub mod whatsapp;
 
@@ -53,12 +55,15 @@ async fn main() {
     env_logger::Builder::from_env(Env::default().default_filter_or("debug")).init();
     debug!("Starting the application");
 
-    debug!("Initializing WhatsApp");
-    whatsapp::initialize_whatsapp();
-
     debug!("Parsing environment variables");
     dotenv().ok();
     APP_SETTINGS.get_or_init(|| settings::extract_settings());
+
+    debug!("Initializing WhatsApp");
+    whatsapp::initialize_whatsapp();
+
+    debug!("Initializing Telegram");
+    telegram::initialize_telegram().await;
 
     debug!("Connecting to the database");
     let connection = DB
