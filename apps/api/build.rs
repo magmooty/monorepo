@@ -44,7 +44,10 @@ fn link_libraries() {
         .unwrap()
         .to_path_buf();
 
-    println!("cargo:warning=Build directory: {}", &out_path.to_str().unwrap());
+    println!(
+        "cargo:warning=Build directory: {}",
+        &out_path.to_str().unwrap()
+    );
 
     // Find binaries search path
     let link_search_path = relative_path
@@ -54,23 +57,29 @@ fn link_libraries() {
     // Set binaries search path
     println!("cargo:warning=Libraries search path: {}", link_search_path);
     println!("cargo:rustc-link-search=native={}", link_search_path);
-
+    
     // Select binaries to statically link
     println!("cargo:rustc-link-lib=static={}", "whatsapp");
-
+    
     // Select binaries to dynamically link
     println!("cargo:rustc-link-lib=dylib={}", "tdjson");
-
+    
     // Copy dynamically linked tdjson
     #[cfg(target_os = "windows")]
-    let tdjson_path = relative_path.join("tdjson.dll");
-
+    let tdjson_file_name = "tdjson.dll";
+    
     #[cfg(target_os = "macos")]
-    let tdjson_path = relative_path.join("libtdjson.1.8.34.dylib");
-
-    println!("cargo:warning=tdjson dynamic library: {}", &tdjson_path.to_str().unwrap());
-
-    fs::copy(tdjson_path, out_path).unwrap_or_default();
+    let tdjson_file_name = "libtdjson.1.8.34.dylib";
+    
+    let tdjson_path = relative_path.join(tdjson_file_name);
+    
+    println!(
+        "cargo:warning=tdjson dynamic library: {}",
+        &tdjson_path.to_str().unwrap()
+    );
+    println!("cargo:rerun-if-changed={}", tdjson_path.display());
+    
+    fs::copy(tdjson_path, out_path.join(tdjson_file_name)).unwrap();
 }
 
 fn main() {
