@@ -25,7 +25,7 @@ fn run_whatsapp_sidecar() {
     tauri::async_runtime::spawn(async move {
         // read events such as stdout
         while let Some(event) = rx.recv().await {
-            if let CommandEvent::Stdout(line) = event {
+            if let CommandEvent::Stdout(_) = event {
                 // print!("{}", line);
             }
         }
@@ -51,7 +51,7 @@ fn run_surreal_sidecar() {
     tauri::async_runtime::spawn(async move {
         // read events such as stdout
         while let Some(event) = rx.recv().await {
-            if let CommandEvent::Stdout(line) = event {
+            if let CommandEvent::Stdout(_) = event {
                 // print!("{}", line);
             }
         }

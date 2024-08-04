@@ -1,6 +1,5 @@
 use std::net::{Ipv4Addr, SocketAddr, SocketAddrV4};
 use tokio::net::UdpSocket;
-use tokio::runtime::Runtime;
 
 pub async fn start_network_discovery_receiver() {
     // Bind the UDP socket to the broadcast address and port
