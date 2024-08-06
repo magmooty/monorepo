@@ -1,8 +1,9 @@
-use log::debug;
+use crate::{APP_SETTINGS, DB};
+use log::{debug, info};
 use serde::{Deserialize, Serialize};
+use surrealdb::engine::remote::ws::Ws;
+use surrealdb::opt::auth::Root;
 use surrealdb::sql::Thing;
-
-use crate::DB;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Record {
@@ -36,13 +37,15 @@ pub async fn define_database() {
         DEFINE INDEX signin_code_index ON TABLE signin_code COLUMNS code UNIQUE;
 
         # User table
-        DEFINE TABLE user SCHEMALESS;
+        DEFINE TABLE user SCHEMAFULL PERMISSIONS FOR SELECT WHERE id = $auth.id;
         DEFINE FIELD first_name ON TABLE user TYPE option<string>;
         DEFINE FIELD last_name ON TABLE user TYPE option<string>;
         DEFINE FIELD phone_number ON TABLE user TYPE option<string>;
         DEFINE FIELD signin_code ON TABLE user TYPE option<record<signin_code>>;
         DEFINE FIELD created_at ON TABLE user TYPE datetime DEFAULT time::now();
         DEFINE INDEX phone_number_index ON TABLE user COLUMNS phone_number UNIQUE;
+
+        DEFINE TABLE center SCHEMALESS PERMISSIONS FOR SELECT WHERE id = $auth.id, FOR UPDATE WHERE id = $auth.id;
 
         # Tutor scope, sign in code is valid for 10 minutes
         DEFINE SCOPE tutor SESSION 24h
@@ -51,4 +54,26 @@ pub async fn define_database() {
     )
     .await
     .unwrap();
+}
+
+pub async fn connect() {
+    let connection = DB
+        .connect::<Ws>(&APP_SETTINGS.get().unwrap().surrealdb_endpoint)
+        .await;
+
+    match connection {
+        Ok(_) => {
+            DB.use_ns("magmooty").use_db("magmooty").await.unwrap();
+            DB.signin(Root {
+                username: &APP_SETTINGS.get().unwrap().surrealdb_root_username,
+                password: &APP_SETTINGS.get().unwrap().surrealdb_root_password,
+            })
+            .await
+            .unwrap();
+            info!("Connected to the database");
+        }
+        Err(e) => {
+            panic!("Failed to connect to the database: {}", e);
+        }
+    }
 }

@@ -15,6 +15,7 @@ const config = {
 		alias: {
 			sdk: './src/sdk',
 			central: './src/central',
+			common: './src/common',
 		}
 	}
 };

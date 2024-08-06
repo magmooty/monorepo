@@ -4,6 +4,8 @@ use serde::Deserialize;
 #[derive(Debug, Default, Deserialize, PartialEq, Eq)]
 pub struct AppSettings {
     pub surrealdb_endpoint: String,
+    pub surrealdb_root_username: String,
+    pub surrealdb_root_password: String,
     pub port: i32,
     pub admin_public_key: String,
     pub telegram_api_id: String,

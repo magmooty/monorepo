@@ -1,5 +1,4 @@
 use bytes::Bytes;
-use database::define_database;
 use dotenv::dotenv;
 use env_logger::Env;
 use http::{header, Response, StatusCode};
@@ -10,12 +9,10 @@ use once_cell::sync::OnceCell;
 use settings::AppSettings;
 use std::any::Any;
 use surrealdb::engine::remote::ws::Client;
-use surrealdb::engine::remote::ws::Ws;
-use surrealdb::opt::auth::Root;
 use surrealdb::Surreal;
+use telegram_bot;
 use tower::ServiceBuilder;
 use tower_http::catch_panic::CatchPanicLayer;
-use telegram_bot;
 
 pub mod app;
 pub mod database;
@@ -65,27 +62,10 @@ async fn main() {
     telegram_bot::initialize_telegram().await;
 
     debug!("Connecting to the database");
-    let connection = DB
-        .connect::<Ws>(&APP_SETTINGS.get().unwrap().surrealdb_endpoint)
-        .await;
+    database::connect().await;
 
-    match connection {
-        Ok(_) => {
-            DB.use_ns("magmooty").use_db("magmooty").await.unwrap();
-            DB.signin(Root {
-                username: "root",
-                password: "root",
-            })
-            .await
-            .unwrap();
-            info!("Connected to the database");
-        }
-        Err(e) => {
-            panic!("Failed to connect to the database: {}", e);
-        }
-    }
-
-    define_database().await;
+    debug!("Defining database schema");
+    database::define_database().await;
 
     debug!("Building panic catcher");
     let svc = ServiceBuilder::new()

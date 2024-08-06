@@ -4,7 +4,8 @@ use axum::{routing::post, Router};
 mod generate_qr_code;
 mod middleware;
 
-use generate_qr_code::generate_whatsapp_qr_code;
+use generate_qr_code::*;
+
 use tower::ServiceBuilder;
 
 pub fn get_router() -> Router {

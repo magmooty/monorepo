@@ -1,10 +1,19 @@
 import Surreal from 'surrealdb.js';
+import { CentralAuthController } from './auth';
+import { CentralCenterController } from './center';
+import { isSurrealConnectionError } from 'common/surreal';
+
+export enum ConnectError {
+	DatabaseConnectionError = 'database_connection_error'
+}
 
 export class CentralClient {
 	apiBaseUrl: string;
 	remoteSurrealUrl: string;
-
 	db: Surreal;
+
+	auth: CentralAuthController;
+	center: CentralCenterController;
 
 	constructor() {
 		if (!import.meta.env.VITE_CENTRAL_API_BASE_URL) {
@@ -20,14 +29,39 @@ export class CentralClient {
 		this.remoteSurrealUrl = import.meta.env.VITE_REMOTE_SURREAL_URL;
 
 		this.db = new Surreal();
+
+		this.auth = new CentralAuthController(this);
+		this.center = new CentralCenterController(this);
 	}
 
 	async isDatabaseConnected() {
-		return this.db.ping();
+		return this.db.ping().catch((error) => {
+			if (isSurrealConnectionError(error)) {
+				return false;
+			}
+
+			throw error;
+		});
 	}
 
+	/**
+	 * @throws {ConnectError} if the function fails
+	 */
 	async connect(): Promise<void> {
-		await this.db.connect(this.remoteSurrealUrl);
-		await this.db.use({ namespace: 'magmooty', database: 'magmooty' });
+		await this.db.connect(this.remoteSurrealUrl).catch((error) => {
+			if (isSurrealConnectionError(error)) {
+				throw new Error(ConnectError.DatabaseConnectionError);
+			}
+
+			throw error;
+		});
+
+		await this.db.use({ namespace: 'magmooty', database: 'magmooty' }).catch((error) => {
+			if (isSurrealConnectionError(error)) {
+				throw new Error(ConnectError.DatabaseConnectionError);
+			}
+
+			throw error;
+		});
 	}
 }

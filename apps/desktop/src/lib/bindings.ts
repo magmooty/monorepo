@@ -10,9 +10,16 @@ declare global {
 // Function avoids 'window not defined' in SSR
 const invoke = () => window.__TAURI_INVOKE__;
 
-export function checkInternetConnection() {
-    return invoke()<InternetConnectionCheckResponse>("check_internet_connection")
+export function setGlobalKey(key: string, value: string) {
+    return invoke()<null>("set_global_key", { key,value })
 }
 
-export type InternetConnectionStatus = "connected" | "not_connected"
-export type InternetConnectionCheckResponse = { connection_status: InternetConnectionStatus }
+export function getGlobalKey(key: string) {
+    return invoke()<string | null>("get_global_key", { key })
+}
+
+export function generateKeyPair() {
+    return invoke()<KeyPair>("generate_key_pair")
+}
+
+export type KeyPair = { private_key: string; public_key: string }

@@ -3,3 +3,4 @@
 /target/
 whatsapp.db
 rocksdb
+global_keys.db*
