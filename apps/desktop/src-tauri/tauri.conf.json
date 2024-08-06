@@ -1,6 +1,7 @@
 {
 	"$schema": "../node_modules/@tauri-apps/cli/schema.json",
 	"build": {
+		
 		"beforeBuildCommand": "yarn build",
 		"beforeDevCommand": "yarn dev",
 		"devPath": "http://localhost:5173",
@@ -13,6 +14,11 @@
 	"tauri": {
 		"allowlist": {
 			"all": false,
+			"http": {
+				"all": false,
+				"request": true,
+				"scope": ["http://localhost:4000/*", "http://localhost:5003"]
+			},
 			"shell": {
 				"sidecar": true,
 				"scope": [
