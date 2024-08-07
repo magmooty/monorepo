@@ -80,8 +80,6 @@ async fn main() {
     info!(target: LOG_TARGET, "Initializing network discovery UDP transceiver");
     tokio::spawn(network_discovery::start_network_discovery_receiver());
 
-    dbg!(network_discovery::discover_network().await.unwrap());
-
     info!(target: LOG_TARGET, "Running local WhatsApp API");
     run_whatsapp_sidecar();
 
