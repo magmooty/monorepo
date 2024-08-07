@@ -14,7 +14,7 @@ export class App {
 	 * Connect to the SurrealDB server
 	 */
 	async connect() {
-		await this.db.connect('http://127.0.0.1:8000/rpc');
+		await this.db.connect('http://127.0.0.1:5004/rpc');
 		await this.db.use({ namespace: 'test', database: 'test' });
 	}
 }

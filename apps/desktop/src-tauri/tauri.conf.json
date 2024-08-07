@@ -37,6 +37,8 @@
 							{
 								"validator": "\\S+"
 							},
+							"--bind",
+							"0.0.0.0:5004",
 							"file:rocksdb"
 						]
 					},

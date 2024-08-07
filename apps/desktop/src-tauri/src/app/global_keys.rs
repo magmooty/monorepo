@@ -1,10 +1,20 @@
 use log::{debug, info};
+use serde::{Deserialize, Serialize};
+use specta::Type;
 use sqlx::{migrate::MigrateDatabase, Row, Sqlite, SqlitePool};
 
 static DB: tokio::sync::OnceCell<SqlitePool> = tokio::sync::OnceCell::const_new();
 static DB_URL: &str = "sqlite://global_keys.db";
 
 static LOG_TARGET: &str = "global_keys";
+
+#[derive(Debug, Serialize, Deserialize, Type)]
+#[serde(rename_all = "snake_case")]
+pub enum GlobalKey {
+    CenterName,
+    InstanceType,
+    PrivateKey,
+}
 
 pub async fn init_global_keys() {
     info!(target: LOG_TARGET, "Checking if global_keys.db exists");
@@ -37,7 +47,9 @@ pub async fn init_global_keys() {
 
 #[tauri::command]
 #[specta::specta]
-pub async fn set_global_key(key: String, value: String) -> Result<(), ()> {
+pub async fn set_global_key(key: GlobalKey, value: String) -> Result<(), ()> {
+    let key = serde_json::to_string(&key).unwrap();
+
     debug!(target: LOG_TARGET, "Unwrapping pool to set global key {key}");
     let pool = DB.get().unwrap();
 
@@ -54,7 +66,9 @@ pub async fn set_global_key(key: String, value: String) -> Result<(), ()> {
 
 #[tauri::command]
 #[specta::specta]
-pub async fn get_global_key(key: String) -> Option<String> {
+pub async fn get_global_key(key: GlobalKey) -> Option<String> {
+    let key = serde_json::to_string(&key).unwrap();
+
     debug!(target: LOG_TARGET, "Unwrapping pool to fetch global key {key}");
     let pool = DB.get().unwrap();
 
@@ -62,8 +76,8 @@ pub async fn get_global_key(key: String) -> Option<String> {
     let row = sqlx::query("SELECT value FROM global_keys WHERE key = ?")
         .bind(key)
         .fetch_one(pool)
-        .await
-        .unwrap();
+        .await;
 
-    row.get::<String, &str>("value").into()
+    row.map(|row| row.try_get::<String, &str>("value").ok())
+        .unwrap_or(None)
 }

@@ -10,11 +10,11 @@ declare global {
 // Function avoids 'window not defined' in SSR
 const invoke = () => window.__TAURI_INVOKE__;
 
-export function setGlobalKey(key: string, value: string) {
+export function setGlobalKey(key: GlobalKey, value: string) {
     return invoke()<null>("set_global_key", { key,value })
 }
 
-export function getGlobalKey(key: string) {
+export function getGlobalKey(key: GlobalKey) {
     return invoke()<string | null>("get_global_key", { key })
 }
 
@@ -22,4 +22,5 @@ export function generateKeyPair() {
     return invoke()<KeyPair>("generate_key_pair")
 }
 
+export type GlobalKey = "center_name" | "instance_type" | "private_key"
 export type KeyPair = { private_key: string; public_key: string }

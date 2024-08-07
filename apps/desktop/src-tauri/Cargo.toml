@@ -32,6 +32,8 @@ simple_logger = "5.0.0"
 rsa = "0.9.6"
 rand = "0.8.5"
 base64 = "0.22.1"
+pnet = "0.35.0"
+futures = "0.3.30"
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem and the built-in dev server is disabled.
