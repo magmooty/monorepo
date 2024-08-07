@@ -2,6 +2,7 @@ use futures::future::join_all;
 use log::{debug, info, warn};
 use pnet::datalink;
 use serde::{Deserialize, Serialize};
+use specta::Type;
 use std::collections::HashSet;
 use std::net::IpAddr;
 use std::time::Duration;
@@ -16,7 +17,7 @@ use crate::app::{get_global_key, GlobalKey};
 
 static LOG_TARGET: &str = "network_discovery";
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Type)]
 #[serde(rename_all = "snake_case")]
 pub enum InstanceType {
     Master,
@@ -24,7 +25,7 @@ pub enum InstanceType {
     Uninitialized,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Type)]
 pub struct NetworkInstanceInfo {
     pub center_name: String,
     pub version: String,

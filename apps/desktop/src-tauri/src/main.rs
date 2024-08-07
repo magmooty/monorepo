@@ -18,7 +18,8 @@ fn generate_typescript_bindings() {
         collect_types![
             app::set_global_key,
             app::get_global_key,
-            app::generate_key_pair
+            app::generate_key_pair,
+            app::discover_network
         ],
         "../src/lib/bindings.ts",
     )
@@ -95,7 +96,8 @@ async fn main() {
         .invoke_handler(tauri::generate_handler![
             app::set_global_key,
             app::get_global_key,
-            app::generate_key_pair
+            app::generate_key_pair,
+            app::discover_network
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

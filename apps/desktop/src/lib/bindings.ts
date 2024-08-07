@@ -22,5 +22,11 @@ export function generateKeyPair() {
     return invoke()<KeyPair>("generate_key_pair")
 }
 
+export function discoverNetwork() {
+    return invoke()<NetworkInstanceInfo[]>("discover_network")
+}
+
 export type GlobalKey = "center_name" | "instance_type" | "private_key"
+export type NetworkInstanceInfo = { center_name: string; version: string; instance_type: InstanceType; local_center_initialized: boolean; ip_addresses: string[] }
+export type InstanceType = "master" | "slave" | "uninitialized"
 export type KeyPair = { private_key: string; public_key: string }
