@@ -71,8 +71,11 @@ fn run_surreal_sidecar() {
 async fn main() {
     simple_logger::init_with_level(log::Level::Debug).unwrap();
 
-    info!(target: LOG_TARGET, "Generating TypeScript bindings");
-    generate_typescript_bindings();
+    #[cfg(debug_assertions)]
+    {
+        info!(target: LOG_TARGET, "Generating TypeScript bindings");
+        generate_typescript_bindings();
+    }
 
     info!(target: LOG_TARGET, "Initializing global keys");
     init_global_keys().await;
