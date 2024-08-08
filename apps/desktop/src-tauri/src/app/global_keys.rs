@@ -14,6 +14,7 @@ pub enum GlobalKey {
     CenterName,
     InstanceType,
     PrivateKey,
+    PublicKey,
 }
 
 pub async fn init_global_keys() {

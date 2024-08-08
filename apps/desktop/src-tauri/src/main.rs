@@ -2,7 +2,7 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use app::init_global_keys;
-use log::info;
+use log::{error, info, warn};
 use simple_logger;
 use specta::collect_types;
 use tauri::api::process::{Command, CommandEvent};
@@ -19,7 +19,8 @@ fn generate_typescript_bindings() {
             app::set_global_key,
             app::get_global_key,
             app::generate_key_pair,
-            app::discover_network
+            app::discover_network,
+            app::get_root_database_credentials
         ],
         "../src/lib/bindings.ts",
     )
@@ -43,16 +44,20 @@ fn run_whatsapp_sidecar() {
 }
 
 fn run_surreal_sidecar() {
+    let credentials = app::get_root_database_credentials();
+
     let (mut rx, _) = Command::new_sidecar("surreal")
         .expect("Failed to run SurrealDB sidecar")
         .args([
             "start",
             "--log",
-            "trace",
+            "info",
             "--user",
-            "root",
+            credentials.username.as_str(),
             "--pass",
-            "root",
+            credentials.password.as_str(),
+            "--bind",
+            "0.0.0.0:5004",
             "file:rocksdb",
         ])
         .spawn()
@@ -61,8 +66,22 @@ fn run_surreal_sidecar() {
     tauri::async_runtime::spawn(async move {
         // read events such as stdout
         while let Some(event) = rx.recv().await {
-            if let CommandEvent::Stdout(_) = event {
-                // print!("{}", line);
+            match event {
+                CommandEvent::Stdout(line) => {
+                    print!("{}", line);
+                }
+                CommandEvent::Stderr(line) => {
+                    print!("{}", line);
+                }
+                CommandEvent::Error(error) => {
+                    print!("{}", error);
+                }
+                CommandEvent::Terminated(_) => {
+                    error!("SurrealDB sidecar terminated");
+                }
+                _ => {
+                    warn!("Unhandled SurrealDB sidecar event: {:?}", event);
+                }
             }
         }
     });
@@ -97,8 +116,9 @@ async fn main() {
             app::set_global_key,
             app::get_global_key,
             app::generate_key_pair,
-            app::discover_network
+            app::discover_network,
+            app::get_root_database_credentials
         ])
         .run(tauri::generate_context!())
-        .expect("error while running tauri application");
+        .expect("Error while running tauri application");
 }

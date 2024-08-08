@@ -1,15 +1,16 @@
 import type { CentralClient } from 'central';
 import type Surreal from 'surrealdb.js';
 import type { Address, LinkedObject } from '../common';
-import type { User } from './auth';
-import { generateKeyPair, setGlobalKey } from '$lib/bindings';
+import type { RemoteUser } from './auth';
+import { generateKeyPair } from '$lib/bindings';
 import { logger } from '$lib/logger';
+import type { InitializeCenterParameters } from 'sdk/manager';
 
 export interface Center {
 	name: string;
 	address: Address;
 	public_key: string;
-	owner: LinkedObject<User>;
+	owner: LinkedObject<RemoteUser>;
 }
 
 const LOG_TARGET = 'CentralCenterController';
@@ -30,7 +31,9 @@ export class CentralCenterController {
 		});
 	}
 
-	async createCenter(center: Omit<Center, 'owner' | 'public_key'>): Promise<void> {
+	async createCenter(
+		payload: Omit<Center, 'owner' | 'public_key'>
+	): Promise<InitializeCenterParameters> {
 		const userId = this.client.auth.userId();
 
 		logger.info(LOG_TARGET, `Creating a new center for user ${userId}`);
@@ -39,15 +42,13 @@ export class CentralCenterController {
 		const { public_key, private_key } = await generateKeyPair();
 
 		logger.info(LOG_TARGET, `Inserting new center into the database`);
-		await this.db.create('center', {
-			...center,
+		const [record] = await this.db.create('center', {
+			...payload,
 			owner: this.client.auth.userId(),
-			public_key: public_key
+			public_key
 		});
 
-		logger.info(LOG_TARGET, `Setting local global key: private_key`);
-		await setGlobalKey('private_key', private_key);
-
 		logger.info(LOG_TARGET, `Center created`);
+		return { id: record.id.toString(), center_name: payload.name, public_key, private_key };
 	}
 }

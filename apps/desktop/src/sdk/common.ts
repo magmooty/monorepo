@@ -15,3 +15,8 @@ export const phoneNumberShape = yup.object({
 });
 
 export type PhoneNumber = yup.InferType<typeof phoneNumberShape>;
+
+export interface InfoForRoot {
+	namespaces: { [key: string]: string };
+	users: { [key: string]: string };
+}

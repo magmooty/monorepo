@@ -17,7 +17,7 @@ export interface SendSigninCodeResponse {
 	status: SendSigninCodeStatus;
 }
 
-export interface User {
+export interface RemoteUser {
 	phone_number: string;
 }
 

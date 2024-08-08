@@ -1,3 +1,5 @@
+import type { RecordId } from "surrealdb.js";
+
 export enum Governorate {
 	Cairo = 'cairo',
 	Giza = 'giza',
@@ -436,7 +438,7 @@ export interface Address {
 	country: Country;
 }
 
-export type LinkedObject<T> = T | string;
+export type LinkedObject<T = RecordId<string>> = T;
 
 export interface SurrealDBToken {
 	iat: number;

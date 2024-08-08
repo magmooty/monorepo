@@ -14,7 +14,7 @@ export class StudentsController {
 	db: Surreal;
 
 	constructor(app: App) {
-		this.db = app.db;
+		this.db = app.rootDb;
 	}
 
 	async create(student: Student) {
