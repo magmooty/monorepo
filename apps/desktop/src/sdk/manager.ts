@@ -118,18 +118,13 @@ export class LocalDatabaseManager {
 
 			DEFINE TABLE space SCHEMAFULL
 				PERMISSIONS
-					FOR SELECT FULL,
-					FOR CREATE WHERE (SELECT * FROM scope WHERE user = $auth.id AND scope_name = '${LocalUserScope.ManageCenter}'),
+					FOR SELECT WHERE id IN (SELECT space FROM scope WHERE user = $auth.id GROUP BY space),
+					FOR CREATE, DELETE WHERE (SELECT * FROM scope WHERE user = $auth.id AND scope_name = '${LocalUserScope.ManageCenter}'),
 					FOR UPDATE WHERE (SELECT * FROM scope WHERE user = $auth.id AND scope_name = '${LocalUserScope.ManageCenter}') OR id IN (SELECT space FROM scope WHERE user = $auth.id AND scope_name = 'manage_space');
 			DEFINE FIELD name ON TABLE space TYPE string;
 
 			DEFINE SCOPE local_user SESSION 24h
         SIGNIN ( SELECT * FROM user WHERE phone_number = $phone_number AND password = $password );
-			
-			DEFINE TABLE tutor SCHEMAFULL;
-			DEFINE FIELD name ON TABLE tutor TYPE string;
-			DEFINE FIELD phone_number ON TABLE tutor TYPE string;
-			DEFINE FIELD subjects ON TABLE tutor TYPE array<string>;
 
 			DEFINE TABLE student SCHEMALESS;
 			DEFINE FIELD name ON TABLE student string;

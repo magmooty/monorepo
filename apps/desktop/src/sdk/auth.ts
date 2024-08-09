@@ -1,13 +1,17 @@
 import { logger } from '$lib/logger';
 import { App } from 'sdk';
-import { LocalUserScope, type LocalUser, type Scope } from './user';
-import type { Action, UUID } from 'surrealdb.js';
+import { LocalUserScope, type Scope } from './user';
+import type { Action, RecordId, UUID } from 'surrealdb.js';
+import type { Space } from './space';
 
 const LOG_TARGET = 'LocalAuthController';
 
 export interface PublicUserInfo {
+	id: RecordId<string>;
 	name: string;
 	phone_number: string;
+	member_of_spaces: string[];
+	manages_spaces: string[];
 	is_center_manager: boolean;
 }
 
@@ -20,15 +24,44 @@ export class LocalAuthController {
 	 * Lists all users in the local database
 	 * @returns {Promise<LocalUser[]>} - List of users
 	 */
-	async listUsers(): Promise<LocalUser[]> {
+	async listUsers(): Promise<PublicUserInfo[]> {
 		logger.info(LOG_TARGET, `Listing users`);
-		const users = await this.app.rootDb.query<LocalUser[]>('SELECT name, phone_number FROM user');
+		const users = await this.app.rootDb.query<PublicUserInfo[]>(
+			'SELECT name, phone_number FROM user'
+		);
 
-		// logger.info(LOG_TARGET, `Listing managers`);
-		// const scopes = await this.app.rootDb.query<Scope[]>(
-		// 	'SELECT user, space, array::group(scope_name) AS scopes FROM scope GROUP BY user, space',
-		// 	{ scope_name: LocalUserScope.ManageCenter }
-		// );
+		logger.info(LOG_TARGET, `Listing center managers`);
+		const managers = await this.app.rootDb.query<Scope[]>(
+			'SELECT user FROM scope WHERE scope_name = $scope',
+			{ scope: LocalUserScope.ManageCenter }
+		);
+
+		logger.info(LOG_TARGET, `Listing space managers`);
+		const space_managers = await this.app.rootDb.query<Scope[]>(
+			'SELECT user, space FROM scope WHERE scope_name = $scope FETCH space',
+			{ scope: LocalUserScope.ManageSpace }
+		);
+
+		logger.info(LOG_TARGET, `Listing space members`);
+		const space_members = await this.app.rootDb.query<Scope[]>(
+			`SELECT user, space FROM scope WHERE scope_name NOT IN ['${LocalUserScope.ManageCenter}', '${LocalUserScope.ManageSpace}'] AND space != NONE GROUP BY user, space FETCH space;`,
+			{ scope: LocalUserScope.CreateStudent }
+		);
+
+		users.map((user) => {
+			user.is_center_manager = managers.some((manager) => manager.user === user.id);
+			user.manages_spaces = space_managers
+				.filter((manager) => manager.user === user.id)
+				.map((manager) => (manager.space as Space).name);
+			user.member_of_spaces = space_members
+				.filter((member) => member.user === user.id)
+				.map((member) => (member.space as Space).name);
+
+			// Filter out managed spaces to make sure there are no duplicates
+			user.member_of_spaces = user.member_of_spaces.filter(
+				(space) => !user.manages_spaces.includes(space)
+			);
+		});
 
 		return users;
 	}

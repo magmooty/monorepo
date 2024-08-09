@@ -438,7 +438,7 @@ export interface Address {
 	country: Country;
 }
 
-export type LinkedObject<T = RecordId<string>> = T;
+export type LinkedObject<T> = RecordId<string> | T;
 
 export interface SurrealDBToken {
 	iat: number;
