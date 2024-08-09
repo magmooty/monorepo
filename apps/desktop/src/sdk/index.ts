@@ -22,7 +22,9 @@ export class App {
 	public academicYears: AcademicYearController;
 	public academicYearCourses: AcademicYearCourseController;
 
-	constructor() {
+	private surrealDbUrl = 'http://127.0.0.1.5004/rpc';
+
+	constructor(private testing = false) {
 		this.rootDb = new Surreal();
 		this.db = new Surreal();
 		this.auth = new LocalAuthController(this);
@@ -37,8 +39,12 @@ export class App {
 	 * Connect to the local SurrealDB server
 	 */
 	async connect() {
+		if (this.testing) {
+			this.surrealDbUrl = 'http://127.0.0.1:7002/rpc';
+		}
+
 		// Connect to Root
-		await this.rootDb.connect('http://127.0.0.1:5004/rpc').catch((err) => {
+		await this.rootDb.connect(this.surrealDbUrl).catch((err) => {
 			if (isSurrealConnectionError(err)) {
 				// This is a critical error, we have to report it
 				logger.error(LOG_TARGET, 'Failed to connect for root to local SurrealDB server');
@@ -53,7 +59,7 @@ export class App {
 		await this.rootDb.signin(rootCredentials);
 
 		// Connect to user
-		await this.db.connect('http://127.0.0.1:5004/rpc').catch((err) => {
+		await this.db.connect(this.surrealDbUrl).catch((err) => {
 			if (isSurrealConnectionError(err)) {
 				// This is a critical error, we have to report it
 				logger.error(LOG_TARGET, 'Failed to connect for user to local SurrealDB server');

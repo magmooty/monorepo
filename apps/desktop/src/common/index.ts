@@ -440,6 +440,8 @@ export interface Address {
 
 export type LinkedObject<T> = RecordId<string> | T;
 
+export type CreatePayload<T> = Omit<T, 'id'>;
+
 export interface SurrealDBToken {
 	iat: number;
 	nbf: number;

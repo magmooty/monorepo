@@ -128,7 +128,7 @@ export class LocalDatabaseManager {
 
 			DEFINE TABLE space SCHEMAFULL
 				PERMISSIONS
-					FOR SELECT WHERE id IN (SELECT space FROM scope WHERE user = $auth.id GROUP BY space),
+					FOR SELECT FULL,
 					FOR CREATE, DELETE WHERE ${CenterManagerScope},
 					FOR UPDATE WHERE ${CenterManagerScope} OR id IN (SELECT space FROM scope WHERE user = $auth.id AND scope_name = 'manage_space');
 			DEFINE FIELD name ON TABLE space TYPE string;
@@ -144,7 +144,7 @@ export class LocalDatabaseManager {
 				PERMISSIONS
 					FOR SELECT WHERE ${CenterManagerScope} OR ${SpaceMemberScope},
 					FOR CREATE, UPDATE, DELETE WHERE ${CenterManagerScope} OR ${SpaceManagerScope} OR ${CustomScope(LocalUserScope.ManageAcademicYearCourses)};
-			DEFINE FIELD grades ON TABLE academic_year_course TYPE array<string>;
+			DEFINE FIELD grade ON TABLE academic_year_course TYPE string;
 			DEFINE FIELD subjects ON TABLE academic_year_course TYPE array<string>;
 			DEFINE FIELD academic_year ON TABLE academic_year_course TYPE record<academic_year>;
 			DEFINE FIELD space ON TABLE academic_year_course TYPE record<space>;

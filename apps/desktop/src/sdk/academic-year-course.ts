@@ -66,7 +66,7 @@ export enum Subject {
 const LOG_TARGET = 'AcademicYearCourseController';
 
 export type AcademicYearCourse = {
-	grades: Grade[];
+	grade: Grade;
 	subjects: Subject[];
 	academic_year: LinkedObject<AcademicYear>;
 	space: LinkedObject<Space>;
@@ -75,18 +75,25 @@ export type AcademicYearCourse = {
 export class AcademicYearCourseController {
 	constructor(private app: App) {}
 
-	createAcademicYearCourse(academicYearCourse: AcademicYearCourse) {
-		logger.info(LOG_TARGET, `Creating academic year course ${academicYearCourse}`);
-		return this.app.db.create<AcademicYearCourse>('academic_year_course', academicYearCourse);
+	async createAcademicYearCourse(content: AcademicYearCourse): Promise<AcademicYearCourse> {
+		logger.info(LOG_TARGET, `Creating academic year course`);
+		const [academicYearCourse] = await this.app.db.create<AcademicYearCourse>(
+			'academic_year_course',
+			content
+		);
+
+		return academicYearCourse;
 	}
 
-	listAcademicYearCourses(academicYear: LinkedObject<AcademicYear>) {
+	async listAcademicYearCourses(academicYear: LinkedObject<AcademicYear>) {
 		logger.info(LOG_TARGET, `Listing academic year courses for academic year ${academicYear}`);
-		return this.app.db.query<AcademicYearCourse[]>(
+		const [academicYearCourses] = await this.app.db.query<AcademicYearCourse[][]>(
 			'SELECT * FROM academic_year_course WHERE academic_year = $academicYear',
 			{
 				academicYear
 			}
 		);
+
+		return academicYearCourses;
 	}
 }

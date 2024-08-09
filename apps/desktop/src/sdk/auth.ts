@@ -37,30 +37,27 @@ export class LocalAuthController {
 	 */
 	async listUsers(): Promise<PublicUserInfo[]> {
 		logger.info(LOG_TARGET, `Listing users`);
-		const users = await this.app.rootDb.query<PublicUserInfo[]>(
-			'SELECT name, phone_number FROM user'
+		const [users] = await this.app.rootDb.query<PublicUserInfo[][]>(
+			'SELECT id, name, phone_number FROM user'
 		);
 
 		logger.info(LOG_TARGET, `Listing center managers`);
-		const managers = await this.app.rootDb.query<Scope[]>(
-			'SELECT user FROM scope WHERE scope_name = $scope',
-			{ scope: LocalUserScope.ManageCenter }
+		const [managers] = await this.app.rootDb.query<Scope[][]>(
+			`SELECT user FROM scope WHERE scope_name = '${LocalUserScope.ManageCenter}'`
 		);
 
 		logger.info(LOG_TARGET, `Listing space managers`);
-		const space_managers = await this.app.rootDb.query<Scope[]>(
-			'SELECT user, space FROM scope WHERE scope_name = $scope FETCH space',
-			{ scope: LocalUserScope.ManageSpace }
+		const [space_managers] = await this.app.rootDb.query<Scope[][]>(
+			`SELECT user, space FROM scope WHERE scope_name = '${LocalUserScope.ManageSpace}' FETCH space`
 		);
 
 		logger.info(LOG_TARGET, `Listing space members`);
-		const space_members = await this.app.rootDb.query<Scope[]>(
-			`SELECT user, space FROM scope WHERE scope_name NOT IN ['${LocalUserScope.ManageCenter}', '${LocalUserScope.ManageSpace}'] AND space != NONE GROUP BY user, space FETCH space;`,
-			{ scope: LocalUserScope.CreateStudent }
+		const [space_members] = await this.app.rootDb.query<Scope[][]>(
+			`SELECT user, space FROM scope WHERE scope_name NOT IN ['${LocalUserScope.ManageCenter}', '${LocalUserScope.ManageSpace}'] AND space != NONE GROUP BY user, space FETCH space;`
 		);
 
 		users.map((user) => {
-			user.is_center_manager = managers.some((manager) => manager.user === user.id);
+			user.is_center_manager = managers.some((manager) => manager.user.toString() === user.id.toString());
 			user.manages_spaces = space_managers
 				.filter((manager) => manager.user === user.id)
 				.map((manager) => (manager.space as Space).name);
