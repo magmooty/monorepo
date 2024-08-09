@@ -6,6 +6,8 @@ import { isSurrealConnectionError } from 'common/surreal';
 import { logger } from '$lib/logger';
 import { LocalAuthController } from './auth';
 import { SpaceController } from './space';
+import { AcademicYearCourseController } from './academic-year-course';
+import { AcademicYearController } from './academic-year';
 
 const LOG_TARGET = 'sdk';
 
@@ -17,6 +19,8 @@ export class App {
 	public manager: LocalDatabaseManager;
 	public students: StudentsController;
 	public spaces: SpaceController;
+	public academicYears: AcademicYearController;
+	public academicYearCourses: AcademicYearCourseController;
 
 	constructor() {
 		this.rootDb = new Surreal();
@@ -25,6 +29,8 @@ export class App {
 		this.manager = new LocalDatabaseManager(this);
 		this.students = new StudentsController(this);
 		this.spaces = new SpaceController(this);
+		this.academicYears = new AcademicYearController(this);
+		this.academicYearCourses = new AcademicYearCourseController(this);
 	}
 
 	/**
