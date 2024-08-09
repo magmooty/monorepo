@@ -60,7 +60,7 @@ export class LocalDatabaseManager {
 		});
 	}
 
-	private async clearLocalDatabase() {
+	async clearLocalDatabase() {
 		logger.info(LOG_TARGET, `Fetching all namespaces`);
 		const [rootInfo] = await this.app.rootDb.query<[InfoForRoot]>('INFO FOR ROOT;');
 

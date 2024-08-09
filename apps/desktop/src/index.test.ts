@@ -107,4 +107,12 @@ describe('SDK', () => {
 		expect(testAcademicYearCourse.grade).toBe(Grade.Secondary1);
 		expect(testAcademicYearCourse.subjects).toEqual([Subject.English]);
 	});
+
+	it('Clears local database', async () => {
+		await app.manager.clearLocalDatabase();
+
+		const users = await app.auth.listUsers();
+
+		expect(users).toHaveLength(0);
+	});
 });
