@@ -15,7 +15,7 @@ export class CentralClient {
 	auth: CentralAuthController;
 	center: CentralCenterController;
 
-	constructor() {
+	constructor(private testing = false) {
 		if (!import.meta.env.VITE_CENTRAL_API_BASE_URL) {
 			throw new Error('VITE_CENTRAL_API_BASE_URL is not set in environment variables');
 		}
@@ -35,19 +35,26 @@ export class CentralClient {
 	}
 
 	async isDatabaseConnected() {
-		return this.db.ping().catch((error) => {
-			if (isSurrealConnectionError(error)) {
-				return false;
-			}
+		return this.db
+			.ping()
+			.then(() => true)
+			.catch((error) => {
+				if (isSurrealConnectionError(error)) {
+					return false;
+				}
 
-			throw error;
-		});
+				throw error;
+			});
 	}
 
 	/**
 	 * @throws {ConnectError} if the function fails
 	 */
 	async connect(): Promise<void> {
+		if (this.testing) {
+			this.remoteSurrealUrl = 'http://127.0.0.1:7001/rpc';
+		}
+
 		await this.db.connect(this.remoteSurrealUrl).catch((error) => {
 			if (isSurrealConnectionError(error)) {
 				throw new Error(ConnectError.DatabaseConnectionError);
