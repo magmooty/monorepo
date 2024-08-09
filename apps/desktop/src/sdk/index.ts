@@ -22,7 +22,7 @@ export class App {
 	public academicYears: AcademicYearController;
 	public academicYearCourses: AcademicYearCourseController;
 
-	private surrealDbUrl = 'http://127.0.0.1.5004/rpc';
+	private surrealDbUrl = 'http://127.0.0.1:5004/rpc';
 
 	constructor(private testing = false) {
 		this.rootDb = new Surreal();
