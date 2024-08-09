@@ -53,7 +53,7 @@ export class App {
 			throw err;
 		});
 
-		await this.rootDb.use({ namespace: 'local', database: 'local' });
+		await this.db.use({ namespace: 'local', database: 'local' });
 	}
 }
 

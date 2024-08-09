@@ -20,6 +20,17 @@ export type PermissionChangesHandler = (action: Action, scope: Scope) => Promise
 export class LocalAuthController {
 	constructor(private app: App) {}
 
+	async signIn(phone_number: string, password: string): Promise<void> {
+		logger.info(LOG_TARGET, `Signing in user with phone number ${phone_number}`);
+		await this.app.db.signin({
+			namespace: 'local',
+			database: 'local',
+			scope: 'local_user',
+			phone_number,
+			password
+		});
+	}
+
 	/**
 	 * Lists all users in the local database
 	 * @returns {Promise<LocalUser[]>} - List of users
