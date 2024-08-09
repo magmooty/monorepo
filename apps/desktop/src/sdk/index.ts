@@ -5,6 +5,7 @@ import { getRootDatabaseCredentials } from '$lib/bindings';
 import { isSurrealConnectionError } from 'common/surreal';
 import { logger } from '$lib/logger';
 import { LocalAuthController } from './auth';
+import { SpaceController } from './space';
 
 const LOG_TARGET = 'sdk';
 
@@ -15,6 +16,7 @@ export class App {
 	public auth: LocalAuthController;
 	public manager: LocalDatabaseManager;
 	public students: StudentsController;
+	public spaces: SpaceController;
 
 	constructor() {
 		this.rootDb = new Surreal();
@@ -22,6 +24,7 @@ export class App {
 		this.auth = new LocalAuthController(this);
 		this.manager = new LocalDatabaseManager(this);
 		this.students = new StudentsController(this);
+		this.spaces = new SpaceController(this);
 	}
 
 	/**
