@@ -1,13 +1,11 @@
 import type { LinkedObject } from 'common';
 import type { Space } from './space';
-import { logger } from '$lib/logger';
-import type { App } from 'sdk';
-import type { RecordId } from 'surrealdb.js';
 
 export enum LocalUserScope {
 	ManageCenter = 'manage_center',
 	ManageSpace = 'manage_space',
-	CreateStudent = 'create_student'
+	ManageAcademicYears = 'manage_academic_years',
+	ManageAcademicYearCourses = 'manage_academic_year_courses',
 }
 
 export type Scope = {

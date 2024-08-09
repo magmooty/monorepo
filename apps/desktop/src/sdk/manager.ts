@@ -98,11 +98,18 @@ export class LocalDatabaseManager {
 		logger.info(LOG_TARGET, `Defining local namespace`);
 		await this.app.rootDb.use({ namespace: 'local', database: 'local' });
 
+		const CenterManagerScope = `(SELECT * FROM scope WHERE user = $auth.id AND scope_name = '${LocalUserScope.ManageCenter}')`;
+		const SpaceManagerScope = `space IN (SELECT space FROM scope WHERE user = $auth.id AND scope_name = '${LocalUserScope.ManageSpace}' GROUP BY space)`;
+		const SpaceMemberScope = `space IN (SELECT space FROM scope WHERE user = $auth.id GROUP BY space)`;
+
+		const CustomScope = (scope: LocalUserScope) =>
+			`space IN (SELECT space FROM scope WHERE user = $auth.id AND scope_name = '${scope}' GROUP BY space)`;
+
 		await this.app.rootDb.query(`
 			DEFINE TABLE user SCHEMAFULL
 				PERMISSIONS
 					FOR SELECT FULL, // All users can see other users
-					FOR UPDATE WHERE id = $auth.id, // User can update themselves
+					FOR UPDATE WHERE id = $auth.id OR ${CenterManagerScope}, // User can update themselves
 					FOR CREATE, DELETE WHERE (SELECT * FROM scope WHERE user = $auth.id AND (scope_name = '${LocalUserScope.ManageCenter}' OR scope_name = 'manage_space')); // Center manager can create other users, A space owner can create users
 			DEFINE FIELD name ON TABLE user TYPE string;
 			DEFINE FIELD phone_number ON TABLE user TYPE string;
@@ -111,24 +118,36 @@ export class LocalDatabaseManager {
 			DEFINE TABLE scope SCHEMAFULL
 				PERMISSIONS
 					FOR SELECT FULL, // All users can see other users' scopes
-					FOR CREATE, UPDATE, DELETE WHERE (SELECT * FROM scope WHERE user = $auth.id AND scope_name = '${LocalUserScope.ManageCenter}') OR (SELECT * FROM scope WHERE user = $auth.id AND scope_name = 'manage_space' AND space = $input.space); // Center manager can modify other users' scopes, A space owner can modify users' scopes if the scopes are for an owned space
+					FOR CREATE, UPDATE, DELETE WHERE ${CenterManagerScope} OR (SELECT * FROM scope WHERE user = $auth.id AND scope_name = 'manage_space' AND space = $input.space); // Center manager can modify other users' scopes, A space owner can modify users' scopes if the scopes are for an owned space
 			DEFINE FIELD user ON TABLE scope TYPE record<user>;
 			DEFINE FIELD space ON TABLE scope TYPE option<record<space>>;
 			DEFINE FIELD scope_name ON TABLE scope TYPE string;
 
-			DEFINE TABLE space SCHEMAFULL
-				PERMISSIONS
-					FOR SELECT WHERE id IN (SELECT space FROM scope WHERE user = $auth.id GROUP BY space),
-					FOR CREATE, DELETE WHERE (SELECT * FROM scope WHERE user = $auth.id AND scope_name = '${LocalUserScope.ManageCenter}'),
-					FOR UPDATE WHERE (SELECT * FROM scope WHERE user = $auth.id AND scope_name = '${LocalUserScope.ManageCenter}') OR id IN (SELECT space FROM scope WHERE user = $auth.id AND scope_name = 'manage_space');
-			DEFINE FIELD name ON TABLE space TYPE string;
-
 			DEFINE SCOPE local_user SESSION 24h
         SIGNIN ( SELECT * FROM user WHERE phone_number = $phone_number AND password = $password );
 
-			DEFINE TABLE student SCHEMALESS;
-			DEFINE FIELD name ON TABLE student string;
-			DEFINE FIELD phone_number ON TABLE student string;
+			DEFINE TABLE space SCHEMAFULL
+				PERMISSIONS
+					FOR SELECT WHERE id IN (SELECT space FROM scope WHERE user = $auth.id GROUP BY space),
+					FOR CREATE, DELETE WHERE ${CenterManagerScope},
+					FOR UPDATE WHERE ${CenterManagerScope} OR id IN (SELECT space FROM scope WHERE user = $auth.id AND scope_name = 'manage_space');
+			DEFINE FIELD name ON TABLE space TYPE string;
+
+			DEFINE TABLE academic_year SCHEMAFULL
+				PERMISSIONS
+					FOR SELECT WHERE ${CenterManagerScope} OR ${SpaceMemberScope},
+					FOR CREATE, UPDATE, DELETE WHERE ${CenterManagerScope} OR ${SpaceManagerScope} OR ${CustomScope(LocalUserScope.ManageAcademicYears)},
+			DEFINE FIELD year ON TABLE academic_year TYPE number;
+			DEFINE FIELD space ON TABLE academic_year TYPE record<space>;
+
+			DEFINE TABLE academic_year_course SCHEMAFULL
+				PERMISSIONS
+					FOR SELECT WHERE ${CenterManagerScope} OR ${SpaceMemberScope},
+					FOR CREATE, UPDATE, DELETE WHERE ${CenterManagerScope} OR ${SpaceManagerScope} OR ${CustomScope(LocalUserScope.ManageAcademicYearCourses)},
+			DEFINE FIELD grades ON TABLE academic_year_course TYPE array<string>;
+			DEFINE FIELD subjects ON TABLE academic_year_course TYPE array<string>;
+			DEFINE FIELD academic_year ON TABLE academic_year TYPE record<academic_year>;
+			DEFINE FIELD space ON TABLE academic_year TYPE record<space>;
 		`);
 	}
 }
