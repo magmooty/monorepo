@@ -146,8 +146,16 @@ export class LocalDatabaseManager {
 					FOR CREATE, UPDATE, DELETE WHERE ${CenterManagerScope} OR ${SpaceManagerScope} OR ${CustomScope(LocalUserScope.ManageAcademicYearCourses)},
 			DEFINE FIELD grades ON TABLE academic_year_course TYPE array<string>;
 			DEFINE FIELD subjects ON TABLE academic_year_course TYPE array<string>;
-			DEFINE FIELD academic_year ON TABLE academic_year TYPE record<academic_year>;
-			DEFINE FIELD space ON TABLE academic_year TYPE record<space>;
+			DEFINE FIELD academic_year ON TABLE academic_year_course TYPE record<academic_year>;
+			DEFINE FIELD space ON TABLE academic_year_course TYPE record<space>;
+
+			DEFINE TABLE group SCHEMAFULL
+				PERMISSIONS
+					FOR SELECT WHERE ${CenterManagerScope} OR ${SpaceMemberScope},
+					FOR CREATE, UPDATE, DELETE WHERE ${CenterManagerScope} OR ${SpaceManagerScope} OR ${CustomScope(LocalUserScope.ManageGroups)},
+			DEFINE FIELD schedule ON TABLE group FLEXIBLE TYPE object;
+			DEFINE FIELD academic_year ON TABLE group TYPE record<academic_year>;
+			DEFINE FIELD space ON TABLE group TYPE record<space>;
 		`);
 	}
 }
