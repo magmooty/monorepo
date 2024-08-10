@@ -1,4 +1,5 @@
 extern crate libc;
+use mockall::automock;
 use std::ffi::CStr;
 use std::ffi::CString;
 use tokio::sync::oneshot;
@@ -125,16 +126,6 @@ extern "C" fn wa_send_message_callback(handle: usize, result: *mut CSendMessageR
     }
 }
 
-#[derive(Debug)]
-pub enum WhatsAppStatus {
-    SignedIn,
-    SignedOut,
-    QRCodeGenerated,
-    WhatsAppLibraryError,
-    TargetNotOnWhatsApp,
-    MessageSent,
-}
-
 fn parse_status(status: &str) -> WhatsAppStatus {
     match status {
         "signed_in" => WhatsAppStatus::SignedIn,
@@ -147,30 +138,20 @@ fn parse_status(status: &str) -> WhatsAppStatus {
     }
 }
 
-pub fn initialize_whatsapp() {
-    unsafe {
-        // Leave it as a blocking function because it is run on initialization, we need it to be blocking
-        wa_initialize();
-    }
+#[derive(Debug)]
+pub enum WhatsAppStatus {
+    SignedIn,
+    SignedOut,
+    QRCodeGenerated,
+    WhatsAppLibraryError,
+    TargetNotOnWhatsApp,
+    MessageSent,
 }
 
 #[derive(Debug)]
 pub struct WAInfoResponse {
     pub status: WhatsAppStatus,
     pub error_message: String,
-}
-
-pub async fn get_info() -> WAInfoResponse {
-    let (tx, rx) = oneshot::channel();
-    let boxed_tx = Box::new(tx);
-    let handle = Box::into_raw(boxed_tx) as usize;
-
-    unsafe {
-        wa_info(handle as libc::uintptr_t);
-    }
-
-    rx.await
-        .expect("Failed to communicate with WhatsApp library")
 }
 
 #[derive(Debug)]
@@ -180,44 +161,73 @@ pub struct WAStartConnectionResponse {
     pub error_message: String,
 }
 
-pub async fn start_connection() -> WAStartConnectionResponse {
-    let (tx, rx) = oneshot::channel();
-    let boxed_tx = Box::new(tx);
-    let handle = Box::into_raw(boxed_tx) as usize;
-
-    unsafe {
-        wa_start_connection(handle as libc::uintptr_t);
-    }
-
-    let result = rx
-        .await
-        .expect("Failed to communicate with WhatsApp library");
-
-    result
-}
-
 #[derive(Debug)]
 pub struct WASendMessageResponse {
     pub status: WhatsAppStatus,
     pub error_message: String,
 }
 
-pub async fn send_message(phone_number: String, message: String) -> WASendMessageResponse {
-    let (tx, rx) = oneshot::channel();
-    let boxed_tx = Box::new(tx);
-    let handle = Box::into_raw(boxed_tx) as usize;
+pub struct WhatsAppBot {}
 
-    unsafe {
-        let c_phone_number = CString::new(phone_number).unwrap();
-        let c_message = CString::new(message).unwrap();
-
-        wa_send_message(
-            handle as libc::uintptr_t,
-            c_phone_number.as_ptr(),
-            c_message.as_ptr(),
-        );
+#[automock]
+impl WhatsAppBot {
+    pub fn new() -> WhatsAppBot {
+        WhatsAppBot {}
     }
 
-    rx.await
-        .expect("Failed to communicate with WhatsApp library")
+    pub fn initialize_whatsapp() {
+        unsafe {
+            // Leave it as a blocking function because it is run on initialization, we need it to be blocking
+            wa_initialize();
+        }
+    }
+
+    pub async fn get_info() -> WAInfoResponse {
+        let (tx, rx) = oneshot::channel();
+        let boxed_tx = Box::new(tx);
+        let handle = Box::into_raw(boxed_tx) as usize;
+
+        unsafe {
+            wa_info(handle as libc::uintptr_t);
+        }
+
+        rx.await
+            .expect("Failed to communicate with WhatsApp library")
+    }
+
+    pub async fn start_connection() -> WAStartConnectionResponse {
+        let (tx, rx) = oneshot::channel();
+        let boxed_tx = Box::new(tx);
+        let handle = Box::into_raw(boxed_tx) as usize;
+
+        unsafe {
+            wa_start_connection(handle as libc::uintptr_t);
+        }
+
+        let result = rx
+            .await
+            .expect("Failed to communicate with WhatsApp library");
+
+        result
+    }
+
+    pub async fn send_message(phone_number: String, message: String) -> WASendMessageResponse {
+        let (tx, rx) = oneshot::channel();
+        let boxed_tx = Box::new(tx);
+        let handle = Box::into_raw(boxed_tx) as usize;
+
+        unsafe {
+            let c_phone_number = CString::new(phone_number).unwrap();
+            let c_message = CString::new(message).unwrap();
+
+            wa_send_message(
+                handle as libc::uintptr_t,
+                c_phone_number.as_ptr(),
+                c_message.as_ptr(),
+            );
+        }
+
+        rx.await
+            .expect("Failed to communicate with WhatsApp library")
+    }
 }

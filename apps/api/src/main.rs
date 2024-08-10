@@ -1,15 +1,15 @@
 use bytes::Bytes;
+use database::Database;
 use dotenv::dotenv;
 use env_logger::Env;
 use http::{header, Response, StatusCode};
 use http_body_util::Full;
 use log::{debug, info};
 use once_cell::sync::Lazy;
-use once_cell::sync::OnceCell;
 use settings::AppSettings;
 use std::any::Any;
-use surrealdb::engine::remote::ws::Client;
-use surrealdb::Surreal;
+use std::sync::Arc;
+use surrealdb::opt::auth::Root;
 use telegram_bot;
 use tower::ServiceBuilder;
 use tower_http::catch_panic::CatchPanicLayer;
@@ -20,8 +20,11 @@ pub mod settings;
 pub mod validation;
 pub mod whatsapp;
 
-static APP_SETTINGS: OnceCell<AppSettings> = OnceCell::new();
-static DB: Lazy<Surreal<Client>> = Lazy::new(Surreal::init);
+static APP_SETTINGS: Lazy<AppSettings> = Lazy::new(|| {
+    debug!("Parsing environment variables");
+    dotenv().ok();
+    settings::extract_settings()
+});
 
 fn handle_panic(err: Box<dyn Any + Send + 'static>) -> Response<Full<Bytes>> {
     let details = if let Some(s) = err.downcast_ref::<String>() {
@@ -51,21 +54,26 @@ async fn main() {
     env_logger::Builder::from_env(Env::default().default_filter_or("debug")).init();
     debug!("Starting the application");
 
-    debug!("Parsing environment variables");
-    dotenv().ok();
-    APP_SETTINGS.get_or_init(|| settings::extract_settings());
-
     debug!("Initializing WhatsApp");
-    whatsapp::initialize_whatsapp();
+    whatsapp::WhatsAppBot::initialize_whatsapp();
 
     debug!("Initializing Telegram");
     telegram_bot::initialize_telegram().await;
 
     debug!("Connecting to the database");
-    database::connect().await;
+    let database = Arc::new(Database::new());
+    database
+        .connect(
+            &APP_SETTINGS.surrealdb_endpoint,
+            Some(Root {
+                username: &APP_SETTINGS.surrealdb_root_username,
+                password: &APP_SETTINGS.surrealdb_root_password,
+            }),
+        )
+        .await;
 
     debug!("Defining database schema");
-    database::define_database().await;
+    database.define_database().await;
 
     debug!("Building panic catcher");
     let svc = ServiceBuilder::new()
@@ -73,14 +81,18 @@ async fn main() {
         .layer(CatchPanicLayer::custom(handle_panic));
 
     debug!("Building app routes");
-    let app = app::get_router().layer(svc);
+    let app = app::create_app_router()
+        .layer(svc)
+        .with_state(Arc::new(app::AppState {
+            db: database.clone(),
+        }))
+        .into_make_service();
 
     debug!("Initialize Tokio TCP listener");
-    let listener =
-        tokio::net::TcpListener::bind(format!("0.0.0.0:{}", APP_SETTINGS.get().unwrap().port))
-            .await
-            .unwrap();
+    let listener = tokio::net::TcpListener::bind(format!("0.0.0.0:{}", &APP_SETTINGS.port))
+        .await
+        .unwrap();
 
-    info!("Listening on port {}", APP_SETTINGS.get().unwrap().port);
+    info!("Listening on port {}", &APP_SETTINGS.port);
     axum::serve(listener, app).await.unwrap();
 }

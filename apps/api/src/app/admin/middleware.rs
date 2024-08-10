@@ -26,7 +26,7 @@ pub async fn jwt_middleware(req: Request<Body>, next: Next) -> Result<Response, 
 
     if let Some(auth_header) = auth_header {
         if let Some(token) = auth_header.strip_prefix("Bearer ") {
-            let base64_encoded = &APP_SETTINGS.get().unwrap().admin_public_key;
+            let base64_encoded = &APP_SETTINGS.admin_public_key;
             let public_key = base64::prelude::BASE64_STANDARD
                 .decode(base64_encoded)
                 .unwrap();

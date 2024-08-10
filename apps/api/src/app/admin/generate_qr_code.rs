@@ -1,15 +1,18 @@
-use crate::whatsapp;
 use axum::debug_handler;
 use axum::response::IntoResponse;
 use http::header;
 use log::info;
+use mockall_double::double;
 use qrcode_generator::{self, QrCodeEcc};
+
+#[double]
+use crate::whatsapp::WhatsAppBot;
 
 #[debug_handler]
 pub async fn generate_whatsapp_qr_code() -> impl IntoResponse {
     info!("Generating new WhatsApp QR code");
 
-    let response = whatsapp::start_connection().await;
+    let response = WhatsAppBot::start_connection().await;
 
     let qr_input = response.code.clone();
     let qr_vec = tokio::task::spawn_blocking(move || {

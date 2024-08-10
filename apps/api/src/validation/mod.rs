@@ -9,3 +9,17 @@ pub fn validate_phone_number(phone_number: &String) -> Result<(), ValidationErro
         false => Err(ValidationError::new("Invalid phone number")),
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_validate_phone_number() {
+        assert!(validate_phone_number(&String::from("+201234567890")).is_ok());
+        assert!(validate_phone_number(&String::from("+20123456789")).is_err());
+        assert!(validate_phone_number(&String::from("+2012345678901")).is_err());
+        assert!(validate_phone_number(&String::from("201234567890")).is_err());
+        assert!(validate_phone_number(&String::from("+20123456789a")).is_err());
+    }
+}
