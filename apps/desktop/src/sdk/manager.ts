@@ -156,6 +156,17 @@ export class LocalDatabaseManager {
 			DEFINE FIELD schedule ON TABLE group FLEXIBLE TYPE object;
 			DEFINE FIELD academic_year ON TABLE group TYPE record<academic_year>;
 			DEFINE FIELD space ON TABLE group TYPE record<space>;
+
+			DEFINE ANALYZER name_analyzer TOKENIZERS blank FILTERS edgengram(2,10);
+
+			DEFINE TABLE student SCHEMALESS
+				PERMISSIONS
+					FOR SELECT WHERE ${CenterManagerScope} OR ${SpaceMemberScope},
+					FOR CREATE, UPDATE, DELETE WHERE ${CenterManagerScope} OR ${SpaceManagerScope} OR ${CustomScope(LocalUserScope.ManageStudents)};
+			DEFINE FIELD name ON TABLE student TYPE string;
+			DEFINE FIELD _name ON TABLE student TYPE string;
+
+			DEFINE INDEX student_name_index ON student FIELDS _name SEARCH ANALYZER name_analyzer BM25;
 		`);
 	}
 }

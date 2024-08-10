@@ -1,5 +1,5 @@
 import { Surreal } from 'surrealdb.js';
-import { StudentsController } from './students';
+import { StudentsController } from './student';
 import { LocalDatabaseManager } from './manager';
 import { getRootDatabaseCredentials } from '$lib/bindings';
 import { isSurrealConnectionError } from 'common/surreal';
@@ -24,9 +24,11 @@ export class App {
 
 	private surrealDbUrl = 'http://127.0.0.1:5004/rpc';
 
-	constructor(private testing = false) {
-		this.rootDb = new Surreal();
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	constructor(private testingUrl?: any) {
 		this.db = new Surreal();
+		this.rootDb = new Surreal();
+
 		this.auth = new LocalAuthController(this);
 		this.manager = new LocalDatabaseManager(this);
 		this.students = new StudentsController(this);
@@ -39,8 +41,8 @@ export class App {
 	 * Connect to the local SurrealDB server
 	 */
 	async connect() {
-		if (this.testing) {
-			this.surrealDbUrl = 'http://127.0.0.1:7002/rpc';
+		if (this.testingUrl) {
+			this.surrealDbUrl = this.testingUrl;
 		}
 
 		// Connect to Root

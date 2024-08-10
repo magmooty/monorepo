@@ -18,14 +18,14 @@ describe('SDK', () => {
 	let academicYear: RecordId<string>;
 
 	beforeAll(() => {
-		app = new App(true);
+		app = new App('http://127.0.0.1:7002/rpc');
 	});
 
-	it('Initializes and connects to database', async () => {
+	it('Initialize and connect to database', async () => {
 		await app.connect();
 	});
 
-	it('Sets up the database', async () => {
+	it('Set up the database', async () => {
 		await app.manager.initializeCenter({
 			center_name: 'Test Center',
 			id: '1',
@@ -108,7 +108,7 @@ describe('SDK', () => {
 		expect(testAcademicYearCourse.subjects).toEqual([Subject.English]);
 	});
 
-	it('Clears local database', async () => {
+	it('Clear local database', async () => {
 		await app.manager.clearLocalDatabase();
 
 		const users = await app.auth.listUsers();
