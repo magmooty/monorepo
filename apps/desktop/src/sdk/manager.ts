@@ -105,6 +105,12 @@ export class LocalDatabaseManager {
 		const SpaceManagerScope = `space IN (SELECT space FROM scope WHERE user = $auth.id AND scope_name = '${LocalUserScope.ManageSpace}' GROUP BY space)`;
 		const SpaceMemberScope = `space IN (SELECT space FROM scope WHERE user = $auth.id GROUP BY space)`;
 
+		const SyncEventCreator = (table: string) => `
+			DEFINE EVENT ${table}_syncer ON TABLE ${table} THEN (
+				CREATE sync CONTENT { record_id: $after.id, event: $event, content: $after, created_at: time::now() }
+			);
+		`;
+
 		const CustomScope = (scope: LocalUserScope) =>
 			`space IN (SELECT space FROM scope WHERE user = $auth.id AND scope_name = '${scope}' GROUP BY space)`;
 
@@ -188,6 +194,17 @@ export class LocalDatabaseManager {
 			DEFINE FIELD space ON TABLE enrollment TYPE record<space>;
 
 			DEFINE INDEX enrollment_student_name_index ON enrollment FIELDS _name SEARCH ANALYZER name_analyzer BM25;
+
+			DEFINE TABLE sync SCHEMALESS PERMISSIONS FOR CREATE FULL, FOR SELECT FULL, FOR UPDATE NONE, FOR DELETE NONE;
+
+			${SyncEventCreator('user')}
+			${SyncEventCreator('scope')}
+			${SyncEventCreator('space')}
+			${SyncEventCreator('academic_year')}
+			${SyncEventCreator('academic_year_course')}
+			${SyncEventCreator('group')}
+			${SyncEventCreator('student')}
+			${SyncEventCreator('enrollment')}
 		`);
 	}
 }
