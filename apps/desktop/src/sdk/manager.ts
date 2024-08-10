@@ -48,11 +48,14 @@ export class LocalDatabaseManager {
 
 	async initializeLocalAdmin(admin: InitializeLocalAdminParameters) {
 		logger.info(LOG_TARGET, `Creating local admin user ${admin.phone_number}`);
-		const [user] = await this.app.rootDb.create<LocalUser>('user', {
-			name: admin.name,
-			phone_number: admin.phone_number,
-			password: admin.password
-		});
+		const [[user]] = await this.app.rootDb.query<LocalUser[][]>(
+			`CREATE user CONTENT { name: $name, phone_number: $phone_number, password: crypto::argon2::generate($password) }`,
+			{
+				name: admin.name,
+				phone_number: admin.phone_number,
+				password: admin.password
+			}
+		);
 
 		await this.app.rootDb.create<Scope>('scope', {
 			scope_name: LocalUserScope.ManageCenter,
@@ -124,7 +127,7 @@ export class LocalDatabaseManager {
 			DEFINE FIELD scope_name ON TABLE scope TYPE string;
 
 			DEFINE SCOPE local_user SESSION 24h
-        SIGNIN ( SELECT * FROM user WHERE phone_number = $phone_number AND password = $password );
+        SIGNIN ( SELECT * FROM user WHERE phone_number = $phone_number AND crypto::argon2::compare(password, $password) );
 
 			DEFINE TABLE space SCHEMAFULL
 				PERMISSIONS

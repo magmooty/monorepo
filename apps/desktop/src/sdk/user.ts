@@ -1,5 +1,6 @@
 import type { LinkedObject } from 'common';
 import type { Space } from './space';
+import type { RecordId } from 'surrealdb.js';
 
 export enum LocalUserScope {
 	ManageCenter = 'manage_center',
@@ -17,6 +18,7 @@ export type Scope = {
 };
 
 export type LocalUser = {
+	id: RecordId<string>;
 	name: string;
 	phone_number: string;
 	password?: string;
