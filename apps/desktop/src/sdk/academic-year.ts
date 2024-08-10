@@ -15,7 +15,7 @@ const LOG_TARGET = 'AcademicYearController';
 export class AcademicYearController {
 	constructor(private app: App) {}
 
-	async createAcademicYear(year: number, space: RecordId<string>): Promise<AcademicYear> {
+	async create(year: number, space: RecordId<string>): Promise<AcademicYear> {
 		logger.info(LOG_TARGET, `Creating academic year ${year} for space ${space}`);
 
 		const [academicYear] = await this.app.db.create<CreatePayload<AcademicYear>>('academic_year', {
@@ -26,7 +26,7 @@ export class AcademicYearController {
 		return academicYear;
 	}
 
-	async listAcademicYears(space: LinkedObject<Space>): Promise<AcademicYear[]> {
+	async list(space: LinkedObject<Space>): Promise<AcademicYear[]> {
 		logger.info(LOG_TARGET, `Listing academic years for space ${space}`);
 		const [academicYears] = await this.app.db.query<AcademicYear[][]>(
 			'SELECT year FROM academic_year WHERE space = $space',

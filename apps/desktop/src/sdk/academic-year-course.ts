@@ -1,7 +1,8 @@
 import { logger } from '$lib/logger';
-import type { LinkedObject } from 'common';
+import type { CreatePayload, LinkedObject } from 'common';
 import type { App } from 'sdk';
 import type { AcademicYear } from './academic-year';
+import type { RecordId } from 'surrealdb.js';
 
 export type Space = {
 	name: string;
@@ -66,6 +67,7 @@ export enum Subject {
 const LOG_TARGET = 'AcademicYearCourseController';
 
 export type AcademicYearCourse = {
+	id: RecordId<string>;
 	grade: Grade;
 	subjects: Subject[];
 	academic_year: LinkedObject<AcademicYear>;
@@ -75,9 +77,11 @@ export type AcademicYearCourse = {
 export class AcademicYearCourseController {
 	constructor(private app: App) {}
 
-	async createAcademicYearCourse(content: AcademicYearCourse): Promise<AcademicYearCourse> {
+	async create(
+		content: CreatePayload<AcademicYearCourse>
+	): Promise<AcademicYearCourse> {
 		logger.info(LOG_TARGET, `Creating academic year course`);
-		const [academicYearCourse] = await this.app.db.create<AcademicYearCourse>(
+		const [academicYearCourse] = await this.app.db.create<CreatePayload<AcademicYearCourse>>(
 			'academic_year_course',
 			content
 		);
@@ -85,7 +89,7 @@ export class AcademicYearCourseController {
 		return academicYearCourse;
 	}
 
-	async listAcademicYearCourses(academicYear: LinkedObject<AcademicYear>) {
+	async list(academicYear: LinkedObject<AcademicYear>) {
 		logger.info(LOG_TARGET, `Listing academic year courses for academic year ${academicYear}`);
 		const [academicYearCourses] = await this.app.db.query<AcademicYearCourse[][]>(
 			'SELECT * FROM academic_year_course WHERE academic_year = $academicYear',

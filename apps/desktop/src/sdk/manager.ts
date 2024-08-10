@@ -153,7 +153,7 @@ export class LocalDatabaseManager {
 				PERMISSIONS
 					FOR SELECT WHERE ${CenterManagerScope} OR ${SpaceMemberScope},
 					FOR CREATE, UPDATE, DELETE WHERE ${CenterManagerScope} OR ${SpaceManagerScope} OR ${CustomScope(LocalUserScope.ManageGroups)};
-			DEFINE FIELD schedule ON TABLE group FLEXIBLE TYPE object;
+			DEFINE FIELD schedule ON TABLE group FLEXIBLE TYPE array<object>;
 			DEFINE FIELD academic_year ON TABLE group TYPE record<academic_year>;
 			DEFINE FIELD space ON TABLE group TYPE record<space>;
 
@@ -167,6 +167,24 @@ export class LocalDatabaseManager {
 			DEFINE FIELD _name ON TABLE student TYPE string;
 
 			DEFINE INDEX student_name_index ON student FIELDS _name SEARCH ANALYZER name_analyzer BM25;
+
+			DEFINE EVENT student_enrollment_syncer ON TABLE student WHEN $before.name != $after.name THEN (
+				UPDATE enrollment SET name = $after.name, _name = $after.name WHERE student = $after.id
+			);
+
+			DEFINE TABLE enrollment SCHEMAFULL
+				PERMISSIONS
+					FOR SELECT WHERE ${CenterManagerScope} OR ${SpaceMemberScope},
+					FOR CREATE, UPDATE, DELETE WHERE ${CenterManagerScope} OR ${SpaceManagerScope} OR ${CustomScope(LocalUserScope.ManageStudents)};
+			DEFINE FIELD name ON TABLE enrollment TYPE string; 
+			DEFINE FIELD _name ON TABLE enrollment TYPE string; 
+			DEFINE FIELD student ON TABLE enrollment TYPE record<student>; 
+			DEFINE FIELD default_group ON TABLE enrollment TYPE record<group>;
+			DEFINE FIELD academic_year ON TABLE enrollment TYPE record<academic_year>;
+			DEFINE FIELD course ON TABLE enrollment TYPE record<academic_year_course>;
+			DEFINE FIELD space ON TABLE enrollment TYPE record<space>;
+
+			DEFINE INDEX enrollment_student_name_index ON enrollment FIELDS _name SEARCH ANALYZER name_analyzer BM25;
 		`);
 	}
 }

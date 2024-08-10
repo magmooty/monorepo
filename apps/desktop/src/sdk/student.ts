@@ -21,9 +21,11 @@ export type Student = {
 	/**
 	 * Normalized name for search
 	 */
-	_name?: string;
+	_name: string;
 	phone_numbers: StudentPhoneNumber[];
 };
+
+export type StudentCreatePayload = Omit<CreatePayload<Student>, '_name'>;
 
 export class StudentsController {
 	db: Surreal;
@@ -32,12 +34,18 @@ export class StudentsController {
 		this.db = app.rootDb;
 	}
 
-	async create(content: CreatePayload<Student>): Promise<Student> {
+	async create(content: StudentCreatePayload): Promise<Student> {
 		const [student] = await this.db.create<CreatePayload<Student>>('student', {
 			...content,
 			name: content.name,
 			_name: nameFilter(content.name, true)
 		});
+
+		return student;
+	}
+
+	async get(id: RecordId<string>): Promise<Student> {
+		const student = await this.db.select<Student>(id);
 
 		return student;
 	}
@@ -58,5 +66,18 @@ export class StudentsController {
 		);
 
 		return students;
+	}
+
+	async rename(id: RecordId<string>, name: string): Promise<Student> {
+		const [[student]] = await this.db.query<Student[][]>(
+			'UPDATE student SET name = $name, _name = $_name WHERE id = $id',
+			{
+				name,
+				_name: nameFilter(name, true),
+				id
+			}
+		);
+
+		return student as Student;
 	}
 }

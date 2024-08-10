@@ -7,7 +7,7 @@ export enum LocalUserScope {
 	ManageAcademicYears = 'manage_academic_years',
 	ManageAcademicYearCourses = 'manage_academic_year_courses',
 	ManageGroups = 'manage_groups',
-	ManageStudents = 'manage_students',
+	ManageStudents = 'manage_students'
 }
 
 export type Scope = {

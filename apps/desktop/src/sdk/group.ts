@@ -1,7 +1,7 @@
 import { logger } from '$lib/logger';
 import type { App } from 'sdk';
 import type { Space } from './space';
-import type { LinkedObject } from 'common';
+import type { CreatePayload, LinkedObject } from 'common';
 import type { AcademicYear } from './academic-year';
 import type { RecordId } from 'surrealdb.js';
 
@@ -35,6 +35,7 @@ export interface ClassSchedule {
 }
 
 export type Group = {
+	id: RecordId<string>;
 	schedule: ClassSchedule[];
 	academic_year: LinkedObject<AcademicYear>;
 	space: LinkedObject<Space>;
@@ -45,15 +46,17 @@ const LOG_TARGET = 'GroupController';
 export class GroupController {
 	constructor(private app: App) {}
 
-	async createGroup(group: Group) {
+	async create(content: CreatePayload<Group>): Promise<Group> {
 		logger.info(
 			LOG_TARGET,
-			`Creating group for academic year ${group.academic_year} for space ${group.space}`
+			`Creating group for academic year ${content.academic_year} for space ${content.space}`
 		);
-		await this.app.db.create<Group>('group', group);
+		const [group] = await this.app.db.create<CreatePayload<Group>>('group', content);
+
+		return group;
 	}
 
-	async listGroups(
+	async list(
 		academic_year: LinkedObject<AcademicYear>,
 		space: LinkedObject<Space>
 	): Promise<Group[]> {
@@ -67,7 +70,7 @@ export class GroupController {
 		);
 	}
 
-	async updateGroup(id: LinkedObject<Space>, content: Group) {
+	async update(id: LinkedObject<Space>, content: Group) {
 		logger.info(LOG_TARGET, `Updating group ${id}`);
 		await this.app.db.update<Group>(id as RecordId<string>, content);
 	}

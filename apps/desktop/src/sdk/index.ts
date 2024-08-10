@@ -8,6 +8,8 @@ import { LocalAuthController } from './auth';
 import { SpaceController } from './space';
 import { AcademicYearCourseController } from './academic-year-course';
 import { AcademicYearController } from './academic-year';
+import { EnrollmentsController } from './enrollment';
+import { GroupController } from './group';
 
 const LOG_TARGET = 'sdk';
 
@@ -21,6 +23,8 @@ export class App {
 	public spaces: SpaceController;
 	public academicYears: AcademicYearController;
 	public academicYearCourses: AcademicYearCourseController;
+	public groups: GroupController;
+	public enrollment: EnrollmentsController;
 
 	private surrealDbUrl = 'http://127.0.0.1:5004/rpc';
 
@@ -35,6 +39,8 @@ export class App {
 		this.spaces = new SpaceController(this);
 		this.academicYears = new AcademicYearController(this);
 		this.academicYearCourses = new AcademicYearCourseController(this);
+		this.groups = new GroupController(this);
+		this.enrollment = new EnrollmentsController(this);
 	}
 
 	/**

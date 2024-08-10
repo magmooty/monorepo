@@ -61,11 +61,11 @@ describe('SDK', () => {
 	});
 
 	it('Create a space', async () => {
-		space = (await app.spaces.createSpace('Test Space')).id;
+		space = (await app.spaces.create('Test Space')).id;
 	});
 
 	it('List all spaces', async () => {
-		const spaces = await app.spaces.listSpaces();
+		const spaces = await app.spaces.list();
 
 		expect(spaces).toHaveLength(1);
 
@@ -75,11 +75,11 @@ describe('SDK', () => {
 	});
 
 	it('Create an academic year', async () => {
-		academicYear = (await app.academicYears.createAcademicYear(2024, space)).id;
+		academicYear = (await app.academicYears.create(2024, space)).id;
 	});
 
 	it('List all academic years', async () => {
-		const academicYears = await app.academicYears.listAcademicYears(space);
+		const academicYears = await app.academicYears.list(space);
 
 		expect(academicYears).toHaveLength(1);
 
@@ -89,7 +89,7 @@ describe('SDK', () => {
 	});
 
 	it('Create an academic year course', async () => {
-		await app.academicYearCourses.createAcademicYearCourse({
+		await app.academicYearCourses.create({
 			academic_year: academicYear,
 			grade: Grade.Secondary1,
 			subjects: [Subject.English],
@@ -98,7 +98,7 @@ describe('SDK', () => {
 	});
 
 	it('List all academic year courses', async () => {
-		const academicYearCourses = await app.academicYearCourses.listAcademicYearCourses(academicYear);
+		const academicYearCourses = await app.academicYearCourses.list(academicYear);
 
 		expect(academicYearCourses).toHaveLength(1);
 
