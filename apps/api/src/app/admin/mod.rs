@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use axum::middleware::from_fn;
 use axum::{routing::post, Router};
 
@@ -8,7 +10,9 @@ use generate_qr_code::*;
 
 use tower::ServiceBuilder;
 
-pub fn get_router() -> Router {
+use super::AppState;
+
+pub fn get_router() -> Router<Arc<AppState>> {
     Router::new()
         .route(
             "/whatsapp/generate_qr_code",

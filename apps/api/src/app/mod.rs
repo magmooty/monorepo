@@ -1,6 +1,10 @@
+use std::sync::Arc;
+
 use axum::Router;
 use serde::Serialize;
 use validator::Validate;
+
+use crate::database::Database;
 
 mod admin;
 mod auth;
@@ -10,7 +14,18 @@ pub struct AppErrorResponse {
     pub error_message: String,
 }
 
-pub fn get_router() -> Router {
+#[derive(Clone)]
+pub struct AppState {
+    pub db: Arc<Database>,
+}
+
+impl AppState {
+    pub fn new(db: Arc<Database>) -> Self {
+        Self { db }
+    }
+}
+
+pub fn create_app_router() -> Router<Arc<AppState>> {
     Router::new()
         .nest("/auth", auth::get_router())
         .nest("/admin", admin::get_router())
