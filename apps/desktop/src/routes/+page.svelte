@@ -2,6 +2,7 @@
 	import { Button } from 'flowbite-svelte';
 	import { CentralClient } from 'central';
 	import { app } from 'sdk';
+	import Login from '../components/Login.svelte';
 
 	app.connect();
 
@@ -13,4 +14,4 @@
 	}
 </script>
 
-<Button on:click={testStuff}>Click me</Button>
+<Login />

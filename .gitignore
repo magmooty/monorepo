@@ -258,3 +258,7 @@ iOSInjectionProject/
 
 # Monorepo
 target
+surrealdb/
+rocksdb/
+apps/api/yarn.lock
+apps/desktop/src-tauri/surreal
