@@ -38,7 +38,7 @@ impl SignInCodeRepository {
         // Generate a random 8 digit code
         let code = tokio::spawn(async {
             let mut rng = rand::thread_rng();
-            rng.gen_range(00000000..=99999999)
+            rng.gen_range(000000..=999999)
         })
         .await
         .unwrap();
@@ -48,7 +48,7 @@ impl SignInCodeRepository {
             .create::<Vec<Record>>("signin_code")
             .content(SigninCode {
                 phone_number: phone_number.clone(),
-                code: code.to_string(),
+                code: format!("{:0>6}", code),
             })
             .await
             .unwrap()
