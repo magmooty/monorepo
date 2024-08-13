@@ -1,17 +1,33 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use app::init_global_keys;
-use log::{error, info, warn};
+use std::sync::Arc;
+
+use log::info;
+use panic_handler::initialize_graceful_panic_handler;
+use process_killer::kill_hanging_sidecars;
 use simple_logger;
 use specta::collect_types;
-use tauri::api::process::{Command, CommandEvent};
+use sync::Syncer;
+use tauri::api::process::CommandChild;
 use tauri_specta::ts;
 
 mod app;
+mod central;
 mod network_discovery;
+mod panic_handler;
+mod process_killer;
+mod surreal_sidecar;
+mod sync;
+mod whatsapp_sidecar;
+
+use surreal_sidecar::run_surreal_sidecar;
+use whatsapp_sidecar::run_whatsapp_sidecar;
 
 static LOG_TARGET: &str = "main";
+
+static SIDECARS: once_cell::sync::Lazy<Arc<std::sync::Mutex<Vec<CommandChild>>>> =
+    once_cell::sync::Lazy::new(|| Arc::new(std::sync::Mutex::new(Vec::new())));
 
 fn generate_typescript_bindings() {
     ts::export(
@@ -27,87 +43,31 @@ fn generate_typescript_bindings() {
     .unwrap();
 }
 
-fn run_whatsapp_sidecar() {
-    let (mut rx, _) = Command::new_sidecar("whatsapp-bot")
-        .expect("Failed to run WhatsApp bot sidecar")
-        .spawn()
-        .expect("Failed to run WhatsApp bot sidecar");
-
-    tauri::async_runtime::spawn(async move {
-        // read events such as stdout
-        while let Some(event) = rx.recv().await {
-            if let CommandEvent::Stdout(_) = event {
-                // print!("{}", line);
-            }
-        }
-    });
-}
-
-fn run_surreal_sidecar() {
-    let credentials = app::get_root_database_credentials();
-
-    let (mut rx, _) = Command::new_sidecar("surreal")
-        .expect("Failed to run SurrealDB sidecar")
-        .args([
-            "start",
-            "--log",
-            "info",
-            "--user",
-            credentials.username.as_str(),
-            "--pass",
-            credentials.password.as_str(),
-            "--bind",
-            "0.0.0.0:5004",
-            "file:rocksdb",
-        ])
-        .spawn()
-        .expect("Failed to run SurrealDB sidecar");
-
-    tauri::async_runtime::spawn(async move {
-        // read events such as stdout
-        while let Some(event) = rx.recv().await {
-            match event {
-                CommandEvent::Stdout(line) => {
-                    print!("{}", line);
-                }
-                CommandEvent::Stderr(line) => {
-                    print!("{}", line);
-                }
-                CommandEvent::Error(error) => {
-                    print!("{}", error);
-                }
-                CommandEvent::Terminated(_) => {
-                    error!("SurrealDB sidecar terminated");
-                }
-                _ => {
-                    warn!("Unhandled SurrealDB sidecar event: {:?}", event);
-                }
-            }
-        }
-    });
-}
-
 #[tokio::main]
 async fn main() {
     simple_logger::init_with_level(log::Level::Debug).unwrap();
+    kill_hanging_sidecars();
+    initialize_graceful_panic_handler();
 
+    // Only run if in debug (dev) mode
     #[cfg(debug_assertions)]
     {
         info!(target: LOG_TARGET, "Generating TypeScript bindings");
         generate_typescript_bindings();
     }
 
-    info!(target: LOG_TARGET, "Initializing global keys");
-    init_global_keys().await;
-
     info!(target: LOG_TARGET, "Initializing network discovery UDP transceiver");
     tokio::spawn(network_discovery::start_network_discovery_receiver());
 
     info!(target: LOG_TARGET, "Running local WhatsApp API");
-    run_whatsapp_sidecar();
+    run_whatsapp_sidecar().await;
 
     info!(target: LOG_TARGET, "Running local SurrealDB");
-    run_surreal_sidecar();
+    run_surreal_sidecar().await;
+
+    info!(target: LOG_TARGET, "Running syncer");
+    let syncer = Syncer::new();
+    syncer.start_syncing().await;
 
     // Run App
     info!(target: LOG_TARGET, "Running main application window");

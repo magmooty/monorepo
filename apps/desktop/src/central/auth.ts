@@ -1,6 +1,6 @@
 import { fetch, Body } from '@tauri-apps/api/http';
 import type { CentralClient } from 'central';
-import type { ScopeAuth } from 'surrealdb.js';
+import { RecordId, StringRecordId, type ScopeAuth } from 'surrealdb.js';
 import type Surreal from 'surrealdb.js';
 import { jwtDecode } from 'jwt-decode';
 import type { SurrealDBToken } from 'common';
@@ -31,13 +31,13 @@ export enum SigninError {
 export class CentralAuthController {
 	db: Surreal;
 
-	private _userId: string | undefined;
+	private _userId: StringRecordId | undefined;
 
 	constructor(private client: CentralClient) {
 		this.db = client.db;
 	}
 
-	userId(): string {
+	userId(): StringRecordId {
 		logger.debug(LOG_TARGET, 'Getting user ID');
 
 		if (!this._userId) {
@@ -80,7 +80,7 @@ export class CentralAuthController {
 		const decoded: SurrealDBToken = jwtDecode(token);
 
 		logger.debug(LOG_TARGET, 'Setting user id');
-		this._userId = decoded.ID;
+		this._userId = new StringRecordId(decoded.ID);
 	}
 
 	async sendSigninCode(phoneNumber: string): Promise<SendSigninCodeResponse> {

@@ -3,9 +3,10 @@ import { getRootDatabaseCredentials, setGlobalKey } from '$lib/bindings';
 import { logger } from '$lib/logger';
 import type { InfoForRoot } from './common';
 import { LocalUserScope, type LocalUser, type Scope } from './user';
+import type { RecordId } from 'surrealdb.js';
 
 export interface InitializeCenterParameters {
-	id: string;
+	id: RecordId<string>;
 	center_name: string;
 	public_key: string;
 	private_key: string;
@@ -30,6 +31,9 @@ export class LocalDatabaseManager {
 
 		logger.info(LOG_TARGET, `Defining local database`);
 		await this.defineDatabase();
+
+		logger.info(LOG_TARGET, `Setting local global key: center_id`);
+		await setGlobalKey('center_id', parameters.id.toString());
 
 		logger.info(LOG_TARGET, `Setting local global key: center_name`);
 		await setGlobalKey('center_name', parameters.center_name);
@@ -61,6 +65,8 @@ export class LocalDatabaseManager {
 			scope_name: LocalUserScope.ManageCenter,
 			user: user.id
 		});
+
+		logger.info(LOG_TARGET, `Local admin user created`);
 	}
 
 	async clearLocalDatabase() {
@@ -196,6 +202,7 @@ export class LocalDatabaseManager {
 			DEFINE INDEX enrollment_student_name_index ON enrollment FIELDS _name SEARCH ANALYZER name_analyzer BM25;
 
 			DEFINE TABLE sync SCHEMALESS PERMISSIONS FOR CREATE FULL, FOR SELECT FULL, FOR UPDATE NONE, FOR DELETE NONE;
+			DEFINE FIELD pushed ON TABLE sync TYPE bool DEFAULT false;
 
 			${SyncEventCreator('user')}
 			${SyncEventCreator('scope')}

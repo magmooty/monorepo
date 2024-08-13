@@ -3,21 +3,21 @@ use serde::{Deserialize, Serialize};
 use specta::Type;
 use sqlx::{migrate::MigrateDatabase, Row, Sqlite, SqlitePool};
 
-static DB: tokio::sync::OnceCell<SqlitePool> = tokio::sync::OnceCell::const_new();
 static DB_URL: &str = "sqlite://global_keys.db";
 
-static LOG_TARGET: &str = "global_keys";
+static LOG_TARGET: &str = "Global keys";
 
 #[derive(Debug, Serialize, Deserialize, Type)]
 #[serde(rename_all = "snake_case")]
 pub enum GlobalKey {
+    CenterId,
     CenterName,
     InstanceType,
     PrivateKey,
     PublicKey,
 }
 
-pub async fn init_global_keys() {
+async fn open_db() -> SqlitePool {
     info!(target: LOG_TARGET, "Checking if global_keys.db exists");
     if !Sqlite::database_exists(DB_URL).await.unwrap_or(false) {
         info!(target: LOG_TARGET, "Creating global_keys.db");
@@ -32,7 +32,7 @@ pub async fn init_global_keys() {
         info!(target: LOG_TARGET, "Database global_keys.db exists");
     }
 
-    info!(target: LOG_TARGET, "Openning global_keys.db");
+    info!(target: LOG_TARGET, "Opening global_keys.db");
     let pool = SqlitePool::connect("sqlite://global_keys.db")
         .await
         .unwrap();
@@ -43,7 +43,7 @@ pub async fn init_global_keys() {
         .await
         .unwrap();
 
-    DB.set(pool).unwrap();
+    pool
 }
 
 #[tauri::command]
@@ -52,13 +52,13 @@ pub async fn set_global_key(key: GlobalKey, value: String) -> Result<(), ()> {
     let key = serde_json::to_string(&key).unwrap();
 
     debug!(target: LOG_TARGET, "Unwrapping pool to set global key {key}");
-    let pool = DB.get().unwrap();
+    let pool = open_db().await;
 
     info!(target: LOG_TARGET, "Setting global key {key}");
     sqlx::query("INSERT INTO global_keys (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value")
         .bind(key)
         .bind(value)
-        .execute(pool)
+        .execute(&pool)
         .await
         .map_err(|_| ())?;
 
@@ -71,12 +71,12 @@ pub async fn get_global_key(key: GlobalKey) -> Option<String> {
     let key = serde_json::to_string(&key).unwrap();
 
     debug!(target: LOG_TARGET, "Unwrapping pool to fetch global key {key}");
-    let pool = DB.get().unwrap();
+    let pool = open_db().await;
 
     info!(target: LOG_TARGET, "Fetching global key {key}");
     let row = sqlx::query("SELECT value FROM global_keys WHERE key = ?")
         .bind(key)
-        .fetch_one(pool)
+        .fetch_one(&pool)
         .await;
 
     row.map(|row| row.try_get::<String, &str>("value").ok())

@@ -4,15 +4,19 @@ use std::sync::Arc;
 use surrealdb::opt::auth::Root;
 use surrealdb::sql::Thing;
 
+mod center;
 mod signin_code;
 mod user;
 
-mod test_define_database;
-mod test_user;
+mod test_center;
 mod test_signin_code;
+mod test_user;
 
+pub use center::*;
 pub use signin_code::*;
 pub use user::*;
+
+static LOG_TARGET: &str = "Database";
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Record {
@@ -29,19 +33,22 @@ pub struct Database {
     surreal: Arc<surrealdb::Surreal<surrealdb::engine::any::Any>>,
 
     pub signin_code: SignInCodeRepository,
-    pub user: UserRepostiory,
+    pub user: UserRepository,
+    pub center: CenterRepository,
 }
 
 impl Database {
     pub fn new() -> Self {
         let surreal = Arc::new(surrealdb::Surreal::init());
         let signin_code = SignInCodeRepository::new(surreal.clone());
-        let user = UserRepostiory::new(surreal.clone());
+        let user = UserRepository::new(surreal.clone());
+        let center = CenterRepository::new(surreal.clone());
 
         Self {
             surreal,
             signin_code,
             user,
+            center,
         }
     }
 
@@ -58,13 +65,17 @@ impl Database {
 
         match connection {
             Ok(_) => {
-                self.surreal.use_ns("magmooty").use_db("magmooty").await.unwrap();
+                self.surreal
+                    .use_ns("magmooty")
+                    .use_db("magmooty")
+                    .await
+                    .unwrap();
 
                 if let Some(credentials) = credentials {
                     self.surreal.signin(credentials).await.unwrap();
                 }
 
-                info!("Connected to the database");
+                info!(target: LOG_TARGET, "Connected to the database");
             }
             Err(e) => {
                 panic!("Failed to connect to the database: {}", e);
@@ -73,9 +84,13 @@ impl Database {
     }
 
     pub async fn define_database(&self) {
-        debug!("Defining the database schema");
+        debug!(target: LOG_TARGET, "Defining the database schema");
 
-        self.surreal.use_ns("magmooty").use_db("magmooty").await.unwrap();
+        self.surreal
+            .use_ns("magmooty")
+            .use_db("magmooty")
+            .await
+            .unwrap();
 
         self.surreal.query(
             "
@@ -95,7 +110,11 @@ impl Database {
             DEFINE FIELD created_at ON TABLE user TYPE datetime DEFAULT time::now();
             DEFINE INDEX phone_number_index ON TABLE user COLUMNS phone_number UNIQUE;
     
-            DEFINE TABLE center SCHEMALESS PERMISSIONS FOR SELECT WHERE id = $auth.id, FOR UPDATE WHERE id = $auth.id;
+            DEFINE TABLE center SCHEMALESS PERMISSIONS FOR SELECT, CREATE, UPDATE WHERE owner = $auth.id;
+            DEFINE FIELD name ON TABLE center TYPE string;
+            DEFINE FIELD address ON TABLE center FLEXIBLE TYPE object;
+            DEFINE FIELD public_key ON TABLE center TYPE string;
+            DEFINE FIELD owner ON TABLE center TYPE record<user>;
     
             # Tutor scope, sign in code is valid for 10 minutes
             DEFINE SCOPE tutor SESSION 24h
@@ -108,6 +127,24 @@ impl Database {
 
     #[cfg(test)]
     pub async fn clear_database(&self) {
-        self.surreal.query("REMOVE NAMESPACE magmooty").await.unwrap();
+        self.surreal
+            .query("REMOVE NAMESPACE magmooty")
+            .await
+            .unwrap();
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::database::Database;
+
+    async fn setup() -> Database {
+        Database::in_memory().await
+    }
+
+    #[tokio::test]
+    async fn test_define_database() {
+        let db = setup().await;
+        db.define_database().await;
     }
 }

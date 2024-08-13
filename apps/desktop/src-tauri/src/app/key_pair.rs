@@ -8,7 +8,7 @@ use rsa::{
 use serde::Serialize;
 use specta::Type;
 
-static LOG_TARGET: &str = "key_pair";
+static LOG_TARGET: &str = "Key pair";
 
 #[derive(Serialize, Debug, Clone, Type)]
 pub struct KeyPair {
@@ -31,14 +31,14 @@ pub async fn generate_key_pair() -> KeyPair {
         debug!(target: LOG_TARGET, "Generating public key");
         let public_key = RsaPublicKey::from(&private_key);
 
-        debug!(target: LOG_TARGET, "Covnerting private key to base64");
+        debug!(target: LOG_TARGET, "Converting private key to base64");
         let private_key = private_key
             .to_pkcs1_der()
             .expect("Failed to encode private key")
             .as_bytes()
             .to_vec();
 
-        debug!(target: LOG_TARGET, "Covnerting public key to base64");
+        debug!(target: LOG_TARGET, "Converting public key to base64");
         let public_key = public_key
             .to_pkcs1_der()
             .expect("Failed to encode private key")
