@@ -8,9 +8,11 @@ use qrcode_generator::{self, QrCodeEcc};
 #[double]
 use crate::whatsapp::WhatsAppBot;
 
+static LOG_TARGET: &str = "Generate QR code";
+
 #[debug_handler]
 pub async fn generate_whatsapp_qr_code() -> impl IntoResponse {
-    info!("Generating new WhatsApp QR code");
+    info!(target: LOG_TARGET, "Generating new WhatsApp QR code");
 
     let response = WhatsAppBot::start_connection().await;
 

@@ -10,6 +10,8 @@ use std::time::{SystemTime, UNIX_EPOCH};
 use tdlib::{new_client, receive, send};
 use tokio::sync::oneshot;
 
+static LOG_TARGET: &str = "Telegram";
+
 pub struct TelegramClient {
     request_handles: Arc<Mutex<HashMap<String, oneshot::Sender<TDLibResponse>>>>,
     pub client_id: i32,
@@ -33,17 +35,17 @@ impl TelegramClient {
 
         tokio::spawn(async move {
             loop {
-                let response = tokio::task::spawn_blocking(move || receive(10.0)).await;
+                let response = tokio::task::spawn_blocking(move || receive(300.0)).await;
 
                 if let Err(e) = response {
                     error!("Failed to receive response from tdlib: {}", e.to_string());
-                    continue;
+                    continue
                 }
 
                 let response = response.unwrap();
 
                 if let None = response {
-                    debug!("No received response from tdlib");
+                    debug!(target: LOG_TARGET, "No received response from tdlib");
                     continue;
                 }
 
@@ -59,7 +61,7 @@ impl TelegramClient {
                 let response = response.unwrap();
 
                 if let None = response.extra.as_ref() {
-                    debug!("No handle found in response: {}", event);
+                    debug!(target: LOG_TARGET, "No handle found in response: {}", event);
                     continue;
                 }
 
@@ -68,7 +70,7 @@ impl TelegramClient {
                 if let Some(sender) = request_handles_arc.lock().unwrap().remove(handle) {
                     let _ = sender.send(response);
                 } else {
-                    debug!("No active handle for response: {}", event);
+                    debug!(target: LOG_TARGET, "No active handle for response: {}", event);
                 }
             }
         });
@@ -88,7 +90,7 @@ impl TelegramClient {
     async fn send(&self, request: impl TelegramRequest) -> Result<TDLibResponse, ()> {
         let (tx, rx) = oneshot::channel();
 
-        debug!(
+        debug!(target: LOG_TARGET, 
             "Assigning a request handle for request: {}",
             request.extra()
         );
@@ -100,11 +102,11 @@ impl TelegramClient {
 
         match serde_json::to_string(&request) {
             Ok(request_json) => {
-                debug!("Sening request to tdlib: {}", request.extra());
+                debug!(target: LOG_TARGET, "Sening request to tdlib: {}", request.extra());
 
                 send(self.client_id, request_json.as_str());
 
-                debug!("Sent request to tdlib: {}", request.extra());
+                debug!(target: LOG_TARGET, "Sent request to tdlib: {}", request.extra());
 
                 rx.await.map_err(|_| (()))
             }

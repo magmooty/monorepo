@@ -14,6 +14,8 @@ use validator::Validate;
 #[double]
 use crate::whatsapp::WhatsAppBot;
 
+static LOG_TARGET: &str = "Send signin code";
+
 // the input to our `create_user` handler
 #[derive(Serialize, Deserialize, Validate)]
 pub struct SendSigninCodePayload {
@@ -40,15 +42,17 @@ pub async fn send_signin_code(
 
     if let None = user {
         info!(
+            target: LOG_TARGET,
             "Creating a new user with phone number: {}",
             payload.phone_number
         );
         state.db.user.create_user(&payload.phone_number).await;
     } else {
-        info!("User found with phone number: {}", payload.phone_number);
+        info!(target: LOG_TARGET, "User found with phone number: {}", payload.phone_number);
     }
 
     info!(
+        target: LOG_TARGET,
         "Deleting previous signin codes for {}",
         &payload.phone_number
     );
@@ -58,14 +62,14 @@ pub async fn send_signin_code(
         .delete_previous_signin_codes(&payload.phone_number)
         .await;
 
-    info!("Creating new signin code for {}", &payload.phone_number);
+    info!(target: LOG_TARGET, "Creating new signin code for {}", &payload.phone_number);
     let code = state
         .db
         .signin_code
         .create_signin_code(&payload.phone_number, 0)
         .await;
 
-    info!("Sending new signin code to {}", &payload.phone_number);
+    info!(target: LOG_TARGET, "Sending new signin code to {}", &payload.phone_number);
     let response = WhatsAppBot::send_message(
         payload.phone_number.clone(),
         format!("Your signin code is: {}", code),
@@ -92,7 +96,7 @@ pub async fn send_signin_code(
         }
     };
 
-    info!("Signin code created for {}", payload.phone_number);
+    info!(target: LOG_TARGET, "Signin code created for {}", payload.phone_number);
     (
         StatusCode::CREATED,
         Json(SendSigninCodeResponse {

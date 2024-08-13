@@ -87,23 +87,28 @@ func (wb *WhatsAppBot) SendMessage(phoneNumber string, message string) (Connecti
 	return MessageSent, ""
 }
 
-func (wb *WhatsAppBot) InitializeClient() (ConnectionStatus, string) {
+func (wb *WhatsAppBot) InitializeClient() (ConnectionStatus, error) {
 	deviceStore, err := wb.container.GetFirstDevice()
+
 	if err != nil {
-		return WhatsAppLibraryError, err.Error()
+		return WhatsAppLibraryError, err
 	}
+
 	log := waLog.Stdout("Client", wb.logLevel, true)
 	client := whatsmeow.NewClient(deviceStore, log)
+
 	if client.Store.ID == nil {
-		return SignedOut, ""
+		return SignedOut, err
 	} else {
 		err = client.Connect()
+
 		if err != nil {
-			return WhatsAppLibraryError, err.Error()
+			return NotConnected, err
 		}
 	}
 	wb.client = client
-	return SignedIn, ""
+
+	return SignedIn, nil
 }
 
 func (wb *WhatsAppBot) StartConnect() (string, ConnectionStatus, string) {

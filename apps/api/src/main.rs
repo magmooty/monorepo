@@ -20,8 +20,10 @@ pub mod settings;
 pub mod validation;
 pub mod whatsapp;
 
+static LOG_TARGET: &str = "Main";
+
 static APP_SETTINGS: Lazy<AppSettings> = Lazy::new(|| {
-    debug!("Parsing environment variables");
+    debug!(target: LOG_TARGET, "Parsing environment variables");
     dotenv().ok();
     settings::extract_settings()
 });
@@ -52,15 +54,15 @@ fn handle_panic(err: Box<dyn Any + Send + 'static>) -> Response<Full<Bytes>> {
 #[tokio::main]
 async fn main() {
     env_logger::Builder::from_env(Env::default().default_filter_or("debug")).init();
-    debug!("Starting the application");
+    debug!(target: LOG_TARGET, "Starting the application");
 
-    debug!("Initializing WhatsApp");
+    debug!(target: LOG_TARGET, "Initializing WhatsApp");
     whatsapp::WhatsAppBot::initialize_whatsapp();
 
-    debug!("Initializing Telegram");
+    debug!(target: LOG_TARGET, "Initializing Telegram");
     telegram_bot::initialize_telegram().await;
 
-    debug!("Connecting to the database");
+    debug!(target: LOG_TARGET, "Connecting to the database");
     let database = Arc::new(Database::new());
     database
         .connect(
@@ -72,15 +74,15 @@ async fn main() {
         )
         .await;
 
-    debug!("Defining database schema");
+    debug!(target: LOG_TARGET, "Defining database schema");
     database.define_database().await;
 
-    debug!("Building panic catcher");
+    debug!(target: LOG_TARGET, "Building panic catcher");
     let svc = ServiceBuilder::new()
         // Use `handle_panic` to create the response.
         .layer(CatchPanicLayer::custom(handle_panic));
 
-    debug!("Building app routes");
+    debug!(target: LOG_TARGET, "Building app routes");
     let app = app::create_app_router()
         .layer(svc)
         .with_state(Arc::new(app::AppState {
@@ -88,11 +90,11 @@ async fn main() {
         }))
         .into_make_service();
 
-    debug!("Initialize Tokio TCP listener");
+    debug!(target: LOG_TARGET, "Initialize Tokio TCP listener");
     let listener = tokio::net::TcpListener::bind(format!("0.0.0.0:{}", &APP_SETTINGS.port))
         .await
         .unwrap();
 
-    info!("Listening on port {}", &APP_SETTINGS.port);
+    info!(target: LOG_TARGET, "Listening on port {}", &APP_SETTINGS.port);
     axum::serve(listener, app).await.unwrap();
 }

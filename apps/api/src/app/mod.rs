@@ -8,6 +8,7 @@ use crate::database::Database;
 
 mod admin;
 mod auth;
+mod sync;
 
 #[derive(Serialize, Debug)]
 pub struct AppErrorResponse {
@@ -29,6 +30,7 @@ pub fn create_app_router() -> Router<Arc<AppState>> {
     Router::new()
         .nest("/auth", auth::get_router())
         .nest("/admin", admin::get_router())
+        .nest("/sync", sync::get_router())
 }
 
 pub fn validate_payload<T>(payload: T)

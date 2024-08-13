@@ -13,15 +13,15 @@ build() {
   case $1 in
     darwin-arm64)
       echo "Building WhatsApp Bot for darwin arm64..."
-      CGO_ENABLED=1 GOOS=darwin GOARCH=arm64 go build -o target/bin/whatsapp-bot-aarch64-apple-darwin bin.go
+      CGO_ENABLED=1 GOOS=darwin GOARCH=arm64 go build -o target/bin/whatsapp-bot-aarch64-apple-darwin ./cmd/api
       ;;
     windows-x86_64)
       echo "Building WhatsApp Bot for Windows x86_64..."
-      CGO_ENABLED=1 GOOS=windows GOARCH=amd64 CC=x86_64-w64-mingw32-gcc CXX=x86_64-w64-mingw32-g++ go build -o target/bin/whatsapp-bot-x86_64-pc-windows-msvc.exe bin.go
+      CGO_ENABLED=1 GOOS=windows GOARCH=amd64 CC=x86_64-w64-mingw32-gcc CXX=x86_64-w64-mingw32-g++ go build -o target/bin/whatsapp-bot-x86_64-pc-windows-msvc.exe ./cmd/api
       ;;
     windows-i686)
       echo "Building WhatsApp Bot for Windows i686..."
-      CGO_ENABLED=1 GOOS=windows GOARCH=386 CC=i686-w64-mingw32-gcc CXX=i686-w64-mingw32-g++ go build -o target/bin/whatsapp-bot-i686-pc-windows-msvc.exe bin.go
+      CGO_ENABLED=1 GOOS=windows GOARCH=386 CC=i686-w64-mingw32-gcc CXX=i686-w64-mingw32-g++ go build -o target/bin/whatsapp-bot-i686-pc-windows-msvc.exe ./cmd/api
       ;;
     *)
       echo "Error: Invalid argument. Please specify one of the following: darwin-arm64, windows-x86_64, windows-i686, all."

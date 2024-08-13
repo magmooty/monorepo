@@ -13,11 +13,11 @@ pub struct User {
 }
 
 #[derive(Clone)]
-pub struct UserRepostiory {
+pub struct UserRepository {
     db: Arc<Surreal<Any>>,
 }
 
-impl UserRepostiory {
+impl UserRepository {
     pub fn new(db: Arc<Surreal<Any>>) -> Self {
         Self { db }
     }

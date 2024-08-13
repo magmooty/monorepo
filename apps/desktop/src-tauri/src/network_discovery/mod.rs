@@ -15,7 +15,7 @@ use tokio::time::timeout;
 
 use crate::app::{get_global_key, GlobalKey};
 
-static LOG_TARGET: &str = "network_discovery";
+static LOG_TARGET: &str = "Network discovery";
 
 #[derive(Debug, Serialize, Deserialize, Type)]
 #[serde(rename_all = "snake_case")]
@@ -109,6 +109,7 @@ async fn get_current_ip_addresses() -> Vec<(Ipv4Addr, Ipv4Addr)> {
                     if !ipv4.is_loopback() {
                         if let IpAddr::V4(mask) = ip_network.mask() {
                             info!(
+                                target: LOG_TARGET,
                                 "Found network interface: {}, IP: {}, Mask: {}",
                                 interface.name, ipv4, mask
                             );

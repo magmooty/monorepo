@@ -22,7 +22,7 @@ export class CentralCenterController {
 		this.db = client.db;
 	}
 
-	async listCenters(): Promise<Center[]> {
+	async list(): Promise<Center[]> {
 		const userId = this.client.auth.userId();
 
 		logger.info(LOG_TARGET, `Listing centers for user ${userId}`);
@@ -31,15 +31,15 @@ export class CentralCenterController {
 		});
 	}
 
-	async createCenter(
-		payload: Omit<Center, 'owner' | 'public_key'>
-	): Promise<InitializeCenterParameters> {
+	async create(payload: Omit<Center, 'owner' | 'public_key'>): Promise<InitializeCenterParameters> {
 		const userId = this.client.auth.userId();
 
 		logger.info(LOG_TARGET, `Creating a new center for user ${userId}`);
 
 		logger.info(LOG_TARGET, `Generating a new key pair`);
 		const { public_key, private_key } = await generateKeyPair();
+
+		console.log({ userId });
 
 		logger.info(LOG_TARGET, `Inserting new center into the database`);
 		const [record] = await this.db.create('center', {
@@ -48,7 +48,7 @@ export class CentralCenterController {
 			public_key
 		});
 
-		logger.info(LOG_TARGET, `Center created`);
-		return { id: record.id.toString(), center_name: payload.name, public_key, private_key };
+		logger.info(LOG_TARGET, `Center created ${record}`);
+		return { id: record.id, center_name: payload.name, public_key, private_key };
 	}
 }
