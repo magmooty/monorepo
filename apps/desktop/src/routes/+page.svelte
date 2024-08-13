@@ -3,6 +3,7 @@
 	import { CentralClient } from 'central';
 	import { app } from 'sdk';
 	import { City, Country, Governorate } from 'common';
+	import Login from '../components/Login.svelte';
 
 	app.connect();
 
@@ -29,4 +30,4 @@
 	}
 </script>
 
-<Button on:click={testStuff}>Click me</Button>
+<Login />
