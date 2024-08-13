@@ -99,7 +99,6 @@ impl Syncer {
                         match response.take::<Vec<SyncEvent>>(0) {
                             Ok(sync_events) => {
                                 debug!(target: LOG_TARGET, "Found {} changes to push", sync_events.len());
-                                dbg!(sync_events);
                             }
                             Err(error) => {
                                 warn!(target: LOG_TARGET, "Error parsing changes: {:?}", error);
