@@ -186,6 +186,30 @@ pub struct AuthorizationStateObject {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
+pub enum ConnectionState {
+    #[serde(rename = "connectionStateWaitingForNetwork")]
+    ConnectionStateWaitingForNetwork,
+
+    #[serde(rename = "connectionStateConnectingToProxy")]
+    ConnectionStateConnectingToProxy,
+
+    #[serde(rename = "connectionStateConnecting")]
+    ConnectionStateConnecting,
+
+    #[serde(rename = "connectionStateUpdating")]
+    ConnectionStateUpdating,
+
+    #[serde(rename = "connectionStateReady")]
+    ConnectionStateReady,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct ConnectionStateObject {
+    #[serde(rename = "@type")]
+    pub state: AuthorizationState,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct TDLibResponse {
     #[serde(rename = "@type")]
     pub td_type: TdLibType,
@@ -197,6 +221,8 @@ pub struct TDLibResponse {
     pub extra: Option<String>,
 
     pub authorization_state: Option<AuthorizationStateObject>,
+
+    pub state: Option<ConnectionStateObject>,
 }
 
 pub trait TelegramRequest: Serialize {

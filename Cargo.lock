@@ -6689,6 +6689,7 @@ dependencies = [
 name = "telegram-bot"
 version = "0.1.0"
 dependencies = [
+ "async-trait",
  "log",
  "qr2term",
  "serde",
