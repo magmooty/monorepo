@@ -1,7 +1,6 @@
 use crate::tdlib::ClientId;
 use crate::{requests::TdLibType, TelegramClient, TelegramRequest};
 use serde::{Deserialize, Serialize};
-use telegram_macros::TelegramRequest;
 
 #[derive(Serialize, Deserialize, Debug, Clone, TelegramRequest)]
 pub struct SetLogVerbosityLevel {
