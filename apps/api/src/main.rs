@@ -10,7 +10,7 @@ use settings::AppSettings;
 use std::any::Any;
 use std::sync::Arc;
 use surrealdb::opt::auth::Root;
-use telegram_bot;
+use telegram_bot::{self, TelegramClient,ConsoleAuthorizationHandler,ConsoleConnectionHandler};
 use tower::ServiceBuilder;
 use tower_http::catch_panic::CatchPanicLayer;
 
@@ -60,7 +60,7 @@ async fn main() {
     whatsapp::WhatsAppBot::initialize_whatsapp();
 
     debug!(target: LOG_TARGET, "Initializing Telegram");
-    telegram_bot::initialize_telegram().await;
+    TelegramClient::init::<ConsoleAuthorizationHandler, ConsoleConnectionHandler>().await;
 
     debug!(target: LOG_TARGET, "Connecting to the database");
     let database = Arc::new(Database::new());

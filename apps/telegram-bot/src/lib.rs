@@ -4,9 +4,10 @@ mod functions;
 mod requests;
 mod tdlib;
 
-use authentication_handler::{AuthorizationHandler, ConsoleAuthorizationHandler};
-use connection_state_handler::{ConnectionHandler, ConsoleConnectionHandler};
-use log::{debug, error};
+pub use authentication_handler::{AuthorizationHandler, ConsoleAuthorizationHandler};
+pub use connection_state_handler::{ConnectionHandler, ConsoleConnectionHandler};
+
+use log::{debug, error, trace};
 use requests::{AuthorizationState, TDLibResponse, TdLibType, TelegramRequest};
 use std::collections::HashMap;
 use std::sync::Arc;
@@ -30,7 +31,7 @@ pub struct TelegramClient {
 }
 
 impl TelegramClient {
-    async fn init<H, C>() -> Arc<Self>
+    pub async fn init<H, C>() -> Arc<Self>
     where
         H: AuthorizationHandler + 'static,
         C: ConnectionHandler + 'static,
@@ -72,11 +73,22 @@ impl TelegramClient {
                 let authorization_state = response.authorization_state.unwrap();
 
                 match authorization_state.state {
-                    AuthorizationState::AuthorizationStateWaitTdlibParameters => {
+                    requests::AuthorizationState::AuthorizationStateWaitTdlibParameters => {
                         authorization_handler.handle_set_tdlib_params().await;
                     }
-                    AuthorizationState::AuthorizationStateWaitPhoneNumber => {
-                        authorization_handler.handle_set_phone_number().await;
+                    requests::AuthorizationState::AuthorizationStateWaitPhoneNumber => {
+                        authorization_handler.handle_wait_phone_number().await;
+                    }
+                    requests::AuthorizationState::AuthorizationStateWaitCode => {
+                        authorization_handler.handle_wait_code().await;
+                    }
+                    AuthorizationState::AuthorizationStateWaitPassword => {
+                        authorization_handler
+                            .handle_wait_password(authorization_state.password_hint)
+                            .await;
+                    }
+                    requests::AuthorizationState::AuthorizationStateWaitRegistration => {
+                        authorization_handler.handle_wait_code().await;
                     }
                     AuthorizationState::AuthorizationStateWaitOtherDeviceConfirmation => {
                         authorization_handler
@@ -85,15 +97,24 @@ impl TelegramClient {
                             )
                             .await;
                     }
-                    AuthorizationState::AuthorizationStateWaitPassword => {
-                        authorization_handler
-                            .handle_wait_password(authorization_state.password_hint)
-                            .await;
+                    requests::AuthorizationState::AuthorizationStateWaitEmailAddress => {
+                        authorization_handler.handle_wait_email_address().await;
                     }
-                    AuthorizationState::AuthorizationStateReady => {
-                        authorization_handler.handle_status_ready().await;
+                    requests::AuthorizationState::AuthorizationStateWaitEmailCode => {
+                        authorization_handler.handle_wait_email_code().await;
                     }
-                    AuthorizationState::AuthorizationStateWaitCode => {}
+                    requests::AuthorizationState::AuthorizationStateReady => {
+                        authorization_handler.handle_ready().await;
+                    }
+                    requests::AuthorizationState::AuthorizationStateLoggingOut => {
+                        authorization_handler.handle_logging_out().await;
+                    }
+                    requests::AuthorizationState::AuthorizationStateClosing => {
+                        authorization_handler.handle_closing().await;
+                    }
+                    requests::AuthorizationState::AuthorizationStateClosed => {
+                        authorization_handler.handle_closed().await;
+                    }
                 }
             }
         });
@@ -171,7 +192,7 @@ impl TelegramClient {
                 let response = serde_json::from_str::<TDLibResponse>(event.as_str());
 
                 if let Err(e) = response {
-                    error!("Failed to parse response from tdlib: {}", e);
+                    trace!("Failed to parse response from tdlib: {}", e);
                     continue;
                 }
 
@@ -188,7 +209,7 @@ impl TelegramClient {
                             conn_tx.send(response).await.unwrap_or_default();
                         }
                         _ => {
-                            debug!(target: LOG_TARGET, "No handle found in response: {}", event);
+                            trace!(target: LOG_TARGET, "No handle found in response {}", event);
                             continue;
                         }
                     }
@@ -257,8 +278,4 @@ impl Drop for TelegramClient {
             listener_task.abort();
         }
     }
-}
-
-pub async fn initialize_telegram() {
-    let _ = TelegramClient::init::<ConsoleAuthorizationHandler, ConsoleConnectionHandler>().await;
 }

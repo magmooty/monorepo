@@ -1,6 +1,6 @@
 use log::info;
 
-static LOG_TARGET: &str = "Console Connection State Handler";
+static LOG_TARGET: &str = "Telegram Console Connection State Handler";
 
 #[async_trait::async_trait]
 pub trait ConnectionHandler: Send + Sync {

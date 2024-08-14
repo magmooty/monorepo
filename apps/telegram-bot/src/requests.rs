@@ -147,6 +147,9 @@ pub enum TdLibType {
     #[serde(rename = "internalLinkTypeQrCodeAuthentication")]
     InternalLinkTypeQrCodeAuthentication,
 
+    #[serde(rename = "updateNewMessage")]
+    UpdateNewMessage,
+
     #[serde(rename = "error")]
     Error,
 
@@ -162,17 +165,35 @@ pub enum AuthorizationState {
     #[serde(rename = "authorizationStateWaitPhoneNumber")]
     AuthorizationStateWaitPhoneNumber,
 
+    #[serde(rename = "authorizationStateWaitEmailAddress")]
+    AuthorizationStateWaitEmailAddress,
+
+    #[serde(rename = "authorizationStateWaitEmailCode")]
+    AuthorizationStateWaitEmailCode,
+
     #[serde(rename = "authorizationStateWaitCode")]
     AuthorizationStateWaitCode,
-
-    #[serde(rename = "authorizationStateWaitPassword")]
-    AuthorizationStateWaitPassword,
 
     #[serde(rename = "authorizationStateWaitOtherDeviceConfirmation")]
     AuthorizationStateWaitOtherDeviceConfirmation,
 
+    #[serde(rename = "authorizationStateWaitRegistration")]
+    AuthorizationStateWaitRegistration,
+
+    #[serde(rename = "authorizationStateWaitPassword")]
+    AuthorizationStateWaitPassword,
+
     #[serde(rename = "authorizationStateReady")]
     AuthorizationStateReady,
+
+    #[serde(rename = "authorizationStateLoggingOut")]
+    AuthorizationStateLoggingOut,
+
+    #[serde(rename = "authorizationStateClosing")]
+    AuthorizationStateClosing,
+
+    #[serde(rename = "authorizationStateClosed")]
+    AuthorizationStateClosed,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]

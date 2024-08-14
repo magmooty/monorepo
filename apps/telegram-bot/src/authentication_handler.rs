@@ -1,14 +1,14 @@
 use log::info;
 use qr2term;
+use std::io::{self, BufRead, BufReader, Write};
 use std::sync::Arc;
-use tokio::io::{self, AsyncBufReadExt, BufReader};
 
 use crate::{
     functions::{CheckAuthenticationPassword, RequestQrCodeAuthentication, SetTdLibParameters},
     TelegramClient,
 };
 
-static LOG_TARGET: &str = "Console Authentication Handler";
+static LOG_TARGET: &str = "Telegram Console Authentication Handler";
 
 #[async_trait::async_trait]
 pub trait AuthorizationHandler: Send + Sync {
@@ -16,7 +16,7 @@ pub trait AuthorizationHandler: Send + Sync {
     fn get_client(&self) -> Arc<TelegramClient>;
 
     async fn handle_set_tdlib_params(&self) -> ();
-    async fn handle_set_phone_number(&self) -> () {
+    async fn handle_wait_phone_number(&self) -> () {
         let client = self.get_client();
 
         client
@@ -24,9 +24,22 @@ pub trait AuthorizationHandler: Send + Sync {
             .await
             .unwrap();
     }
+    async fn handle_wait_email_address(&self) -> () {
+        let client = self.get_client();
+
+        client
+            .send(RequestQrCodeAuthentication::new(&client))
+            .await
+            .unwrap();
+    }
+    async fn handle_wait_email_code(&self) -> () {}
+    async fn handle_wait_code(&self) -> () {}
     async fn handle_wait_other_device_confirmation(&self, link: String) -> ();
     async fn handle_wait_password(&self, hint: Option<String>) -> ();
-    async fn handle_status_ready(&self) -> ();
+    async fn handle_ready(&self) -> ();
+    async fn handle_logging_out(&self) -> () {}
+    async fn handle_closing(&self) -> () {}
+    async fn handle_closed(&self) -> ();
 }
 
 pub struct ConsoleAuthorizationHandler {
@@ -68,17 +81,30 @@ impl AuthorizationHandler for ConsoleAuthorizationHandler {
 
         print!("Telegram password: ");
 
-        reader.read_line(&mut password).await.unwrap();
+        io::stdout().flush().unwrap();
+
+        reader.read_line(&mut password).unwrap();
+
+        println!("Logging in...");
+
+        io::stdout().flush().unwrap();
 
         let client = self.get_client();
 
         client
-            .send(CheckAuthenticationPassword::new(&client, password))
+            .send(CheckAuthenticationPassword::new(
+                &client,
+                password.trim().to_string(),
+            ))
             .await
             .unwrap();
     }
 
-    async fn handle_status_ready(&self) {
-        println!("Telegram connected and logged in");
+    async fn handle_ready(&self) {
+        info!(target: LOG_TARGET, "Telegram connected and logged in");
+    }
+
+    async fn handle_closed(&self) {
+        info!(target: LOG_TARGET, "Connection closed");
     }
 }
