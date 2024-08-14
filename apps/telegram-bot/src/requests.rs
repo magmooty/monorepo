@@ -206,7 +206,7 @@ pub enum ConnectionState {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct ConnectionStateObject {
     #[serde(rename = "@type")]
-    pub state: AuthorizationState,
+    pub state: ConnectionState,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]

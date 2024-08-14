@@ -1,9 +1,11 @@
 mod authentication_handler;
+mod connection_state_handler;
 mod functions;
 mod requests;
 mod tdlib;
 
 use authentication_handler::{AuthorizationHandler, ConsoleAuthorizationHandler};
+use connection_state_handler::{ConnectionHandler, ConsoleConnectionHandler};
 use log::{debug, error};
 use requests::{AuthorizationState, TDLibResponse, TdLibType, TelegramRequest};
 use std::collections::HashMap;
@@ -28,9 +30,10 @@ pub struct TelegramClient {
 }
 
 impl TelegramClient {
-    async fn init<H>() -> Arc<Self>
+    async fn init<H, C>() -> Arc<Self>
     where
         H: AuthorizationHandler + 'static,
+        C: ConnectionHandler + 'static,
     {
         let client_id = new_client();
         let mut client = TelegramClient {
@@ -42,7 +45,7 @@ impl TelegramClient {
             authorization_state: None,
         };
 
-        let mut rx = client.start_receiving().await;
+        let (mut auth_rx, mut conn_rx) = client.start_receiving().await;
 
         let client = Arc::new(client);
 
@@ -55,10 +58,11 @@ impl TelegramClient {
             .await;
 
         let authorization_handler = H::new(client.clone());
+        let connection_state_handler = C::new();
 
         tokio::spawn(async move {
             loop {
-                let response = rx.recv().await;
+                let response = auth_rx.recv().await;
 
                 if response.is_none() {
                     continue;
@@ -94,11 +98,55 @@ impl TelegramClient {
             }
         });
 
+        tokio::spawn(async move {
+            loop {
+                let response = conn_rx.recv().await;
+
+                if response.is_none() {
+                    continue;
+                }
+
+                let response = response.unwrap();
+                let connection_state = response.state.unwrap();
+
+                match connection_state.state {
+                    requests::ConnectionState::ConnectionStateWaitingForNetwork => {
+                        connection_state_handler.handle_waiting_for_network().await;
+                    }
+                    requests::ConnectionState::ConnectionStateConnectingToProxy => {
+                        connection_state_handler.handle_connecting_to_proxy().await;
+                    }
+                    requests::ConnectionState::ConnectionStateConnecting => {
+                        connection_state_handler.handle_connecting().await;
+                    }
+                    requests::ConnectionState::ConnectionStateUpdating => {
+                        connection_state_handler.handle_updating().await;
+                    }
+                    requests::ConnectionState::ConnectionStateReady => {
+                        connection_state_handler.handle_ready().await;
+                    }
+                }
+            }
+        });
+
         client
     }
 
-    async fn start_receiving(&mut self) -> tokio::sync::mpsc::Receiver<TDLibResponse> {
-        let (tx, rx) = tokio::sync::mpsc::channel::<TDLibResponse>(100);
+    /// Start listening for tdlib events and returns a receiver for authentication messages
+    /// # Returns
+    ///
+    /// A tuple of Receivers
+    ///
+    /// 1. Listener for authentication messages
+    /// 2. Listener for connection state updates
+    async fn start_receiving(
+        &mut self,
+    ) -> (
+        tokio::sync::mpsc::Receiver<TDLibResponse>,
+        tokio::sync::mpsc::Receiver<TDLibResponse>,
+    ) {
+        let (auth_tx, auth_rx) = tokio::sync::mpsc::channel::<TDLibResponse>(100);
+        let (conn_tx, conn_rx) = tokio::sync::mpsc::channel::<TDLibResponse>(100);
 
         let request_handles_arc = self.request_handles.clone();
 
@@ -133,7 +181,11 @@ impl TelegramClient {
                     match response.td_type {
                         TdLibType::UpdateAuthorizationState => {
                             debug!(target: LOG_TARGET, "Found authorization state update event: {}", event);
-                            tx.send(response).await.unwrap_or_default();
+                            auth_tx.send(response).await.unwrap_or_default();
+                        }
+                        TdLibType::UpdateConnectionState => {
+                            debug!(target: LOG_TARGET, "Found connection state update event: {}", event);
+                            conn_tx.send(response).await.unwrap_or_default();
                         }
                         _ => {
                             debug!(target: LOG_TARGET, "No handle found in response: {}", event);
@@ -152,9 +204,10 @@ impl TelegramClient {
 
         self.listener_task = Some(join_handle);
 
-        rx
+        (auth_rx, conn_rx)
     }
 
+    /// Generate a new random handle for @extra field in tdlib
     fn generate_extra_handle(&self) -> String {
         format!(
             "{}-{}",
@@ -166,6 +219,7 @@ impl TelegramClient {
         )
     }
 
+    /// Send a request to tdlib
     async fn send(&self, request: impl TelegramRequest) -> Result<TDLibResponse, ()> {
         let (tx, rx) = oneshot::channel();
 
@@ -206,5 +260,5 @@ impl Drop for TelegramClient {
 }
 
 pub async fn initialize_telegram() {
-    let _ = TelegramClient::init::<ConsoleAuthorizationHandler>().await;
+    let _ = TelegramClient::init::<ConsoleAuthorizationHandler, ConsoleConnectionHandler>().await;
 }
