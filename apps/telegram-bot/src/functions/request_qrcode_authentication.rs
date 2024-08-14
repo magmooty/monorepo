@@ -3,7 +3,7 @@ use crate::{requests::TdLibType, TelegramClient, TelegramRequest};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone, TelegramRequest)]
-pub struct GetAuthorizationState {
+pub struct RequestQrCodeAuthentication {
     #[serde(rename = "@type")]
     td_type: TdLibType,
 
@@ -14,10 +14,10 @@ pub struct GetAuthorizationState {
     extra: String,
 }
 
-impl GetAuthorizationState {
+impl RequestQrCodeAuthentication {
     pub fn new(client: &TelegramClient) -> Self {
         Self {
-            td_type: TdLibType::GetAuthorizationState,
+            td_type: TdLibType::RequestQrCodeAuthentication,
             client_id: client.client_id,
             extra: client.generate_extra_handle(),
         }

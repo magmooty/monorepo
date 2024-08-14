@@ -3,7 +3,7 @@ use crate::{requests::TdLibType, TelegramClient, TelegramRequest};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone, TelegramRequest)]
-pub struct GetAuthorizationState {
+pub struct CheckAuthenticationPassword {
     #[serde(rename = "@type")]
     td_type: TdLibType,
 
@@ -12,14 +12,17 @@ pub struct GetAuthorizationState {
 
     #[serde(rename = "@extra")]
     extra: String,
+
+    password: String,
 }
 
-impl GetAuthorizationState {
-    pub fn new(client: &TelegramClient) -> Self {
+impl CheckAuthenticationPassword {
+    pub fn new(client: &TelegramClient, password: String) -> Self {
         Self {
-            td_type: TdLibType::GetAuthorizationState,
+            td_type: TdLibType::CheckAuthenticationPassword,
             client_id: client.client_id,
             extra: client.generate_extra_handle(),
+            password,
         }
     }
 }
