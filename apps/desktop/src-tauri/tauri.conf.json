@@ -65,7 +65,7 @@
 				"icons/icon.ico"
 			],
 			"identifier": "com.magmooty.desktop",
-			"longDescription": "",
+			"longDescription": "Magmooty Desktop App for Centers and Tutors",
 			"macOS": {
 				"entitlements": null,
 				"exceptionDomain": "",
