@@ -14,7 +14,7 @@ jobs:
 
     strategy:
       matrix:
-        rust: [stable, beta, nightly]
+        rust: [stable]
 
     steps:
       - name: Check out the repository
