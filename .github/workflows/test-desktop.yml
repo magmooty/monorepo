@@ -27,6 +27,7 @@ jobs:
         with:
           node-version: 21
           cache: "pnpm"
+          working-directory: apps/desktop
 
       - name: Install dependencies
         run: pnpm install
