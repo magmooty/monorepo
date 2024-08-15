@@ -2,12 +2,19 @@ use rand::Rng;
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 
-use surrealdb::{engine::any::Any, Surreal};
+use surrealdb::{engine::any::Any, sql::Datetime, Surreal};
 
 use super::Record;
 
 #[derive(Deserialize, Serialize, Clone)]
 pub struct SigninCode {
+    pub phone_number: String,
+    pub code: String,
+    pub created_at: Datetime,
+}
+
+#[derive(Serialize)]
+struct SigninCodeCreate {
     pub phone_number: String,
     pub code: String,
 }
@@ -20,6 +27,18 @@ pub struct SignInCodeRepository {
 impl SignInCodeRepository {
     pub fn new(db: Arc<Surreal<Any>>) -> Self {
         Self { db }
+    }
+
+    pub async fn find_signin_code(&self, phone_number: &String) -> Option<SigninCode> {
+        self.db
+            .query("SELECT * FROM signin_code WHERE phone_number = $phone_number LIMIT 1")
+            .bind(("phone_number", phone_number))
+            .await
+            .unwrap()
+            .take::<Vec<SigninCode>>(0)
+            .unwrap()
+            .first()
+            .map(|record| record.clone())
     }
 
     pub async fn delete_previous_signin_codes(&self, phone_number: &String) -> () {
@@ -49,6 +68,7 @@ impl SignInCodeRepository {
             .content(SigninCode {
                 phone_number: phone_number.clone(),
                 code: format!("{:0>6}", code),
+                created_at: chrono::Utc::now().into(),
             })
             .await
             .unwrap()
