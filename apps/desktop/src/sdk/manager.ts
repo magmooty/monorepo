@@ -69,6 +69,28 @@ export class LocalDatabaseManager {
 		logger.info(LOG_TARGET, `Local admin user created`);
 	}
 
+	/**
+	 * Reset the password for a local user.
+	 * **CAUTION**: This is root access and should only be used for local admin user if signed in.
+	 * @param phoneNumber The phone number of the user
+	 * @param password The new password
+	 */
+	async resetLocalUserPassword(phoneNumber: string, password: string) {
+		logger.info(
+			LOG_TARGET,
+			`Resetting password for local user through root manager ${phoneNumber}`
+		);
+		await this.app.rootDb.query(
+			`UPDATE user SET password = crypto::argon2::generate($password) WHERE phone_number = $phone_number`,
+			{
+				phone_number: phoneNumber,
+				password: password
+			}
+		);
+
+		logger.info(LOG_TARGET, `Password reset for local user through root manager ${phoneNumber}`);
+	}
+
 	async clearLocalDatabase() {
 		logger.info(LOG_TARGET, `Fetching all namespaces`);
 		const [rootInfo] = await this.app.rootDb.query<[InfoForRoot]>('INFO FOR ROOT;');
