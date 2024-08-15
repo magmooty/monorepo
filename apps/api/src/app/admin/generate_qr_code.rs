@@ -11,6 +11,15 @@ use crate::whatsapp::WhatsAppBot;
 static LOG_TARGET: &str = "Generate QR code";
 
 #[debug_handler]
+#[utoipa::path(
+    post,
+    tag = "Admin",
+    path = "/admin/whatsapp/generate_qr_code",
+    responses(
+        (status = 200, description = "QR code image", content_type = "image/png"),
+    ),
+    security(("admin_token" = []))
+)]
 pub async fn generate_whatsapp_qr_code() -> impl IntoResponse {
     info!(target: LOG_TARGET, "Generating new WhatsApp QR code");
 

@@ -13,12 +13,6 @@ pub struct SigninCode {
     pub created_at: Datetime,
 }
 
-#[derive(Serialize)]
-struct SigninCodeCreate {
-    pub phone_number: String,
-    pub code: String,
-}
-
 #[derive(Clone)]
 pub struct SignInCodeRepository {
     db: Arc<Surreal<Any>>,

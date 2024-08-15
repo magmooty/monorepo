@@ -2,14 +2,14 @@ use std::sync::Arc;
 
 use axum::{routing::post, Router};
 
-mod resend_signin_code;
-mod send_signin_code;
+pub mod resend_signin_code;
+pub mod send_signin_code;
 
 mod test_send_signin_code;
 mod test_resend_signin_code;
 
-use resend_signin_code::*;
-use send_signin_code::*;
+pub use resend_signin_code::*;
+pub use send_signin_code::*;
 
 use super::AppState;
 
