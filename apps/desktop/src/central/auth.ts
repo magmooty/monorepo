@@ -1,6 +1,6 @@
 import { fetch, Body } from '@tauri-apps/api/http';
 import type { CentralClient } from 'central';
-import { RecordId, StringRecordId, type ScopeAuth } from 'surrealdb.js';
+import { StringRecordId, type ScopeAuth } from 'surrealdb.js';
 import type Surreal from 'surrealdb.js';
 import { jwtDecode } from 'jwt-decode';
 import type { SurrealDBToken } from 'common';
