@@ -67,6 +67,9 @@ fn link_libraries() {
     // Copy dynamically linked tdjson
     #[cfg(target_os = "windows")]
     let tdjson_file_name = "tdjson.dll";
+
+    #[cfg(target_os = "linux")]
+    let tdjson_file_name = "libtdjson.so.1.8.29";
     
     #[cfg(target_os = "macos")]
     let tdjson_file_name = "libtdjson.1.8.34.dylib";
