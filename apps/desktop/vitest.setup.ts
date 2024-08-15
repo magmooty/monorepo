@@ -34,7 +34,9 @@ function runSurrealInstance(port: number): Promise<ChildProcessWithoutNullStream
 const instances: ChildProcessWithoutNullStreams[] = [];
 
 beforeAll(async () => {
-	// instances.push(await runSurrealInstance(7001));
+	if (process.env.SKIP_SURREAL) {
+		return;
+	}
 	instances.push(await runSurrealInstance(7002));
 });
 
