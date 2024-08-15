@@ -20,20 +20,14 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: '21'
+        cache: 'pnpm'
 
-    - name: Cache pnpm store
-      id: pnpm-cache
-      uses: actions/cache@v3
-      with:
-        path: ~/.pnpm-store
-        key: ${{ runner.os }}-pnpm-${{ hashFiles('apps/desktop/pnpm-lock.yaml') }}
-        restore-keys: |
-          ${{ runner.os }}-pnpm-
+    - name: Install pnpm
+      run: npm install -g pnpm
 
     - name: Install dependencies
       run: pnpm install
       working-directory: apps/desktop
-      if: steps.pnpm-cache.outputs.cache-hit != 'true'
 
     - name: Start SurrealDB
       uses: jvllmr/surrealdb-action@2.0.0

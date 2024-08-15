@@ -1,4 +1,4 @@
-name: Test Central API
+name: Run Tests on Central API
 
 on:
   push:
