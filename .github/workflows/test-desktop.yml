@@ -13,30 +13,33 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '21'
-        cache: 'pnpm'
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+          version: 9
+          run_install: false
 
-    - name: Install pnpm
-      run: npm install -g pnpm
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 21
+          cache: "pnpm"
 
-    - name: Install dependencies
-      run: pnpm install
-      working-directory: apps/desktop
+      - name: Install dependencies
+        run: pnpm install
+        working-directory: apps/desktop
 
-    - name: Start SurrealDB
-      uses: jvllmr/surrealdb-action@2.0.0
-      with:
-        surrealdb-version: v1.5.4
-        surrealdb-port: 7002
-        surrealdb-user: root
-        surrealdb-password: root
+      - name: Start SurrealDB
+        uses: jvllmr/surrealdb-action@2.0.0
+        with:
+          surrealdb-version: v1.5.4
+          surrealdb-port: 7002
+          surrealdb-user: root
+          surrealdb-password: root
 
-    - name: Run tests for Desktop App
-      run: SKIP_SURREAL=1 pnpm test
-      working-directory: apps/desktop
+      - name: Run tests for Desktop App
+        run: SKIP_SURREAL=1 pnpm test
+        working-directory: apps/desktop
