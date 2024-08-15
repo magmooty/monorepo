@@ -9,6 +9,7 @@ use log::info;
 use mockall_double::double;
 use serde;
 use serde::{Deserialize, Serialize};
+use utoipa::ToSchema;
 use validator::Validate;
 
 #[double]
@@ -16,20 +17,37 @@ use crate::whatsapp::WhatsAppBot;
 
 static LOG_TARGET: &str = "Send signin code";
 
-// the input to our `create_user` handler
-#[derive(Serialize, Deserialize, Validate)]
+#[derive(Serialize, Deserialize, Validate, ToSchema)]
 pub struct SendSigninCodePayload {
     #[validate(custom(function = "validate_phone_number"))]
     pub phone_number: String,
 }
 
-// the output to our `create_user` handler
-#[derive(Serialize)]
+#[derive(Serialize, ToSchema)]
+#[serde(rename_all = "snake_case")]
+pub enum SendSigninCodeStatus {
+    TargetNotOnWhatsApp,
+    MessageSent,
+    WhatsAppError,
+}
+
+#[derive(Serialize, ToSchema)]
 pub struct SendSigninCodeResponse {
-    status: String,
+    status: SendSigninCodeStatus,
 }
 
 #[debug_handler]
+#[utoipa::path(
+    post,
+    tag = "Authorization",
+    path = "/auth/send_signin_code",
+    request_body = SendSigninCodePayload,
+    responses(
+        (status = CREATED, description = "Sent sign in code", body = ResendSigninCodeResponse, example = json!({ "status": "message_sent" })),
+        (status = BAD_REQUEST, description = "Target is not on WhatsApp", body = ResendSigninCodeResponse, example = json!({ "status": "target_not_on_whatsapp" })),
+        (status = INTERNAL_SERVER_ERROR, description = "WhatsApp error", body = ResendSigninCodeResponse, example = json!({ "status": "whatsapp_error" }))
+    )
+)]
 pub async fn send_signin_code(
     // this argument tells axum to parse the request body
     // as JSON into a `CreateUser` type
@@ -81,7 +99,7 @@ pub async fn send_signin_code(
             return (
                 StatusCode::BAD_REQUEST,
                 Json(SendSigninCodeResponse {
-                    status: "target_not_on_whatsapp".to_string(),
+                    status: SendSigninCodeStatus::TargetNotOnWhatsApp,
                 }),
             );
         }
@@ -90,7 +108,7 @@ pub async fn send_signin_code(
             return (
                 StatusCode::INTERNAL_SERVER_ERROR,
                 Json(SendSigninCodeResponse {
-                    status: "whatsapp_error".to_string(),
+                    status: SendSigninCodeStatus::WhatsAppError,
                 }),
             );
         }
@@ -100,7 +118,7 @@ pub async fn send_signin_code(
     (
         StatusCode::CREATED,
         Json(SendSigninCodeResponse {
-            status: "message_sent".to_string(),
+            status: SendSigninCodeStatus::MessageSent,
         }),
     )
 }

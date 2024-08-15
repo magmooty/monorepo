@@ -5,10 +5,12 @@ mod tests {
     use axum_test::TestServer;
     use mockall::predicate;
     use serde_json::json;
+    use serde_variant::to_variant_name;
+    use serial_test::serial;
 
     use crate::{
         app::{
-            auth::{get_router, SendSigninCodePayload},
+            auth::{get_router, SendSigninCodePayload, SendSigninCodeStatus},
             AppState,
         },
         database::Database,
@@ -24,6 +26,7 @@ mod tests {
     }
 
     #[tokio::test]
+    #[serial]
     async fn test_send_signin_code_new_user_creation() {
         let ctx = MockWhatsAppBot::send_message_context();
 
@@ -32,6 +35,7 @@ mod tests {
                 predicate::eq("+201096707442".to_string()),
                 predicate::always(),
             )
+            .times(1)
             .returning(|_, _| WASendMessageResponse {
                 status: WhatsAppStatus::MessageSent,
                 error_message: "".to_string(),
@@ -49,7 +53,7 @@ mod tests {
 
         response.assert_json(&json!(
             {
-                "status": "message_sent"
+                "status": to_variant_name(&SendSigninCodeStatus::MessageSent).unwrap()
             }
         ));
 

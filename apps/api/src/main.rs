@@ -10,7 +10,7 @@ use settings::AppSettings;
 use std::any::Any;
 use std::sync::Arc;
 use surrealdb::opt::auth::Root;
-use telegram_bot::{self, TelegramClient,ConsoleAuthorizationHandler,ConsoleConnectionHandler};
+use telegram_bot::{self, ConsoleAuthorizationHandler, ConsoleConnectionHandler, TelegramClient};
 use tower::ServiceBuilder;
 use tower_http::catch_panic::CatchPanicLayer;
 

@@ -36,7 +36,7 @@ mod tests {
 
         let response = server.post("/check_sync_availability").json(&payload).await;
 
-        response.assert_status_bad_request();
+        response.assert_status_unauthorized();
 
         response.assert_json(&json!(
             {
@@ -129,7 +129,7 @@ mod tests {
 
         let response = server.post("/check_sync_availability").json(&payload).await;
 
-        response.assert_status_bad_request();
+        response.assert_status_unauthorized();
 
         response.assert_json(&json!(
             {
