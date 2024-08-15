@@ -1,6 +1,6 @@
 import { describe, it, beforeAll, vi, expect } from 'vitest';
 import { App } from 'sdk';
-import type { RecordId } from 'surrealdb.js';
+import { RecordId } from 'surrealdb.js';
 import { Grade, Subject } from 'sdk/academic-year-course';
 
 beforeAll(() => {
@@ -28,7 +28,7 @@ describe('SDK', () => {
 	it('Set up the database', async () => {
 		await app.manager.initializeCenter({
 			center_name: 'Test Center',
-			id: '1',
+			id: new RecordId('center', 'test-center'),
 			private_key: 'private',
 			public_key: 'public'
 		});
@@ -58,6 +58,11 @@ describe('SDK', () => {
 
 	it('Sign in as admin user', async () => {
 		await app.auth.signIn('+201096707442', '0000');
+	});
+
+	it('Reset admin user password', async () => {
+		await app.manager.resetLocalUserPassword('+201096707442', '1234');
+		await app.auth.signIn('+201096707442', '1234');
 	});
 
 	it('Create a space', async () => {
