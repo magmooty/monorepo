@@ -1,11 +1,8 @@
 <script>
-	import { Button } from 'flowbite-svelte';
 	import { CentralClient } from 'central';
 	import { app } from 'sdk';
 	import { City, Country, Governorate } from 'common';
 	import Login from '../components/Login.svelte';
-
-	app.connect();
 
 	async function testStuff() {
 		await app.manager.clearLocalDatabase();

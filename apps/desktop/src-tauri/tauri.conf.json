@@ -1,7 +1,6 @@
 {
 	"$schema": "../node_modules/@tauri-apps/cli/schema.json",
 	"build": {
-		
 		"beforeBuildCommand": "yarn build",
 		"beforeDevCommand": "yarn dev",
 		"devPath": "http://localhost:5173",
@@ -95,9 +94,18 @@
 		"windows": [
 			{
 				"resizable": true,
-				"title": "Magmooty",
+				"title": "مجموعتي",
 				"width": 1000,
-				"height": 750
+				"height": 750,
+				"visible": false
+			},
+			{
+				"width": 500,
+				"height": 500,
+				"decorations": false,
+				"url": "splashscreen.html",
+				"label": "splashscreen",
+				"visible": true
 			}
 		]
 	}

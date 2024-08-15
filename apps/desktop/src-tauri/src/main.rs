@@ -36,7 +36,9 @@ fn generate_typescript_bindings() {
             app::get_global_key,
             app::generate_key_pair,
             app::discover_network,
-            app::get_root_database_credentials
+            app::get_root_database_credentials,
+            app::open_splash_screen,
+            app::close_splash_screen
         ],
         "../src/lib/bindings.ts",
     )
@@ -77,7 +79,9 @@ async fn main() {
             app::get_global_key,
             app::generate_key_pair,
             app::discover_network,
-            app::get_root_database_credentials
+            app::get_root_database_credentials,
+            app::open_splash_screen,
+            app::close_splash_screen
         ])
         .run(tauri::generate_context!())
         .expect("Error while running tauri application");

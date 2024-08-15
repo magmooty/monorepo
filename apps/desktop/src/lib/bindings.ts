@@ -30,6 +30,14 @@ export function getRootDatabaseCredentials() {
     return invoke()<RootDatabaseCredentials>("get_root_database_credentials")
 }
 
+export function openSplashScreen() {
+    return invoke()<null>("open_splash_screen")
+}
+
+export function closeSplashScreen() {
+    return invoke()<null>("close_splash_screen")
+}
+
 export type NetworkInstanceInfo = { center_name: string; version: string; instance_type: InstanceType; local_center_initialized: boolean; ip_addresses: string[] }
 export type GlobalKey = "center_id" | "center_name" | "instance_type" | "private_key" | "public_key"
 export type InstanceType = "master" | "slave" | "uninitialized"
