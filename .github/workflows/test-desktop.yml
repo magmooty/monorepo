@@ -1,0 +1,46 @@
+name: Run Tests on Desktop App
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test-desktop:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+          version: 9
+          run_install: false
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 21
+          cache: "pnpm"
+          cache-dependency-path: apps/desktop/pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install
+        working-directory: apps/desktop
+
+      - name: Start SurrealDB
+        uses: jvllmr/surrealdb-action@2.0.0
+        with:
+          surrealdb-version: v1.5.4
+          surrealdb-port: 7002
+          surrealdb-user: root
+          surrealdb-password: root
+
+      - name: Run tests for Desktop App
+        run: SKIP_SURREAL=1 pnpm test
+        working-directory: apps/desktop
