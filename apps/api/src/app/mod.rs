@@ -1,8 +1,9 @@
 use std::sync::Arc;
 
+use admin::AdminSecurityAddon;
 use axum::Router;
 use serde::Serialize;
-use utoipa::OpenApi;
+use utoipa::{Modify, OpenApi};
 use utoipa_swagger_ui::SwaggerUi;
 use utoipauto::utoipauto;
 use validator::Validate;
@@ -15,8 +16,22 @@ mod sync;
 
 #[utoipauto(paths = "./apps/api/src/app")]
 #[derive(OpenApi)]
-#[openapi(paths(), components())]
+#[openapi(
+    info(
+        title = "Magmooty Central API",
+        description = "Handles authorization and offline -> remote syncing"
+    ),
+    modifiers(&VersionAddon, &AdminSecurityAddon)
+)]
 struct ApiDoc;
+
+pub struct VersionAddon;
+
+impl Modify for VersionAddon {
+    fn modify(&self, openapi: &mut utoipa::openapi::OpenApi) {
+        openapi.info.version = env!("CARGO_PKG_VERSION").to_string()
+    }
+}
 
 #[derive(Serialize, Debug)]
 pub struct AppErrorResponse {

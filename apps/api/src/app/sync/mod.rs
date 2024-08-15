@@ -2,11 +2,11 @@ use std::sync::Arc;
 
 use axum::{routing::post, Router};
 
-mod check_sync_availability;
+pub mod check_sync_availability;
 
 mod test_check_sync_availability;
 
-use check_sync_availability::*;
+pub use check_sync_availability::*;
 
 use super::AppState;
 

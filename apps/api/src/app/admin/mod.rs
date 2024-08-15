@@ -18,19 +18,18 @@ pub struct AdminSecurityAddon;
 
 impl Modify for AdminSecurityAddon {
     fn modify(&self, openapi: &mut utoipa::openapi::OpenApi) {
-        openapi.components = Some(
-            utoipa::openapi::ComponentsBuilder::new()
-                .security_scheme(
-                    "admin_token",
-                    SecurityScheme::Http(
-                        HttpBuilder::new()
-                            .scheme(HttpAuthScheme::Bearer)
-                            .bearer_format("JWT")
-                            .build(),
-                    ),
-                )
+        let mut components = openapi.components.take().unwrap();
+
+        let security_scheme = SecurityScheme::Http(
+            HttpBuilder::new()
+                .scheme(HttpAuthScheme::Bearer)
+                .bearer_format("JWT")
                 .build(),
-        )
+        );
+
+        components.add_security_scheme("admin", security_scheme);
+
+        openapi.components = Some(components);
     }
 }
 

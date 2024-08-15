@@ -45,7 +45,7 @@ pub struct ResendSigninCodeResponse {
     path = "/auth/resend_signin_code",
     request_body = ResendSigninCodePayload,
     responses(
-        (status = 201, description = "Sent sign in code", body = ResendSigninCodeResponse, example = json!({ "status": "message_sent" })),
+        (status = OK, description = "Sent sign in code", body = ResendSigninCodeResponse, example = json!({ "status": "message_sent" })),
         (status = NOT_FOUND, description = "User was not found", body = ResendSigninCodeResponse, example = json!({ "status": "user_not_found" })),
         (status = BAD_REQUEST, description = "Target is not on WhatsApp", body = ResendSigninCodeResponse, example = json!({ "status": "target_not_on_whatsapp" })),
         (status = UNAUTHORIZED, description = "Signin code has expired", body = ResendSigninCodeResponse, example = json!({ "status": "code_expired" })),

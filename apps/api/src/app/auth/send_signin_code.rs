@@ -43,7 +43,7 @@ pub struct SendSigninCodeResponse {
     path = "/auth/send_signin_code",
     request_body = SendSigninCodePayload,
     responses(
-        (status = 201, description = "Sent sign in code", body = ResendSigninCodeResponse, example = json!({ "status": "message_sent" })),
+        (status = CREATED, description = "Sent sign in code", body = ResendSigninCodeResponse, example = json!({ "status": "message_sent" })),
         (status = BAD_REQUEST, description = "Target is not on WhatsApp", body = ResendSigninCodeResponse, example = json!({ "status": "target_not_on_whatsapp" })),
         (status = INTERNAL_SERVER_ERROR, description = "WhatsApp error", body = ResendSigninCodeResponse, example = json!({ "status": "whatsapp_error" }))
     )

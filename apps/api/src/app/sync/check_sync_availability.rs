@@ -8,17 +8,18 @@ use jsonwebtoken::{self, decode_header, Algorithm, Validation};
 use log::{info, warn};
 use serde;
 use serde::{Deserialize, Serialize};
+use utoipa::ToSchema;
 use validator::Validate;
 
 static LOG_TARGET: &str = "Check sync availability";
 
-#[derive(Serialize, Deserialize, Validate, Debug)]
+#[derive(Serialize, Deserialize, Validate, Debug, ToSchema)]
 pub struct CheckSyncAvailabilityPayload {
     pub center_id: String,
     pub signature: String,
 }
 
-#[derive(Serialize, Debug)]
+#[derive(Serialize, Debug, ToSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum CheckSyncAvailabilityStatus {
     CenterNotFound,
@@ -26,12 +27,23 @@ pub enum CheckSyncAvailabilityStatus {
     Available,
 }
 
-#[derive(Serialize, Debug)]
+#[derive(Serialize, Debug, ToSchema)]
 pub struct CheckSyncAvailabilityResponse {
     status: CheckSyncAvailabilityStatus,
 }
 
 #[debug_handler]
+#[utoipa::path(
+    post,
+    tag = "Synchronization",
+    path = "/sync/check_sync_availability",
+    request_body = CheckSyncAvailabilityPayload,
+    responses(
+        (status = OK, description = "Available", body = CheckSyncAvailabilityResponse, example = json!({ "status": "available" })),
+        (status = UNAUTHORIZED, description = "Invalid or manipulated signature for the center", body = CheckSyncAvailabilityResponse, example = json!({ "status": "center_signature_invalid" })),
+        (status = NOT_FOUND, description = "Center not found", body = CheckSyncAvailabilityResponse, example = json!({ "status": "center_not_found" }))
+    )
+)]
 pub async fn check_sync_availability(
     // this argument tells axum to parse the request body
     // as JSON into a `CreateUser` type
@@ -46,7 +58,7 @@ pub async fn check_sync_availability(
             if header.alg != Algorithm::RS256 {
                 warn!(target: LOG_TARGET, "Invalid algorithm for token");
                 return (
-                    StatusCode::BAD_REQUEST,
+                    StatusCode::UNAUTHORIZED,
                     Json(CheckSyncAvailabilityResponse {
                         status: CheckSyncAvailabilityStatus::CenterSignatureInvalid,
                     }),
@@ -57,7 +69,7 @@ pub async fn check_sync_availability(
         }
         Err(_) => {
             return (
-                StatusCode::BAD_REQUEST,
+                StatusCode::UNAUTHORIZED,
                 Json(CheckSyncAvailabilityResponse {
                     status: CheckSyncAvailabilityStatus::CenterSignatureInvalid,
                 }),
@@ -84,7 +96,7 @@ pub async fn check_sync_availability(
         Err(err) => {
             warn!(target: LOG_TARGET, "Error decoding public key: {}", err);
             return (
-                StatusCode::BAD_REQUEST,
+                StatusCode::UNAUTHORIZED,
                 Json(CheckSyncAvailabilityResponse {
                     status: CheckSyncAvailabilityStatus::CenterSignatureInvalid,
                 }),
@@ -108,7 +120,7 @@ pub async fn check_sync_availability(
         Err(err) => {
             warn!(target: LOG_TARGET, "Error decoding token: {}", err);
             return (
-                StatusCode::BAD_REQUEST,
+                StatusCode::UNAUTHORIZED,
                 Json(CheckSyncAvailabilityResponse {
                     status: CheckSyncAvailabilityStatus::CenterSignatureInvalid,
                 }),
@@ -119,7 +131,7 @@ pub async fn check_sync_availability(
     if token.claims["center_id"] != payload.center_id.to_string() {
         warn!(target: LOG_TARGET, "Token center_id {} does not match payload center_id {}", token.claims["center_id"], payload.center_id);
         return (
-            StatusCode::BAD_REQUEST,
+            StatusCode::UNAUTHORIZED,
             Json(CheckSyncAvailabilityResponse {
                 status: CheckSyncAvailabilityStatus::CenterSignatureInvalid,
             }),

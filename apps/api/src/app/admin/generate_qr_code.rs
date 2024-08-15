@@ -18,7 +18,7 @@ static LOG_TARGET: &str = "Generate QR code";
     responses(
         (status = 200, description = "QR code image", content_type = "image/png"),
     ),
-    security(("admin_token" = []))
+    security(("admin" = []))
 )]
 pub async fn generate_whatsapp_qr_code() -> impl IntoResponse {
     info!(target: LOG_TARGET, "Generating new WhatsApp QR code");
