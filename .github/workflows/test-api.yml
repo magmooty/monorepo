@@ -3,7 +3,7 @@ name: Run Tests on Central API
 on:
   push:
     branches:
-      - main
+      - release
   pull_request:
     branches:
       - main
