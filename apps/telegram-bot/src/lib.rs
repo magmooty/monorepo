@@ -1,20 +1,24 @@
 mod authentication_handler;
 mod connection_state_handler;
-mod functions;
+pub mod functions;
 mod requests;
 mod tdlib;
+mod classes;
 
 pub use authentication_handler::{AuthorizationHandler, ConsoleAuthorizationHandler};
 pub use connection_state_handler::{ConnectionHandler, ConsoleConnectionHandler};
+pub use requests::TdLibType;
+pub use classes::*;
 
 use log::{debug, error, trace};
-use requests::{AuthorizationState, TDLibResponse, TdLibType, TelegramRequest};
+use requests::{AuthorizationState, TDLibResponse, TelegramRequest};
 use std::collections::HashMap;
 use std::sync::Arc;
-use std::time::{SystemTime, UNIX_EPOCH};
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use tdlib::{new_client, receive, send};
 use tokio::sync::{oneshot, Mutex};
 use tokio::task::JoinHandle;
+use tokio::time;
 
 #[macro_use]
 extern crate telegram_macros;
@@ -31,6 +35,17 @@ pub struct TelegramClient {
 }
 
 impl TelegramClient {
+    pub fn for_testing() -> Arc<Self> {
+        Arc::new(TelegramClient {
+            request_handles: Arc::new(Mutex::new(HashMap::new())),
+            listener_task: None,
+            client_id: 1,
+            version: None,
+            commit_hash: None,
+            authorization_state: None,
+        })
+    }
+
     pub async fn init<H, C>() -> Arc<Self>
     where
         H: AuthorizationHandler + 'static,
@@ -192,7 +207,7 @@ impl TelegramClient {
                 let response = serde_json::from_str::<TDLibResponse>(event.as_str());
 
                 if let Err(e) = response {
-                    trace!("Failed to parse response from tdlib: {}", e);
+                    debug!("Failed to parse response from tdlib: {}", e);
                     continue;
                 }
 
@@ -215,6 +230,7 @@ impl TelegramClient {
                     }
                 } else if let Some(handle) = response.extra.as_ref() {
                     if let Some(sender) = request_handles_arc.lock().await.remove(handle) {
+                        debug!(target: LOG_TARGET, "Found active handle for response: {}", event);
                         let _ = sender.send(response);
                     } else {
                         debug!(target: LOG_TARGET, "No active handle for response: {}", event);
@@ -241,7 +257,7 @@ impl TelegramClient {
     }
 
     /// Send a request to tdlib
-    async fn send(&self, request: impl TelegramRequest) -> Result<TDLibResponse, ()> {
+    pub async fn send(&self, request: impl TelegramRequest) -> Result<TDLibResponse, String> {
         let (tx, rx) = oneshot::channel();
 
         debug!(target: LOG_TARGET,
@@ -262,11 +278,18 @@ impl TelegramClient {
 
                 debug!(target: LOG_TARGET, "Sent request to tdlib: {}", request.extra());
 
-                rx.await.map_err(|_| (()))
+                match time::timeout(Duration::from_secs(5), rx).await {
+                    Ok(response) => response.map_err(|err| (err.to_string())),
+                    Err(e) => {
+                        error!("Timed out waiting for response from tdlib: {}", e);
+                        self.request_handles.lock().await.remove(&request.extra());
+                        Err(e.to_string())
+                    }
+                }
             }
             Err(e) => {
                 error!("Failed to serialize request to tdlib: {}", e);
-                Err(())
+                Err(e.to_string())
             }
         }
     }

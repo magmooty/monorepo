@@ -8,6 +8,7 @@ mod tests {
     use openssl::rsa::Rsa;
     use serde_json::json;
     use surrealdb::sql::Thing;
+    use telegram_bot::TelegramClient;
 
     use crate::{
         app::{
@@ -19,7 +20,11 @@ mod tests {
 
     async fn setup() -> (Arc<Database>, TestServer) {
         let db = Arc::new(Database::in_memory().await);
-        let state = Arc::new(AppState { db: db.clone() });
+        let telegram = TelegramClient::for_testing();
+        let state = Arc::new(AppState {
+            db: db.clone(),
+            telegram,
+        });
         let router = get_router().with_state(state).into_make_service();
 
         (db.clone(), TestServer::new(router).unwrap())
@@ -167,7 +172,9 @@ mod tests {
 
         let payload = CheckSyncAvailabilityPayload {
             center_id: center.id.to_string(),
-            signature: generate_signature(center.id.to_string(), private_key.to_string()).await.unwrap(),
+            signature: generate_signature(center.id.to_string(), private_key.to_string())
+                .await
+                .unwrap(),
         };
 
         let response = server.post("/check_sync_availability").json(&payload).await;

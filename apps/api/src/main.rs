@@ -60,7 +60,8 @@ async fn main() {
     whatsapp::WhatsAppBot::initialize_whatsapp();
 
     debug!(target: LOG_TARGET, "Initializing Telegram");
-    TelegramClient::init::<ConsoleAuthorizationHandler, ConsoleConnectionHandler>().await;
+    let telegram_client =
+        TelegramClient::init::<ConsoleAuthorizationHandler, ConsoleConnectionHandler>().await;
 
     debug!(target: LOG_TARGET, "Connecting to the database");
     let database = Arc::new(Database::new());
@@ -87,6 +88,7 @@ async fn main() {
         .layer(svc)
         .with_state(Arc::new(app::AppState {
             db: database.clone(),
+            telegram: telegram_client.clone(),
         }))
         .into_make_service();
 

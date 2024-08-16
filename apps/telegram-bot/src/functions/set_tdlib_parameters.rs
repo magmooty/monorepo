@@ -47,7 +47,7 @@ pub struct SetTdLibParameters {
 impl SetTdLibParameters {
     pub fn new(client: &TelegramClient, api_id: i32, api_hash: String) -> Self {
         Self {
-            td_type: TdLibType::SetTdLibParameters,
+            td_type: TdLibType::SetTdlibParameters,
             client_id: client.client_id,
             extra: client.generate_extra_handle(),
             use_test_dc: false,
