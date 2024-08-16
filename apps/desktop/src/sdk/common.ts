@@ -71,7 +71,7 @@ export function nameFilter(name: string, autocomplete = false): string {
 		}
 	}
 
-	// Do two passes to avoid unnormalized characters
+	// Do two passes to avoid un-normalized characters
 	for (const i of dalIndexes) {
 		if (!(output[i - 2] === 'ع' && output[i - 1] === 'ب')) {
 			continue;

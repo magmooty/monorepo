@@ -54,7 +54,7 @@ export enum Subject {
 	Geography = 'geography',
 	Geology = 'geology',
 	Dynamics = 'dynamics',
-	Philisophy = 'philisophy',
+	Philosophy = 'philosophy',
 	Physics = 'physics',
 	Chemistry = 'chemistry',
 	Mechanics = 'mechanics',

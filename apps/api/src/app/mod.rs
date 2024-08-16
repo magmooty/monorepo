@@ -3,6 +3,7 @@ use std::sync::Arc;
 use admin::AdminSecurityAddon;
 use axum::Router;
 use serde::Serialize;
+use telegram_bot::TelegramClient;
 use utoipa::{Modify, OpenApi};
 use utoipa_swagger_ui::SwaggerUi;
 use utoipauto::utoipauto;
@@ -13,6 +14,7 @@ use crate::database::Database;
 mod admin;
 mod auth;
 mod sync;
+mod common;
 
 #[utoipauto(paths = "./apps/api/src/app")]
 #[derive(OpenApi)]
@@ -41,11 +43,12 @@ pub struct AppErrorResponse {
 #[derive(Clone)]
 pub struct AppState {
     pub db: Arc<Database>,
+    pub telegram: Arc<TelegramClient>,
 }
 
 impl AppState {
-    pub fn new(db: Arc<Database>) -> Self {
-        Self { db }
+    pub fn new(db: Arc<Database>, telegram: Arc<TelegramClient>) -> Self {
+        Self { db, telegram }
     }
 }
 

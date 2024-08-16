@@ -2,197 +2,91 @@ use super::tdlib::ClientId;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(rename_all = "camelCase")]
 pub enum TdLibType {
-    #[serde(rename = "updateOption")]
+    SendMessage,
     UpdateOption,
-
-    #[serde(rename = "updateAuthorizationState")]
+    Message,
+    UpdateMessageSendSucceeded,
+    UpdateMessageSendFailed,
+    UpdateMessageSendAcknowledged,
+    UpdateSavedMessagesTopic,
+    InputMessageText,
+    FormattedText,
     UpdateAuthorizationState,
-
-    #[serde(rename = "getAuthorizationState")]
     GetAuthorizationState,
-
-    #[serde(rename = "setLogVerbosityLevel")]
     SetLogVerbosityLevel,
-
-    #[serde(rename = "authorizationStateWaitTdlibParameters")]
     AuthorizationStateWaitTdlibParameters,
-
-    #[serde(rename = "updateDefaultBackground")]
     UpdateDefaultBackground,
-
-    #[serde(rename = "updateFileDownloads")]
     UpdateFileDownloads,
-
-    #[serde(rename = "updateConnectionState")]
     UpdateConnectionState,
-
-    #[serde(rename = "setTdlibParameters")]
-    SetTdLibParameters,
-
-    #[serde(rename = "updateAnimationSearchParameters")]
+    SetTdlibParameters,
     UpdateAnimationSearchParameters,
-
-    #[serde(rename = "sendPhoneNumberCode")]
     SendPhoneNumberCode,
-
-    #[serde(rename = "setAuthenticationPhoneNumber")]
     SetAuthenticationPhoneNumber,
-
-    #[serde(rename = "requestQrCodeAuthentication")]
     RequestQrCodeAuthentication,
-
-    #[serde(rename = "checkAuthenticationCode")]
     CheckAuthenticationCode,
-
-    #[serde(rename = "checkAuthenticationPassword")]
     CheckAuthenticationPassword,
-
-    #[serde(rename = "updateAccentColors")]
     UpdateAccentColors,
-
-    #[serde(rename = "updateProfileAccentColors")]
     UpdateProfileAccentColors,
-
-    #[serde(rename = "updateSpeechRecognitionTrial")]
     UpdateSpeechRecognitionTrial,
-
-    #[serde(rename = "updateAttachmentMenuBots")]
     UpdateAttachmentMenuBots,
-
-    #[serde(rename = "updateDiceEmojis")]
     UpdateDiceEmojis,
-
-    #[serde(rename = "updateActiveEmojiReactions")]
     UpdateActiveEmojiReactions,
-
-    #[serde(rename = "updateAvailableMessageEffects")]
     UpdateAvailableMessageEffects,
-
-    #[serde(rename = "updateChatThemes")]
     UpdateChatThemes,
-
-    #[serde(rename = "updateReactionNotificationSettings")]
     UpdateReactionNotificationSettings,
-
-    #[serde(rename = "updateChatFolders")]
     UpdateChatFolders,
-
-    #[serde(rename = "updateStoryStealthMode")]
     UpdateStoryStealthMode,
-
-    #[serde(rename = "updateHavePendingNotifications")]
     UpdateHavePendingNotifications,
-
-    #[serde(rename = "updateUser")]
     UpdateUser,
-
-    #[serde(rename = "updateScopeNotificationSettings")]
+    UpdateChatRemovedFromList,
     UpdateScopeNotificationSettings,
-
-    #[serde(rename = "updateUserStatus")]
     UpdateUserStatus,
-
-    #[serde(rename = "updateSupergroup")]
     UpdateSupergroup,
-
-    #[serde(rename = "updateBasicGroup")]
     UpdateBasicGroup,
-
-    #[serde(rename = "updateNewChat")]
     UpdateNewChat,
-
-    #[serde(rename = "updateChatNotificationSettings")]
     UpdateChatNotificationSettings,
-
-    #[serde(rename = "updateChatLastMessage")]
     UpdateChatLastMessage,
-
-    #[serde(rename = "updateChatReadInbox")]
     UpdateChatReadInbox,
-
-    #[serde(rename = "updateChatReadOutbox")]
     UpdateChatReadOutbox,
-
-    #[serde(rename = "updateChatAddedToList")]
     UpdateChatAddedToList,
-
-    #[serde(rename = "updateChatMessageAutoDeleteTime")]
     UpdateChatMessageAutoDeleteTime,
-
-    #[serde(rename = "updateChatPosition")]
     UpdateChatPosition,
-
-    #[serde(rename = "updateUserFullInfo")]
     UpdateUserFullInfo,
-
-    #[serde(rename = "updateChatIsTranslatable")]
     UpdateChatIsTranslatable,
-
-    #[serde(rename = "updateChatAvailableReactions")]
     UpdateChatAvailableReactions,
-
-    #[serde(rename = "updateChatVideoChat")]
     UpdateChatVideoChat,
-
-    #[serde(rename = "updateMessageInteractionInfo")]
     UpdateMessageInteractionInfo,
-
-    #[serde(rename = "updateSupergroupFullInfo")]
     UpdateSupergroupFullInfo,
-
-    #[serde(rename = "updateDefaultReactionType")]
     UpdateDefaultReactionType,
-
-    #[serde(rename = "internalLinkTypeQrCodeAuthentication")]
     InternalLinkTypeQrCodeAuthentication,
-
-    #[serde(rename = "updateNewMessage")]
     UpdateNewMessage,
-
-    #[serde(rename = "error")]
+    SearchUserByPhoneNumber,
+    SearchContacts,
+    CreatePrivateChat,
+    Users,
+    User,
+    Chats,
+    Chat,
     Error,
-
-    #[serde(rename = "ok")]
     Ok,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(rename_all = "camelCase")]
 pub enum AuthorizationState {
-    #[serde(rename = "authorizationStateWaitTdlibParameters")]
     AuthorizationStateWaitTdlibParameters,
-
-    #[serde(rename = "authorizationStateWaitPhoneNumber")]
     AuthorizationStateWaitPhoneNumber,
-
-    #[serde(rename = "authorizationStateWaitEmailAddress")]
     AuthorizationStateWaitEmailAddress,
-
-    #[serde(rename = "authorizationStateWaitEmailCode")]
     AuthorizationStateWaitEmailCode,
-
-    #[serde(rename = "authorizationStateWaitCode")]
     AuthorizationStateWaitCode,
-
-    #[serde(rename = "authorizationStateWaitOtherDeviceConfirmation")]
     AuthorizationStateWaitOtherDeviceConfirmation,
-
-    #[serde(rename = "authorizationStateWaitRegistration")]
     AuthorizationStateWaitRegistration,
-
-    #[serde(rename = "authorizationStateWaitPassword")]
     AuthorizationStateWaitPassword,
-
-    #[serde(rename = "authorizationStateReady")]
     AuthorizationStateReady,
-
-    #[serde(rename = "authorizationStateLoggingOut")]
     AuthorizationStateLoggingOut,
-
-    #[serde(rename = "authorizationStateClosing")]
     AuthorizationStateClosing,
-
-    #[serde(rename = "authorizationStateClosed")]
     AuthorizationStateClosed,
 }
 
@@ -244,6 +138,9 @@ pub struct TDLibResponse {
     pub authorization_state: Option<AuthorizationStateObject>,
 
     pub state: Option<ConnectionStateObject>,
+
+    #[serde(flatten)]
+    pub data: serde_json::Value,
 }
 
 pub trait TelegramRequest: Serialize {

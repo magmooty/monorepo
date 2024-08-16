@@ -3,7 +3,7 @@ import type { CentralClient } from 'central';
 import { StringRecordId, type ScopeAuth } from 'surrealdb.js';
 import type Surreal from 'surrealdb.js';
 import { jwtDecode } from 'jwt-decode';
-import type { SurrealDBToken } from 'common';
+import type { MessagingChannel, SurrealDBToken } from 'common';
 import { logger } from '$lib/logger';
 import { isSurrealConnectionError } from 'common/surreal';
 
@@ -83,11 +83,14 @@ export class CentralAuthController {
 		this._userId = new StringRecordId(decoded.ID);
 	}
 
-	async sendSigninCode(phoneNumber: string): Promise<SendSigninCodeResponse> {
+	async sendSigninCode(
+		phoneNumber: string,
+		channel: MessagingChannel
+	): Promise<SendSigninCodeResponse> {
 		logger.info(LOG_TARGET, `Requesting signin code for ${phoneNumber}`);
 		const response = await fetch(`${this.client.apiBaseUrl}/auth/send_signin_code`, {
 			method: 'POST',
-			body: Body.json({ phone_number: phoneNumber })
+			body: Body.json({ phone_number: phoneNumber, channel })
 		});
 
 		logger.debug(LOG_TARGET, `Received response: ${response.status}`);

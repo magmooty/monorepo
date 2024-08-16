@@ -2,6 +2,7 @@
 	import { Label, Input, Button } from 'flowbite-svelte';
 	import { MobilePhoneSolid } from 'flowbite-svelte-icons';
 	import { CentralClient } from '../central';
+	import { MessagingChannel } from 'common';
 	const client = new CentralClient();
 
 	let phoneNumber = '+201069392983';
@@ -10,7 +11,7 @@
 	let isSignedIn = false;
 
 	async function sendCode() {
-		client.auth.sendSigninCode(phoneNumber).then(() => {
+		client.auth.sendSigninCode(phoneNumber, MessagingChannel.WhatsApp).then(() => {
 			isCodeSent = true;
 		});
 	}

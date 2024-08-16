@@ -453,3 +453,8 @@ export interface SurrealDBToken {
 	SC: string;
 	ID: string;
 }
+
+export enum MessagingChannel {
+	WhatsApp = 'whatsapp',
+	Telegram = 'telegram'
+}

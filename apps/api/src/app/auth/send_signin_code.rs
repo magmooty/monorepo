@@ -1,5 +1,6 @@
 use std::sync::Arc;
 
+use crate::app::common::MessagingChannel;
 use crate::app::{validate_payload, AppState};
 use crate::validation::validate_phone_number;
 use crate::whatsapp::WhatsAppStatus;
@@ -9,6 +10,8 @@ use log::info;
 use mockall_double::double;
 use serde;
 use serde::{Deserialize, Serialize};
+use telegram_bot::functions::{CreatePrivateChat, SearchUserByPhoneNumber, SendMessage};
+use telegram_bot::{TdLibType, TelegramChat, TelegramUser};
 use utoipa::ToSchema;
 use validator::Validate;
 
@@ -21,6 +24,8 @@ static LOG_TARGET: &str = "Send signin code";
 pub struct SendSigninCodePayload {
     #[validate(custom(function = "validate_phone_number"))]
     pub phone_number: String,
+
+    pub channel: MessagingChannel,
 }
 
 #[derive(Serialize, ToSchema)]
@@ -29,11 +34,143 @@ pub enum SendSigninCodeStatus {
     TargetNotOnWhatsApp,
     MessageSent,
     WhatsAppError,
+    TargetNotOnTelegram,
+    TelegramError,
 }
 
 #[derive(Serialize, ToSchema)]
 pub struct SendSigninCodeResponse {
     status: SendSigninCodeStatus,
+}
+
+async fn send_signin_code_whatsapp(
+    payload: &SendSigninCodePayload,
+    code: String,
+) -> Result<(), (StatusCode, Json<SendSigninCodeResponse>)> {
+    info!(target: LOG_TARGET, "Sending new signin code to {}", &payload.phone_number);
+    let response = WhatsAppBot::send_message(
+        payload.phone_number.clone(),
+        format!("Your signin code is: {}", code),
+    )
+    .await;
+
+    match response.status {
+        WhatsAppStatus::TargetNotOnWhatsApp => {
+            return Err((
+                StatusCode::BAD_REQUEST,
+                Json(SendSigninCodeResponse {
+                    status: SendSigninCodeStatus::TargetNotOnWhatsApp,
+                }),
+            ));
+        }
+        WhatsAppStatus::MessageSent => Ok(()),
+        _ => {
+            return Err((
+                StatusCode::INTERNAL_SERVER_ERROR,
+                Json(SendSigninCodeResponse {
+                    status: SendSigninCodeStatus::WhatsAppError,
+                }),
+            ));
+        }
+    }
+}
+
+async fn send_signin_code_telegram(
+    state: &Arc<AppState>,
+    payload: &SendSigninCodePayload,
+    code: String,
+) -> Result<(), (StatusCode, Json<SendSigninCodeResponse>)> {
+    info!(target: LOG_TARGET, "Sending new signin code to {}", &payload.phone_number);
+
+    let tg_user = state
+        .telegram
+        .send(SearchUserByPhoneNumber::new(
+            &state.telegram,
+            payload.phone_number.clone(),
+        ))
+        .await
+        .map_err(|_| {
+            (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                Json(SendSigninCodeResponse {
+                    status: SendSigninCodeStatus::TelegramError,
+                }),
+            )
+        })?;
+
+    if matches!(tg_user.td_type, TdLibType::Error)
+        && tg_user.data.get("code").is_some()
+        && tg_user.data.get("code").unwrap().as_i64().unwrap() == 404
+    {
+        return Err((
+            StatusCode::BAD_REQUEST,
+            Json(SendSigninCodeResponse {
+                status: SendSigninCodeStatus::TargetNotOnTelegram,
+            }),
+        ));
+    }
+
+    let tg_user = serde_json::from_value::<TelegramUser>(tg_user.data).map_err(|_| {
+        (
+            StatusCode::INTERNAL_SERVER_ERROR,
+            Json(SendSigninCodeResponse {
+                status: SendSigninCodeStatus::TelegramError,
+            }),
+        )
+    })?;
+
+    let chat = state
+        .telegram
+        .send(CreatePrivateChat::new(&state.telegram, tg_user.id))
+        .await
+        .map_err(|_| {
+            (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                Json(SendSigninCodeResponse {
+                    status: SendSigninCodeStatus::TelegramError,
+                }),
+            )
+        })?;
+
+    let chat = serde_json::from_value::<TelegramChat>(chat.data).map_err(|_| {
+        (
+            StatusCode::INTERNAL_SERVER_ERROR,
+            Json(SendSigninCodeResponse {
+                status: SendSigninCodeStatus::TelegramError,
+            }),
+        )
+    })?;
+
+    let message = state
+        .telegram
+        .send(SendMessage::new(
+            &state.telegram,
+            chat.id,
+            format!("Your signin code is: {}", code),
+        ))
+        .await
+        .map_err(|_| {
+            (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                Json(SendSigninCodeResponse {
+                    status: SendSigninCodeStatus::TelegramError,
+                }),
+            )
+        })?;
+
+    match message.td_type {
+        TdLibType::Error => {
+            return Err((
+                StatusCode::INTERNAL_SERVER_ERROR,
+                Json(SendSigninCodeResponse {
+                    status: SendSigninCodeStatus::TelegramError,
+                }),
+            ));
+        }
+        _ => {}
+    }
+
+    Ok(())
 }
 
 #[debug_handler]
@@ -43,9 +180,11 @@ pub struct SendSigninCodeResponse {
     path = "/auth/send_signin_code",
     request_body = SendSigninCodePayload,
     responses(
-        (status = CREATED, description = "Sent sign in code", body = ResendSigninCodeResponse, example = json!({ "status": "message_sent" })),
-        (status = BAD_REQUEST, description = "Target is not on WhatsApp", body = ResendSigninCodeResponse, example = json!({ "status": "target_not_on_whatsapp" })),
-        (status = INTERNAL_SERVER_ERROR, description = "WhatsApp error", body = ResendSigninCodeResponse, example = json!({ "status": "whatsapp_error" }))
+        (status = CREATED, description = "Sent sign in code", body = SendSigninCodeResponse, example = json!({ "status": "message_sent" })),
+        (status = BAD_REQUEST, description = "Target is not on Telegram", body = SendSigninCodeResponse, example = json!({ "status": "target_not_on_telegram" })),
+        (status = BAD_REQUEST, description = "Target is not on WhatsApp", body = SendSigninCodeResponse, example = json!({ "status": "target_not_on_whatsapp" })),
+        (status = INTERNAL_SERVER_ERROR, description = "WhatsApp error", body = SendSigninCodeResponse, example = json!({ "status": "whatsapp_error" })),
+        (status = INTERNAL_SERVER_ERROR, description = "Telegram error", body = SendSigninCodeResponse, example = json!({ "status": "telegram_error" }))
     )
 )]
 pub async fn send_signin_code(
@@ -88,31 +227,20 @@ pub async fn send_signin_code(
         .await;
 
     info!(target: LOG_TARGET, "Sending new signin code to {}", &payload.phone_number);
-    let response = WhatsAppBot::send_message(
-        payload.phone_number.clone(),
-        format!("Your signin code is: {}", code),
-    )
-    .await;
+    let code = format!("Your signin code is: {}", &code);
 
-    match response.status {
-        WhatsAppStatus::TargetNotOnWhatsApp => {
-            return (
-                StatusCode::BAD_REQUEST,
-                Json(SendSigninCodeResponse {
-                    status: SendSigninCodeStatus::TargetNotOnWhatsApp,
-                }),
-            );
+    match payload.channel {
+        MessagingChannel::WhatsApp => {
+            if let Err(error_response) = send_signin_code_whatsapp(&payload, code).await {
+                return error_response;
+            }
         }
-        WhatsAppStatus::MessageSent => {}
-        _ => {
-            return (
-                StatusCode::INTERNAL_SERVER_ERROR,
-                Json(SendSigninCodeResponse {
-                    status: SendSigninCodeStatus::WhatsAppError,
-                }),
-            );
+        MessagingChannel::Telegram => {
+            if let Err(error_response) = send_signin_code_telegram(&state, &payload, code).await {
+                return error_response;
+            }
         }
-    };
+    }
 
     info!(target: LOG_TARGET, "Signin code created for {}", payload.phone_number);
     (

@@ -8,14 +8,14 @@ mod tests {
     use serde_variant::to_variant_name;
     use serial_test::serial;
     use surrealdb::opt::PatchOp;
+    use telegram_bot::TelegramClient;
 
     use crate::{
         app::{
             auth::{
                 get_router, ResendSigninCodePayload, ResendSigninCodeStatus, SendSigninCodePayload,
                 SendSigninCodeStatus,
-            },
-            AppState,
+            }, common::MessagingChannel, AppState
         },
         database::{Database, SigninCode},
         whatsapp::{MockWhatsAppBot, WASendMessageResponse, WhatsAppStatus},
@@ -23,7 +23,11 @@ mod tests {
 
     async fn setup() -> (Arc<Database>, TestServer) {
         let db = Arc::new(Database::in_memory().await);
-        let state = Arc::new(AppState { db: db.clone() });
+        let telegram = TelegramClient::for_testing();
+        let state = Arc::new(AppState {
+            db: db.clone(),
+            telegram,
+        });
         let router = get_router().with_state(state).into_make_service();
 
         (db.clone(), TestServer::new(router).unwrap())
@@ -49,6 +53,7 @@ mod tests {
 
         let payload = SendSigninCodePayload {
             phone_number: "+201096707442".to_string(),
+            channel: MessagingChannel::WhatsApp,
         };
 
         let response = server.post("/send_signin_code").json(&payload).await;
@@ -63,6 +68,7 @@ mod tests {
 
         let payload = ResendSigninCodePayload {
             phone_number: "+201096707442".to_string(),
+            channel: MessagingChannel::WhatsApp,
         };
 
         let response = server.post("/resend_signin_code").json(&payload).await;
@@ -96,6 +102,7 @@ mod tests {
 
         let payload = SendSigninCodePayload {
             phone_number: "+201096707442".to_string(),
+            channel: MessagingChannel::WhatsApp,
         };
 
         let response = server.post("/send_signin_code").json(&payload).await;
@@ -120,6 +127,7 @@ mod tests {
 
         let payload = ResendSigninCodePayload {
             phone_number: "+201096707442".to_string(),
+            channel: MessagingChannel::WhatsApp,
         };
 
         let response = server.post("/resend_signin_code").json(&payload).await;
@@ -144,6 +152,7 @@ mod tests {
 
         let payload = ResendSigninCodePayload {
             phone_number: "+201096707442".to_string(),
+            channel: MessagingChannel::WhatsApp,
         };
 
         let response = server.post("/resend_signin_code").json(&payload).await;
