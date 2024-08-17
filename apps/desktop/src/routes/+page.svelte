@@ -3,6 +3,7 @@
 	import { app } from 'sdk';
 	import { City, Country, Governorate } from 'common';
 	import Login from '../components/Login.svelte';
+	import Locales from '../components/locales.svelte';
 
 	async function testStuff() {
 		await app.manager.clearLocalDatabase();
@@ -28,3 +29,4 @@
 </script>
 
 <Login />
+<Locales />
