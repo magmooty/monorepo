@@ -26,6 +26,26 @@ Modify your `.bashrc` or `.zshrc` to use sccache
 export RUSTC_WRAPPER=sccache
 ```
 
+### Windows and OpenSSL
+
+Because we're building Tauri with MSVC, we have to install OpenSSL the Microsoft way with vcpkg :) It's all documented in [openssl-sys](https://docs.rs/crate/openssl-sys/0.9.19).
+
+- Clone and install vcpkg somewhere on your computer. Let's say `C:/vcpkg`
+
+```sh
+git clone https://github.com/microsoft/vcpkg.git
+./vcpkg.exe integrate install
+./vcpkg.exe install openssl:x64-windows
+./vcpkg.exe install openssl:x86-windows
+```
+
+Now, set your environment variables in `.bashrc` or `.bash_profile`:
+
+```sh
+export X86_64_PC_WINDOWS_MSVC_OPENSSL_DIR="C:\\vcpkg\\packages\\openssl_x64-windows"
+export X86_PC_WINDOWS_MSVC_OPENSSL_DIR="C:\\vcpkg\\packages\\openssl_x86-windows"
+```
+
 Run the app
 
 ```sh
