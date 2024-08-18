@@ -5,7 +5,7 @@ use log::debug;
 static LOG_TARGET: &str = "Process Killer";
 
 #[cfg(target_os = "macos")]
-fn shutdown_process(process_id: u32) -> Result<(), std::io::Error> {
+fn shutdown_process(process_id: u32, _: bool) -> Result<(), std::io::Error> {
     use log::debug;
 
     let output = Command::new("kill")
@@ -23,7 +23,7 @@ fn shutdown_process(process_id: u32) -> Result<(), std::io::Error> {
 }
 
 #[cfg(target_os = "macos")]
-fn find_process_on_port(port: u16, _: bool) -> Option<u32> {
+fn find_process_on_port(port: u16) -> Option<u32> {
     use log::debug;
 
     debug!(target: LOG_TARGET, "Finding processes listening on port {}", port);
