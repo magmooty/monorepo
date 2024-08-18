@@ -26,6 +26,13 @@ Modify your `.bashrc` or `.zshrc` to use sccache
 export RUSTC_WRAPPER=sccache
 ```
 
+### Windows and PNET for Network Discovery
+
+Following [pnet documentation](https://crates.io/crates/pnet_base)
+
+1. Install [WinPcap](https://www.winpcap.org/)
+2. Place Packet.lib
+
 ### Windows and OpenSSL
 
 Because we're building Tauri with MSVC, we have to install OpenSSL the Microsoft way with vcpkg :) It's all documented in [openssl-sys](https://docs.rs/crate/openssl-sys/0.9.19).
