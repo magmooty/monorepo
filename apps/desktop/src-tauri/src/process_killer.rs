@@ -23,7 +23,7 @@ fn shutdown_process(process_id: u32) -> Result<(), std::io::Error> {
 }
 
 #[cfg(target_os = "macos")]
-fn find_process_on_port(port: u16) -> Option<u32> {
+fn find_process_on_port(port: u16, _: bool) -> Option<u32> {
     use log::debug;
 
     debug!(target: LOG_TARGET, "Finding processes listening on port {}", port);
@@ -47,13 +47,25 @@ fn find_process_on_port(port: u16) -> Option<u32> {
 }
 
 #[cfg(target_os = "windows")]
-fn shutdown_process(process_id: u32) -> Result<(), std::io::Error> {
+fn shutdown_process(process_id: u32, force: bool) -> Result<(), std::io::Error> {
     use log::debug;
 
-    let output = Command::new("taskkill")
-        .arg("/PID")
-        .arg(process_id.to_string())
-        .output()?;
+    let output;
+
+    if force {
+        output = Command::new("taskkill")
+            .arg("/F")
+            .arg("/PID")
+            .arg(process_id.to_string())
+            .output()
+            .expect("Failed to execute lsof command");
+    } else {
+        output = Command::new("taskkill")
+            .arg("/PID")
+            .arg(process_id.to_string())
+            .output()
+            .expect("Failed to execute lsof command");
+    }
 
     if output.status.success() {
         debug!(target: LOG_TARGET, "Process {} killed", process_id);
@@ -81,9 +93,16 @@ fn find_process_on_port(port: u16) -> Option<u32> {
 
         let lines: Vec<&str> = output_str.split("\n").collect();
         for line in lines {
-            // TODO: Implement the logic to find the process ID on Windows
-            if line.contains(&format!("0.0.0.0:{}", port)) {
-                println!("Process found on port {}: {}", port, line);
+            if line.contains(&format!(":{}", port)) {
+                debug!(target: LOG_TARGET, "Process found on port {}: {}", port, line);
+                let parts: Vec<&str> = line.split_whitespace().collect();
+
+                // The last part should be the PID
+                if let Some(pid) = parts.last() {
+                    if let Ok(pid_number) = pid.parse::<u32>() {
+                        return Some(pid_number);
+                    }
+                }
             }
         }
 
@@ -96,13 +115,13 @@ pub fn kill_hanging_sidecars() {
 
     if let Some(whatsapp) = whatsapp {
         debug!(target: LOG_TARGET, "Killing hanging WhatsApp sidecar on port 5003 with PID {}", &whatsapp);
-        shutdown_process(whatsapp).unwrap_or_default();
+        shutdown_process(whatsapp, true).unwrap_or_default();
     }
 
     let surreal = find_process_on_port(5004);
 
     if let Some(surreal) = surreal {
         debug!(target: LOG_TARGET, "Killing hanging Surreal sidecar on port 5004 with PID {}", &surreal);
-        shutdown_process(surreal).unwrap_or_default();
+        shutdown_process(surreal, false).unwrap_or_default();
     }
 }

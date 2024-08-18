@@ -48,7 +48,11 @@ fn generate_typescript_bindings() {
 #[tokio::main]
 async fn main() {
     simple_logger::init_with_level(log::Level::Debug).unwrap();
+
+    info!(target: LOG_TARGET, "Killing hanging sidecars");
     kill_hanging_sidecars();
+
+    info!(target: LOG_TARGET, "Initializing graceful panic handler");
     initialize_graceful_panic_handler();
 
     // Only run if in debug (dev) mode
