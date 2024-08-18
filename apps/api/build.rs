@@ -96,5 +96,7 @@ fn link_openssl() {
 
 fn main() {
     link_libraries();
+
+    #[cfg(target_os = "windows")]
     link_openssl();
 }
