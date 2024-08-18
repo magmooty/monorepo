@@ -9,7 +9,14 @@
 rustup override set x86_64-pc-windows-gnu
 ```
 
-Run
+- Install needed packages through Pacman
+- Open MSYS64
+
+```
+pacman -S mingw-w64-x86_64-openssl pkgconf openssl-devel
+```
+
+Run through Git bash (don't use powershell)
 
 ```sh
 cargo run
