@@ -85,6 +85,16 @@ fn link_libraries() {
     fs::copy(tdjson_path, out_path.join(tdjson_file_name)).unwrap();
 }
 
+fn link_openssl() {
+    #[cfg(all(target_arch = "x86_64", target_os = "windows"))]
+    let openssl_dir = r"C:\msys64\mingw64";
+
+    println!("cargo:rerun-if-changed=build.rs");
+    println!("cargo:rerun-if-env-changed=OPENSSL_DIR");
+    println!("cargo:env=OPENSSL_DIR={}", openssl_dir);
+}
+
 fn main() {
     link_libraries();
+    link_openssl();
 }
