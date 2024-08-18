@@ -1,8 +1,10 @@
+#[cfg(target_os = "windows")]
 use std::{env, path::PathBuf};
 
 #[cfg(all(target_arch = "x86_64", target_os = "windows"))]
 static BINARIES_DIRECTORY: &str = r"binaries\windows-x86_64";
 
+#[cfg(target_os = "windows")]
 fn link_libraries() {
     #[cfg(all(target_arch = "x86_64", target_os = "windows"))]
     println!("cargo:warning=Compiling for Windows x86_64");
