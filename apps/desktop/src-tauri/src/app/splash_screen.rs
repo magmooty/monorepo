@@ -11,7 +11,7 @@ pub async fn open_splash_screen(window: Window) {
         .get_window("splashscreen")
         .expect("no window labeled 'splashscreen' found")
         .show()
-        .unwrap();
+        .unwrap_or_default();
 }
 
 #[tauri::command]
@@ -22,7 +22,7 @@ pub async fn close_splash_screen(window: Window) {
         .get_window("splashscreen")
         .expect("no window labeled 'splashscreen' found")
         .close()
-        .unwrap();
+        .unwrap_or_default();
 
     debug!(target: LOG_TARGET, "Showing main window");
     window
