@@ -20,6 +20,9 @@ importers:
       svelte-i18n:
         specifier: ^4.0.0
         version: 4.0.0(svelte@4.2.18)
+      tailwindcss-rtl:
+        specifier: ^0.9.0
+        version: 0.9.0
       yup:
         specifier: ^1.4.0
         version: 1.4.0
@@ -2062,6 +2065,9 @@ packages:
 
   tailwind-merge@2.4.0:
     resolution: {integrity: sha512-49AwoOQNKdqKPd9CViyH5wJoSKsCDjUlzL8DxuGp3P1FsGY36NJDAa18jLZcaHAUUuTj+JB8IAo8zWgBNvBF7A==}
+
+  tailwindcss-rtl@0.9.0:
+    resolution: {integrity: sha512-y7yC8QXjluDBEFMSX33tV6xMYrf0B3sa+tOB5JSQb6/G6laBU313a+Z+qxu55M1Qyn8tDMttjomsA8IsJD+k+w==}
 
   tailwindcss@3.4.6:
     resolution: {integrity: sha512-1uRHzPB+Vzu57ocybfZ4jh5Q3SdlH7XW23J5sQoM9LhE9eIOlzxer/3XPSsycvih3rboRsvt0QCmzSrqyOYUIA==}
@@ -4135,6 +4141,8 @@ snapshots:
       svg.js: 2.7.1
 
   tailwind-merge@2.4.0: {}
+
+  tailwindcss-rtl@0.9.0: {}
 
   tailwindcss@3.4.6:
     dependencies:
