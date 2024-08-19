@@ -6,8 +6,19 @@
 	const toggleLocale = () => {
 		if (currentLocale === 'en') {
 			locale.set('ar');
+			toggleDirection('ar');
 		} else {
 			locale.set('en');
+			toggleDirection('en');
+		}
+	};
+
+	const toggleDirection = (locale: string) => {
+		const htmlElement = document.documentElement;
+		if (locale === 'ar') {
+			htmlElement.setAttribute('dir', 'rtl');
+		} else {
+			htmlElement.setAttribute('dir', 'ltr');
 		}
 	};
 
