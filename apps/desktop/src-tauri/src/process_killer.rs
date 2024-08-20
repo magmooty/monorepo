@@ -5,7 +5,7 @@ use log::debug;
 static LOG_TARGET: &str = "Process Killer";
 
 #[cfg(target_os = "macos")]
-fn shutdown_process(process_id: u32, _: bool) -> Result<(), std::io::Error> {
+fn shutdown_process(process_id: u32) -> Result<(), std::io::Error> {
     use log::debug;
 
     let output = Command::new("kill")
@@ -47,25 +47,16 @@ fn find_process_on_port(port: u16) -> Option<u32> {
 }
 
 #[cfg(target_os = "windows")]
-fn shutdown_process(process_id: u32, force: bool) -> Result<(), std::io::Error> {
+fn shutdown_process(process_id: u32) -> Result<(), std::io::Error> {
     use log::debug;
 
     let output;
 
-    if force {
-        output = Command::new("taskkill")
-            .arg("/F")
-            .arg("/PID")
-            .arg(process_id.to_string())
-            .output()
-            .expect("Failed to execute lsof command");
-    } else {
-        output = Command::new("taskkill")
-            .arg("/PID")
-            .arg(process_id.to_string())
-            .output()
-            .expect("Failed to execute lsof command");
-    }
+    output = Command::new("taskkill")
+        .arg("/PID")
+        .arg(process_id.to_string())
+        .output()
+        .expect("Failed to execute lsof command");
 
     if output.status.success() {
         debug!(target: LOG_TARGET, "Process {} killed", process_id);
@@ -115,13 +106,13 @@ pub fn kill_hanging_sidecars() {
 
     if let Some(whatsapp) = whatsapp {
         debug!(target: LOG_TARGET, "Killing hanging WhatsApp sidecar on port 5003 with PID {}", &whatsapp);
-        shutdown_process(whatsapp, true).unwrap_or_default();
+        shutdown_process(whatsapp).unwrap_or_default();
     }
 
     let surreal = find_process_on_port(5004);
 
     if let Some(surreal) = surreal {
         debug!(target: LOG_TARGET, "Killing hanging Surreal sidecar on port 5004 with PID {}", &surreal);
-        shutdown_process(surreal, false).unwrap_or_default();
+        shutdown_process(surreal).unwrap_or_default();
     }
 }
