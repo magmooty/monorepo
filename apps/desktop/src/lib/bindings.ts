@@ -38,8 +38,8 @@ export function closeSplashScreen() {
     return invoke()<null>("close_splash_screen")
 }
 
-export type NetworkInstanceInfo = { center_name: string; version: string; instance_type: InstanceType; local_center_initialized: boolean; ip_addresses: string[] }
-export type GlobalKey = "center_id" | "center_name" | "instance_type" | "private_key" | "public_key"
-export type InstanceType = "master" | "slave" | "uninitialized"
 export type KeyPair = { private_key: string; public_key: string }
 export type RootDatabaseCredentials = { username: string; password: string }
+export type NetworkInstanceInfo = { center_name: string; version: string; instance_type: InstanceType; local_center_initialized: boolean; ip_addresses: string[] }
+export type InstanceType = "master" | "slave" | "uninitialized"
+export type GlobalKey = "center_id" | "center_name" | "instance_type" | "private_key" | "public_key"

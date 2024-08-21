@@ -5,5 +5,19 @@
       "code": "Code",
       "signIn": "Sign In",
       "isSignedIn": "User Is Signed In"
+
+ },
+ "localSignIn":{
+       "welcomeAgain": "Welcome again",
+       "chooseAccountToSignIn": "Choose your account to sign in",
+       "connectToMaster":"Connect to master device",
+       "recoverData":"Recover lost data",
+       "teacher":"Teacher",
+       "manager":"Manager",
+     "and": "and",
+        "assistantIn":"Assistant in"
+
+ },"common":{
+  "connectUs":"تواصل بنا"
  }
 }

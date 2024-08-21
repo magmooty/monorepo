@@ -4,6 +4,7 @@
 	import { City, Country, Governorate } from 'common';
 	import Login from '../components/Login.svelte';
 	import Locales from '../components/locales.svelte';
+	import LoginLocal from '../components/localSignIn/LoginLocal.svelte';
 
 	async function testStuff() {
 		await app.manager.clearLocalDatabase();
@@ -23,10 +24,12 @@
 		await app.manager.initializeLocalAdmin({
 			name: 'Ziad',
 			password: '123456',
-			phone_number: '+201096707442'
+			phone_number: '+201021246070'
 		});
 	}
+	// setTimeout(testStuff, 2000);
 </script>
 
-<Login />
+<!-- <Login /> -->
+<LoginLocal />
 <Locales />
