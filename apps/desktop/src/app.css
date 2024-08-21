@@ -1,15 +1,15 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@100..900&display=swap');
-
 @import 'flowbite/dist/flowbite.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-#lang_selector {
-	position: absolute !important;
-	top: 0 !important;
-	right: 0 !important;
+@font-face {
+	font-family: 'Noto Kufi Arabic';
+	font-weight: normal;
+	font-style: normal;
+	font-display: swap;
+	src: url('/fonts/NotoKufiArabic.ttf');
 }
+
 html {
 	font-family: 'Noto Kufi Arabic', sans-serif;
 }

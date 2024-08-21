@@ -27,7 +27,6 @@
 			phone_number: '+201021246070'
 		});
 	}
-	// setTimeout(testStuff, 2000);
 </script>
 
 <!-- <Login /> -->

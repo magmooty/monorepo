@@ -10,13 +10,15 @@
        "welcomeAgain": "أهلًا بك مرة أخرى ",
        "chooseAccountToSignIn": "اختر حسابك   لتسجيل الدخول",
        "connectToMaster":"الاتصال بجهاز الماستر",
-       "recoverData":"استرجاع بيانات مفقودة",
-       "teacher":"معلم",
-       "manager":"مدير السنتر",
-       "assistantIn":"مساعد لدي ",
-       "and": "و"
+       "recoverData":"استرجاع بيانات مفقودة"
+    
  }
- ,"common":{
-  "connectUs":"تواصل بنا"
+ ,
+ "common":{
+      "teacher":"معلم",
+      "manager":"مدير السنتر",
+      "assistantIn":"مساعد لدي ",
+      "and": "و",
+      "connectUs":"تواصل بنا"
  }
 }

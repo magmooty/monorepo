@@ -50,19 +50,9 @@
 	];
 	async function listUsers() {
 		const users = await app.auth.listUsers();
-		console.log(users);
-
 		return users;
 	}
 	listUsers();
-	// }, 5000);
-	// async function signIn(phone_number: string, password: string) {
-	// 	await app.auth.signIn(phone_number, password);
-	// }
-
-	// async function connectToMaster() {
-	// 	await app.auth.();
-	// }
 </script>
 
 <div class=" flex h-[1024px] min-h-screen flex-row items-center text-center">
@@ -94,15 +84,15 @@
 							</p>
 							<p>
 								{#if item.is_center_manager && item.manages_spaces.length > 0}
-									{$_('localSignIn.teacher')} {$_('localSignIn.and')} {$_('localSignIn.manager')}
+									{$_('common.teacher')} {$_('common.and')} {$_('common.manager')}
 								{:else if item.manages_spaces.length > 0}
-									{$_('localSignIn.teacher')}
+									{$_('common.teacher')}
 								{:else}
-									{$_('localSignIn.assistantIn')}
+									{$_('common.assistantIn')}
 									{#each item.member_of_spaces as space, index}
 										{space}
 										{#if item.member_of_spaces.length > 1 && index < item.member_of_spaces.length - 1}
-											{$_('localSignIn.and')}
+											{$_('common.and')}
 										{/if}
 									{/each}
 								{/if}

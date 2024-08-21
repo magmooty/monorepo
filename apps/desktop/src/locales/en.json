@@ -11,13 +11,13 @@
        "welcomeAgain": "Welcome again",
        "chooseAccountToSignIn": "Choose your account to sign in",
        "connectToMaster":"Connect to master device",
-       "recoverData":"Recover lost data",
-       "teacher":"Teacher",
-       "manager":"Manager",
+       "recoverData":"Recover lost data"
+ },
+  "common":{
+     "teacher":"Teacher",
+     "manager":"Manager",
      "and": "and",
-        "assistantIn":"Assistant in"
-
- },"common":{
-  "connectUs":"تواصل بنا"
- }
+     "assistantIn":"Assistant in",
+     "connectUs":"Connect us"
+     }
 }
