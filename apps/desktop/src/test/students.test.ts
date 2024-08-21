@@ -1,6 +1,6 @@
-import { describe, it, beforeAll, vi, expect, afterAll } from 'vitest';
+import { describe, it, beforeAll, vi, expect } from 'vitest';
 import { App } from 'sdk';
-import type { RecordId } from 'surrealdb.js';
+import { RecordId } from 'surrealdb.js';
 import { Grade, Subject } from 'sdk/academic-year-course';
 import { StudentPhoneNumberUse } from 'sdk/student';
 import { Day } from 'sdk/group';
@@ -30,7 +30,7 @@ describe('Students', () => {
 
 		await app.manager.initializeCenter({
 			center_name: 'Test Center',
-			id: '1',
+			id: new RecordId('center', 'test-center'),
 			private_key: 'private',
 			public_key: 'public'
 		});
@@ -205,7 +205,7 @@ describe('Students', () => {
 	});
 
 	it('Create enrollment', async () => {
-		await app.enrollment.create({
+		await app.enrollments.create({
 			space,
 			course: academicYearCourse,
 			academic_year: academicYear,
@@ -215,7 +215,7 @@ describe('Students', () => {
 	});
 
 	it('List enrollments', async () => {
-		const enrollments = await app.enrollment.list(academicYearCourse);
+		const enrollments = await app.enrollments.list(academicYearCourse);
 
 		expect(enrollments).toHaveLength(1);
 		expect(enrollments).toEqual(
@@ -224,7 +224,7 @@ describe('Students', () => {
 	});
 
 	it('Enrollment name gets copied from student', async () => {
-		const enrollments = await app.enrollment.list(academicYearCourse);
+		const enrollments = await app.enrollments.list(academicYearCourse);
 
 		expect(enrollments).toHaveLength(1);
 		expect(enrollments).toEqual(
@@ -235,7 +235,7 @@ describe('Students', () => {
 	it('Enrollment name auto updates from student', async () => {
 		await app.students.rename(students[0], 'زياد طارق');
 
-		const enrollments = await app.enrollment.list(academicYearCourse);
+		const enrollments = await app.enrollments.list(academicYearCourse);
 
 		expect(enrollments).toHaveLength(1);
 		expect(enrollments).toEqual(
@@ -244,7 +244,7 @@ describe('Students', () => {
 	});
 
 	it('Search enrollments', async () => {
-		const enrollments = await app.enrollment.search('زياد');
+		const enrollments = await app.enrollments.search('زياد');
 
 		expect(enrollments).toEqual(
 			expect.arrayContaining([expect.objectContaining({ name: 'زياد طارق' })])

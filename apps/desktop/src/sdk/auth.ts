@@ -1,6 +1,6 @@
 import { logger } from '$lib/logger';
 import { App } from 'sdk';
-import { LocalUserScope, type Scope } from './user';
+import { LocalUserScope, type LocalUser, type Scope } from './user';
 import type { Action, RecordId, UUID } from 'surrealdb.js';
 import type { Space } from './space';
 
@@ -14,6 +14,11 @@ export interface PublicUserInfo {
 	manages_spaces: string[];
 	is_center_manager: boolean;
 }
+
+export type LocalUserWithPermissionsToResetPassword = Omit<
+	PublicUserInfo,
+	'member_of_spaces' | 'manages_spaces'
+>;
 
 export type PermissionChangesHandler = (action: Action, scope: Scope) => Promise<void>;
 
@@ -29,6 +34,41 @@ export class LocalAuthController {
 			phone_number,
 			password
 		});
+	}
+
+	async whoCanResetPasswordFor(
+		phone_number: string
+	): Promise<LocalUserWithPermissionsToResetPassword[]> {
+		logger.info(LOG_TARGET, `Checking who can reset password for ${phone_number}`);
+
+		const users: Map<RecordId<string>, LocalUserWithPermissionsToResetPassword> = new Map();
+
+		logger.info(LOG_TARGET, `Checking center managers`);
+		const [managers] = await this.app.rootDb.query<Scope[][]>(
+			`SELECT user.id, user.phone_number, user.name FROM scope WHERE scope_name = '${LocalUserScope.ManageCenter}' FETCH user`
+		);
+
+		managers.forEach((manager) => {
+			const user = manager.user as LocalUserWithPermissionsToResetPassword;
+			users.set(user.id, user);
+		});
+
+		logger.info(LOG_TARGET, `Checking space managers`);
+		const [space_managers] = await this.app.rootDb.query<Scope[][]>(
+			`SELECT user.id, user.name, user.phone_number, space FROM scope WHERE scope_name = '${LocalUserScope.ManageSpace}' AND space IN (SELECT space FROM scope WHERE user IN (SELECT id FROM user WHERE phone_number = $phone_number).id).space FETCH user`,
+			{ phone_number }
+		);
+
+		space_managers.forEach((manager) => {
+			const user = manager.user as LocalUserWithPermissionsToResetPassword;
+
+			// Skip if it's the same user
+			if (user.phone_number == phone_number) return;
+
+			users.set(user.id, user);
+		});
+
+		return Array.from(users.values());
 	}
 
 	/**
@@ -57,12 +97,16 @@ export class LocalAuthController {
 		);
 
 		users.map((user) => {
-			user.is_center_manager = managers.some((manager) => manager.user.toString() === user.id.toString());
+			user.is_center_manager = managers.some(
+				(manager) => manager.user.toString() === user.id.toString()
+			);
+
 			user.manages_spaces = space_managers
-				.filter((manager) => manager.user === user.id)
+				.filter((manager) => manager.user.toString() === user.id.toString())
 				.map((manager) => (manager.space as Space).name);
+
 			user.member_of_spaces = space_members
-				.filter((member) => member.user === user.id)
+				.filter((member) => member.user.toString() === user.id.toString())
 				.map((member) => (member.space as Space).name);
 
 			// Filter out managed spaces to make sure there are no duplicates

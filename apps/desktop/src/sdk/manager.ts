@@ -130,8 +130,8 @@ export class LocalDatabaseManager {
 		await this.app.rootDb.use({ namespace: 'local', database: 'local' });
 
 		const CenterManagerScope = `(SELECT * FROM scope WHERE user = $auth.id AND scope_name = '${LocalUserScope.ManageCenter}')`;
-		const SpaceManagerScope = `space IN (SELECT space FROM scope WHERE user = $auth.id AND scope_name = '${LocalUserScope.ManageSpace}' GROUP BY space)`;
-		const SpaceMemberScope = `space IN (SELECT space FROM scope WHERE user = $auth.id GROUP BY space)`;
+		const SpaceManagerScope = `space IN (SELECT space FROM scope WHERE user = $auth.id AND scope_name = '${LocalUserScope.ManageSpace}' GROUP BY space).space`;
+		const SpaceMemberScope = `space IN (SELECT space FROM scope WHERE user = $auth.id GROUP BY space).space`;
 
 		const SyncEventCreator = (table: string) => `
 			DEFINE EVENT ${table}_syncer ON TABLE ${table} THEN (
@@ -151,11 +151,13 @@ export class LocalDatabaseManager {
 			DEFINE FIELD name ON TABLE user TYPE string;
 			DEFINE FIELD phone_number ON TABLE user TYPE string;
 			DEFINE FIELD password ON TABLE user TYPE string PERMISSIONS FOR SELECT NONE;
+
+			DEFINE INDEX user_phone_number_index ON TABLE user COLUMNS phone_number UNIQUE;
 			
 			DEFINE TABLE scope SCHEMAFULL
 				PERMISSIONS
 					FOR SELECT FULL, // All users can see other users' scopes
-					FOR CREATE, UPDATE, DELETE WHERE ${CenterManagerScope} OR (SELECT * FROM scope WHERE user = $auth.id AND scope_name = 'manage_space' AND space = $input.space); // Center manager can modify other users' scopes, A space owner can modify users' scopes if the scopes are for an owned space
+					FOR CREATE, UPDATE, DELETE WHERE ${CenterManagerScope} OR (SELECT id FROM scope WHERE user = $auth.id AND scope_name = 'manage_space' AND space = $this.space); // Center manager can modify other users' scopes, A space owner can modify users' scopes if the scopes are for an owned space
 			DEFINE FIELD user ON TABLE scope TYPE record<user>;
 			DEFINE FIELD space ON TABLE scope TYPE option<record<space>>;
 			DEFINE FIELD scope_name ON TABLE scope TYPE string;

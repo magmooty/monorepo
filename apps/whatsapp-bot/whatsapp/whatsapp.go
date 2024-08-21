@@ -152,3 +152,13 @@ func (wb *WhatsAppBot) StartConnect() (string, ConnectionStatus, string) {
 		return "", SignedIn, ""
 	}
 }
+
+func (wb *WhatsAppBot) Shutdown() {
+	if wb.client != nil {
+		wb.client.Disconnect()
+	}
+
+	if wb.container != nil {
+		wb.container.Close()
+	}
+}
