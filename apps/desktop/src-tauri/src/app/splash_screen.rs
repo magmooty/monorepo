@@ -7,22 +7,18 @@ static LOG_TARGET: &str = "Splash Screen";
 #[specta::specta]
 pub async fn open_splash_screen(window: Window) {
     debug!(target: LOG_TARGET, "Showing splash screen");
-    window
-        .get_window("splashscreen")
-        .expect("no window labeled 'splashscreen' found")
-        .show()
-        .unwrap_or_default();
+    if let Some(window) = window.get_window("splashscreen") {
+        window.show().unwrap_or_default();
+    }
 }
 
 #[tauri::command]
 #[specta::specta]
 pub async fn close_splash_screen(window: Window) {
     debug!(target: LOG_TARGET, "Closing splash screen");
-    window
-        .get_window("splashscreen")
-        .expect("no window labeled 'splashscreen' found")
-        .close()
-        .unwrap_or_default();
+    if let Some(window) = window.get_window("splashscreen") {
+        window.close().unwrap_or_default();
+    }
 
     debug!(target: LOG_TARGET, "Showing main window");
     window

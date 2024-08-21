@@ -1,12 +1,13 @@
 package main
 
 import (
+	"github.com/gin-gonic/gin"
 	"net"
 	"net/http"
 	"os"
+	"os/signal"
+	"syscall"
 	whatsapp "whatsapp-bot/whatsapp"
-
-	"github.com/gin-gonic/gin"
 )
 
 var whatsAppBot *whatsapp.WhatsAppBot
@@ -107,6 +108,19 @@ func main() {
 	if status == whatsapp.WhatsAppLibraryError && err != nil {
 		println("[ERROR] Failed to create WhatsApp bot: %s", err.Error())
 	}
+
+	// Handle graceful exit
+	go func() {
+		quit := make(chan os.Signal, 1)
+		signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
+		signal.Notify(quit, os.Interrupt, syscall.SIGINT)
+		<-quit
+
+		println("Closing WhatsApp database file")
+		whatsAppBot.Shutdown()
+
+		os.Exit(0)
+	}()
 
 	// Initialize routes
 	gin.SetMode(gin.ReleaseMode)
