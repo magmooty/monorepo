@@ -10,6 +10,7 @@ import { AcademicYearCourseController } from './academic-year-course';
 import { AcademicYearController } from './academic-year';
 import { EnrollmentsController } from './enrollment';
 import { GroupController } from './group';
+import { UserController } from './user';
 
 const LOG_TARGET = 'sdk';
 
@@ -24,7 +25,8 @@ export class App {
 	public academicYears: AcademicYearController;
 	public academicYearCourses: AcademicYearCourseController;
 	public groups: GroupController;
-	public enrollment: EnrollmentsController;
+	public enrollments: EnrollmentsController;
+	public users: UserController;
 
 	private surrealDbUrl = 'http://127.0.0.1:5004/rpc';
 
@@ -40,7 +42,8 @@ export class App {
 		this.academicYears = new AcademicYearController(this);
 		this.academicYearCourses = new AcademicYearCourseController(this);
 		this.groups = new GroupController(this);
-		this.enrollment = new EnrollmentsController(this);
+		this.enrollments = new EnrollmentsController(this);
+		this.users = new UserController(this);
 	}
 
 	/**
