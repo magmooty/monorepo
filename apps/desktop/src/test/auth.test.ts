@@ -129,13 +129,6 @@ describe('Auth', () => {
 	it('Who can reset password for secretary', async () => {
 		const users = await app.auth.whoCanResetPasswordFor('+201151002052');
 
-		const queryResult = await app.db.query(
-			`SELECT * FROM scope`,
-			{ phone_number: '+201151002052' }
-		);
-
-		console.log(queryResult);
-
 		expect(users).toHaveLength(2);
 		expect(users).toEqual(
 			expect.arrayContaining([
