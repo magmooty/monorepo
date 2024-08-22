@@ -4,7 +4,6 @@
 	import { City, Country, Governorate } from 'common';
 	import Login from '../components/Login.svelte';
 	import Locales from '../components/locales.svelte';
-	import Layout from '../components/localSignIn/LocalLoginLayout .svelte';
 	import LocalLoginLayout from '../components/localSignIn/LocalLoginLayout .svelte';
 
 	async function testStuff() {
