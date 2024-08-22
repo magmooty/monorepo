@@ -3,10 +3,8 @@
 @tailwind components;
 @tailwind utilities;
 
-
-
 #lang_selector {
-    position: absolute !important;
-    top: 0 !important;
-    right: 0 !important;
+	position: absolute !important;
+	top: 0 !important;
+	right: 0 !important;
 }

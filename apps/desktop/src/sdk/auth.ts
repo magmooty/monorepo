@@ -1,6 +1,6 @@
 import { logger } from '$lib/logger';
 import { App } from 'sdk';
-import { LocalUserScope, type LocalUser, type Scope } from './user';
+import { LocalUserScope, type Scope } from './user';
 import type { Action, RecordId, UUID } from 'surrealdb.js';
 import type { Space } from './space';
 
