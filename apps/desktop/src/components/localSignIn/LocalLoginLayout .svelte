@@ -9,20 +9,18 @@
 <div class=" flex h-screen flex-row items-center text-center">
 	<div class="flex h-screen w-[50%] flex-col items-center justify-center">
 		<div class=" flex flex-col items-center justify-center">
-			<div class="">
+			<div>
 				<img class="h-[100px] w-[100px]" src="images/logo.png" alt="logo" />
 			</div>
-			<div class="">
+			<div>
 				<Heading tag="h1" class="text-4xl text-[#0B8CD2]">{$_('localSignIn.welcomeAgain')}</Heading>
 				<Heading tag="h1" class="text-4xl  text-[#0B8CD2]"
 					>{$_('localSignIn.chooseAccountToSignIn')}</Heading
 				>
 			</div>
 		</div>
-
 		<div class="flex w-[274px] flex-col items-center justify-between">
 			<UserSelector />
-
 			<div class="h-[93px] w-[274px]">
 				<Button class="mb-[20px] w-[274px] bg-[#0B8CD2] hover:bg-[#1EA8F3]">
 					{$_('localSignIn.connectToMaster')}
