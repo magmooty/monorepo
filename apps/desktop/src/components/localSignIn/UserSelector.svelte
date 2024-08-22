@@ -25,7 +25,7 @@
 			>
 				<Avatar alt="logo" class="flex-shrink-0" />
 				<div class="min-w-0 flex-1 ltr:text-left rtl:text-right">
-					<p class="font-siz-[16px] truncate text-gray-900 dark:text-white">
+					<p class="font-size-[16px] truncate text-gray-900 dark:text-white">
 						{item.name}
 					</p>
 					<p>
