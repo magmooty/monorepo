@@ -77,9 +77,7 @@ export type AcademicYearCourse = {
 export class AcademicYearCourseController {
 	constructor(private app: App) {}
 
-	async create(
-		content: CreatePayload<AcademicYearCourse>
-	): Promise<AcademicYearCourse> {
+	async create(content: CreatePayload<AcademicYearCourse>): Promise<AcademicYearCourse> {
 		logger.info(LOG_TARGET, `Creating academic year course`);
 		const [academicYearCourse] = await this.app.db.create<CreatePayload<AcademicYearCourse>>(
 			'academic_year_course',
