@@ -11,9 +11,11 @@
 			const fetchedUsers = await app.auth.listUsers();
 			users = fetchedUsers;
 		} catch (error) {
+			//TODO: Handle error
 			console.error('Failed to fetch users:', error);
 		}
 	}
+	console.log('users:', users);
 	fetchUsers();
 </script>
 
@@ -33,33 +35,39 @@
 
 		<div class="flex w-[274px] flex-col items-center justify-between">
 			<div class=" h-[365px] overflow-y-auto">
-				<Listgroup items={users} let:item class="border-0 p-0 dark:!bg-transparent">
-					<div
-						class="flex h-[73px] w-[274px] items-center space-x-2 hover:bg-gray-200 rtl:space-x-reverse"
-					>
-						<Avatar alt="logo" class="flex-shrink-0" />
-						<div class="min-w-0 flex-1 ltr:text-left rtl:text-right">
-							<p class="font-siz-[16px] truncate text-gray-900 dark:text-white">
-								{item.name}
-							</p>
-							<p>
-								{#if item.is_center_manager && item.manages_spaces.length > 0}
-									{$_('common.teacher')} {$_('common.and')} {$_('common.manager')}
-								{:else if item.manages_spaces.length > 0}
-									{$_('common.teacher')}
-								{:else}
-									{$_('common.assistantIn') + ' '}
-									{#each item.member_of_spaces as space, index}
-										{space}
-										{#if index < item.member_of_spaces.length - 1}
-											{$_('common.and')}
-										{/if}
-									{/each}
-								{/if}
-							</p>
+				{#if users.length > 0}
+					<Listgroup items={users} let:item class="border-0 p-0 dark:!bg-transparent">
+						<div
+							class="flex h-[73px] w-[274px] items-center space-x-2 hover:bg-gray-200 rtl:space-x-reverse"
+						>
+							<Avatar alt="logo" class="flex-shrink-0" />
+							<div class="min-w-0 flex-1 ltr:text-left rtl:text-right">
+								<p class="font-siz-[16px] truncate text-gray-900 dark:text-white">
+									{item.name}
+								</p>
+								<p>
+									{#if item.is_center_manager && item.manages_spaces.length > 0}
+										{$_('common.teacher')} {$_('common.and')} {$_('common.manager')}
+									{:else if item.manages_spaces.length > 0}
+										{$_('common.teacher')}
+									{:else}
+										{$_('common.assistantIn') + ' '}
+										{#each item.member_of_spaces as space, index}
+											{space}
+											{#if index < item.member_of_spaces.length - 1}
+												{$_('common.and')}
+											{/if}
+										{/each}
+									{/if}
+								</p>
+							</div>
 						</div>
-					</div>
-				</Listgroup>
+					</Listgroup>
+				{:else}
+					<p>
+						{$_('common.loading')}
+					</p>
+				{/if}
 			</div>
 
 			<div class="h-[93px] w-[274px]">
