@@ -4,7 +4,8 @@
 	import { City, Country, Governorate } from 'common';
 	import Login from '../components/Login.svelte';
 	import Locales from '../components/locales.svelte';
-	import LoginLocal from '../components/localSignIn/LoginLocal.svelte';
+	import Layout from '../components/localSignIn/LocalLoginLayout .svelte';
+	import LocalLoginLayout from '../components/localSignIn/LocalLoginLayout .svelte';
 
 	async function testStuff() {
 		await app.manager.clearLocalDatabase();
@@ -30,4 +31,4 @@
 </script>
 
 <!-- <Login /> -->
-<LoginLocal />
+<LocalLoginLayout />
