@@ -10,6 +10,41 @@
 	src: url('/fonts/NotoKufiArabic.ttf');
 }
 
+* {
+	user-select: none;
+}
+
 html {
 	font-family: 'Noto Kufi Arabic', sans-serif;
+}
+
+/* Chrome, Edge and Safari */
+*::-webkit-scrollbar {
+	height: 6px;
+	width: 6px;
+}
+*::-webkit-scrollbar-track {
+	border-radius: 5px;
+	background-color: #eeeeee;
+}
+
+*::-webkit-scrollbar-track:hover {
+	background-color: #eaeaea;
+}
+
+*::-webkit-scrollbar-track:active {
+	background-color: #eaeaea;
+}
+
+*::-webkit-scrollbar-thumb {
+	border-radius: 5px;
+	background-color: #888888;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+	background-color: #666666;
+}
+
+*::-webkit-scrollbar-thumb:active {
+	background-color: #666666;
 }

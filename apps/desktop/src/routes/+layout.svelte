@@ -6,7 +6,12 @@
 
 	let connected = false;
 	// Initialization logic goes here
-	app.connect().then(closeSplashScreen);
+	app.connect().then(() => {
+		connected = true;
+		closeSplashScreen();
+	});
 </script>
 
-<slot></slot>
+{#if connected}
+	<slot></slot>
+{/if}

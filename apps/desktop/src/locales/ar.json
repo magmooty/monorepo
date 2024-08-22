@@ -4,11 +4,11 @@
       "sendCode": "ارسل الرمز",
       "code": "الرمز",
       "signIn": "تسجيل الدخول",
-       "isSignedIn": "تم تسجيل دخول المستخدم "      
+       "isSignedIn": "تم تسجيل دخول المستخدم"      
  },
  "localSignIn":{
-       "welcomeAgain": "أهلًا بك مرة أخرى ",
-       "chooseAccountToSignIn": "اختر حسابك   لتسجيل الدخول",
+       "welcomeAgain": "أهلًا بك مرة أخرى",
+       "chooseAccountToSignIn": "اختر حسابك لتسجيل الدخول",
        "connectToMaster":"الاتصال بجهاز الماستر",
        "recoverData":"استرجاع بيانات مفقودة"
     
@@ -17,7 +17,7 @@
  "common":{
       "teacher":"معلم",
       "manager":"مدير السنتر",
-      "assistantIn":"مساعد لدي ",
+      "assistantIn":"مساعد لدي",
       "and": "و",
       "connectUs":"تواصل بنا"
  }

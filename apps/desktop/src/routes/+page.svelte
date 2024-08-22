@@ -31,4 +31,3 @@
 
 <!-- <Login /> -->
 <LoginLocal />
-<Locales />
