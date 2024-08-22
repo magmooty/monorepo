@@ -41,6 +41,10 @@ jobs:
           surrealdb-user: root
           surrealdb-password: root
 
+      - name: Run lint for Desktop App
+        run: yarn lint
+        working-directory: apps/desktop
+
       - name: Run tests for Desktop App
         run: SKIP_SURREAL=1 pnpm test
         working-directory: apps/desktop
