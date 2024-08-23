@@ -29,9 +29,9 @@ jobs:
         with:
           path: |
             ./docker_cache
-          key: docker-${{ hashFiles('Dockerfile') }}
+          key: api-docker-layers-${{ hashFiles('Dockerfile') }}
           restore-keys: |
-            docker-
+            api-docker-layers-
 
       - name: Cache sccache
         uses: actions/cache@v3
@@ -39,7 +39,7 @@ jobs:
         with:
           path: |
             disk-sccache
-          key: cache-${{ hashFiles('Cargo.lock') }}
+          key: api-cache-sccache
 
       - name: Inject sccache into Docker
         uses: reproducible-containers/buildkit-cache-dance@v3.1.0
