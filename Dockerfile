@@ -46,7 +46,7 @@ FROM debian:buster-slim
 
 COPY --from=build /usr/src/target/release/api* /app
 COPY --from=build /usr/src/target/release/lib* /app
-COPY ./apps/api/binaries/linux-x86_64/libtdjson.so /app/libtdjson.so
-COPY ./apps/api/binaries/linux-x86_64/libtdjson.so.1.8.29 /app/libtdjson.so.1.8.29
+COPY ./apps/api/binaries/linux-x86_64/libtdjson.so /app
+COPY ./apps/api/binaries/linux-x86_64/libtdjson.so.1.8.29 /app
 
 CMD ["app/api"]
