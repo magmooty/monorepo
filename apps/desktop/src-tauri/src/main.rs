@@ -8,7 +8,7 @@ use panic_handler::initialize_graceful_panic_handler;
 use process_killer::kill_hanging_sidecars;
 use simple_logger;
 use sync::Syncer;
-use tauri::{api::process::CommandChild, Manager};
+use tauri::api::process::CommandChild;
 
 #[cfg(debug_assertions)]
 use specta::collect_types;
