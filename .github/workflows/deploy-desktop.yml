@@ -19,11 +19,23 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Bump version
-        uses: tj-actions/cargo-bump@v3
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache cargo registry
+        uses: actions/cache@v3
         with:
-          release_type: patch
-          working-directory: ./apps/desktop/src-tauri
+          path: ~/.cargo/registry
+          key: ${{ runner.os }}-cargo-registry-workspaces }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-registry-workspaces
+
+      - name: Install cargo workspaces
+        run: cargo install cargo-workspaces
+
+      - name: Bump version
+        run: cargo workspaces version patch
+        working-directory: ./apps/desktop/src-tauri
 
   publish-tauri:
     name: Build and publish desktop app
