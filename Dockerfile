@@ -31,6 +31,8 @@ COPY ./apps/telegram-macros ./apps/telegram-macros
 
 WORKDIR /usr/src/api
 
+RUN cargo build --release --verbose
+
 # Set the environment variables
 ENV RUSTC_WRAPPER=sccache
 ENV OPENSSL_INCLUDE_DIR=/usr/include/openssl
