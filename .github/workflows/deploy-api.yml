@@ -35,13 +35,13 @@ jobs:
           docker buildx create --use
           docker buildx build --cache-from type=local,src=/tmp/.buildx-cache \
             --cache-to type=local,dest=/tmp/.buildx-cache-new \
-            --tag registry.fly.io/magmooty-api:latest ./apps
+            --tag registry.fly.io/magmooty-api:latest .
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
       - name: Install Fly.io
         uses: superfly/flyctl-actions/setup-flyctl@master
 
       - name: Deploy to Fly.io
-        run: flyctl deploy ./apps --image registry.fly.io/magmooty-api:latest --app magmooty-api
+        run: flyctl deploy . --image registry.fly.io/magmooty-api:latest --app magmooty-api
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
