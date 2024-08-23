@@ -91,11 +91,6 @@ async fn main() {
             app::open_splash_screen,
             app::close_splash_screen
         ])
-        .setup(|app| {
-            let window = app.get_window("main").unwrap();
-            window.open_devtools();
-            Ok(())
-        })
         .run(tauri::generate_context!())
         .expect("Error while running tauri application");
 }
