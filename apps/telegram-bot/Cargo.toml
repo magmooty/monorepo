@@ -3,6 +3,10 @@ name = "telegram-bot"
 version = "0.1.0"
 edition = "2021"
 
+[lib]
+name = "telegram_bot"
+path = "src/lib.rs"
+
 [dependencies]
 log = "0.4.22"
 serde = { version = "1.0.204", features = ["derive"] }

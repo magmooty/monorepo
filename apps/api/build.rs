@@ -68,7 +68,10 @@ fn link_libraries() {
     #[cfg(target_os = "windows")]
     let tdjson_file_name = "tdjson.dll";
 
-    #[cfg(target_os = "linux")]
+    #[cfg(all(target_os = "linux", target_arch = "aarch64"))]
+    let tdjson_file_name = "libtdjson.so";
+
+    #[cfg(all(target_os = "linux", target_arch = "x86_64"))]
     let tdjson_file_name = "libtdjson.so.1.8.29";
     
     #[cfg(target_os = "macos")]
