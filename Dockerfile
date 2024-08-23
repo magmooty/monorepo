@@ -13,6 +13,8 @@ ARG SCCACHE_GHA_ENABLED
 ARG ACTIONS_CACHE_URL
 ARG ACTIONS_RUNTIME_TOKEN
 
+RUN sccache --show-stats
+
 WORKDIR /usr/src
 
 # Copy the Cargo files
