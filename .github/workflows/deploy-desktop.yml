@@ -31,10 +31,10 @@ jobs:
             ${{ runner.os }}-cargo-registry-workspaces
 
       - name: Install cargo workspaces
-        run: cargo install cargo-workspaces --no-git-tag
+        run: cargo install cargo-workspaces
 
       - name: Bump version
-        run: cargo workspaces version patch
+        run: cargo workspaces version patch --no-git-tag
         working-directory: ./apps/desktop/src-tauri
 
   publish-tauri:
