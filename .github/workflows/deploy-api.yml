@@ -23,22 +23,8 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Cache Docker layers
-        uses: actions/cache@v3
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
-
       - name: Build docker image
-        run: |
-          docker buildx create --use
-          docker buildx build --cache-from type=local,src=/tmp/.buildx-cache \
-            --cache-to type=local,dest=/tmp/.buildx-cache-new \
-            --tag registry.fly.io/magmooty-api:latest .
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
-          docker use --load registry.fly.io/magmooty-api:latest
+        run: docker build --tag registry.fly.io/magmooty-api:latest .
 
       - name: Install Fly.io
         uses: superfly/flyctl-actions/setup-flyctl@master
