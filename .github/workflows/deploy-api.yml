@@ -10,6 +10,7 @@ on:
       - apps/telegram-macros/**/*
       - Dockerfile
       - fly.toml
+      - .github/workflows/deploy-api.yml
 
 jobs:
   build-and-deploy:
@@ -37,6 +38,7 @@ jobs:
             --cache-to type=local,dest=/tmp/.buildx-cache-new \
             --tag registry.fly.io/magmooty-api:latest .
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+          docker use --load registry.fly.io/magmooty-api:latest
 
       - name: Install Fly.io
         uses: superfly/flyctl-actions/setup-flyctl@master
