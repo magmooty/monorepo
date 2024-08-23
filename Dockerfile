@@ -31,6 +31,7 @@ COPY ./apps/telegram-macros ./apps/telegram-macros
 
 WORKDIR /usr/src/api
 
+# Build dependencies
 RUN cargo build --release --verbose
 
 # Set the environment variables
