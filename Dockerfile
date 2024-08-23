@@ -9,6 +9,10 @@ RUN cargo install sccache
 # Set up sccache caching directory
 ENV SCCACHE_DIR=/usr/local/sccache
 
+ARG SCCACHE_GHA_ENABLED
+ARG ACTIONS_CACHE_URL
+ARG ACTIONS_RUNTIME_TOKEN
+
 WORKDIR /usr/src
 
 # Copy the Cargo files
