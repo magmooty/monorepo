@@ -80,11 +80,18 @@ jobs:
           key: ${{ runner.os }}-cargo-registry-desktop-${{ matrix.arch }}
           restore-keys: |
             ${{ runner.os }}-cargo-registry-desktop-${{ matrix.arch }}
+          
+      - name: Cache sccache
+        uses: actions/cache@v3
+        with:
+          path: /root/.cache/sccache
+          key: ${{ runner.os }}-sccache-desktop-${{ matrix.arch }}
+          restore-keys: |
+            ${{ runner.os }}-sccache-desktop-${{ matrix.arch }}
 
       - name: Run sccache-cache
         uses: mozilla-actions/sccache-action@v0.0.5
       - run: |
-          echo "SCCACHE_GHA_ENABLED=true" >> $GITHUB_ENV
           echo "RUSTC_WRAPPER=sccache" >> $GITHUB_ENV
 
       - name: Install frontend dependencies
@@ -109,7 +116,6 @@ jobs:
           X86_64_PC_WINDOWS_MSVC_OPENSSL_DIR: ${{ github.workspace }}/vcpkg/packages/openssl_x64-windows
           X86_PC_WINDOWS_MSVC_OPENSSL_DIR: ${{ github.workspace }}/vcpkg/packages/openssl_x86-windows
           RUSTC_WRAPPER: sccache
-          SCCACHE_GHA_ENABLED: true
         with:
           tagName: app-__VERSION__
           releaseName: "App __VERSION__"
