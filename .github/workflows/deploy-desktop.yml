@@ -61,27 +61,15 @@ jobs:
         run: pnpm install
         working-directory: ./apps/desktop
 
-      - name: vcpkg build x64
+      - name: vcpkg build ${{ matrix.arch }}
         uses: johnwason/vcpkg-action@v6
         id: vcpkg
         with:
-          pkgs: openssl:x64-windows
-          triplet: x64-windows-release
+          pkgs: openssl:${{ matrix.arch }}-windows
+          triplet: ${{ matrix.arch }}-windows-release
           token: ${{ github.token }}
-          cache-key: vcpkg-cache-x64-windows
+          cache-key: vcpkg-cache-${{ matrix.arch }}-windows
           github-binarycache: true
-        if: matrix.arch == 'x64'
-
-      - name: vcpkg build x32
-        uses: johnwason/vcpkg-action@v6
-        id: vcpkg
-        with:
-          pkgs: openssl:x32-windows
-          triplet: x32-windows-release
-          token: ${{ github.token }}
-          cache-key: vcpkg-cache-x32-windows
-          github-binarycache: true
-        if: matrix.arch == 'x32'
 
       - uses: tauri-apps/tauri-action@v0
         env:
