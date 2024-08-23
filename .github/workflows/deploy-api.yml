@@ -29,16 +29,20 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
         with:
           script: |
-            core.exportVariable('ACTIONS_CACHE_URL', process.env['ACTIONS_CACHE_URL'])
-            core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env['ACTIONS_RUNTIME_TOKEN'])
-            core.exportVariable('ACTIONS_RUNTIME_URL', process.env['ACTIONS_RUNTIME_URL'])
+            return {
+              actions_cache_url: process.env['ACTIONS_CACHE_URL'],
+              actions_runtime_token: process.env['ACTIONS_RUNTIME_TOKEN'],
+              actions_runtime_url: process.env['ACTIONS_RUNTIME_URL'],
+            }
+          result-encoding: string
+          outputs: actions_cache_url,actions_runtime_token,actions_runtime_url
 
       - name: Echo required env vars
         shell: bash
         run: |
-          echo "ACTIONS_CACHE_URL: $ACTIONS_CACHE_URL"
-          echo "ACTIONS_RUNTIME_TOKEN: $ACTIONS_RUNTIME_TOKEN"     
-          echo "ACTIONS_RUNTIME_URL: $ACTIONS_RUNTIME_URL"
+          echo "ACTIONS_CACHE_URL: ${{ steps.set-vars.outputs.actions_cache_url }}"
+          echo "ACTIONS_RUNTIME_TOKEN: ${{ steps.set-vars.outputs.actions_runtime_token }}"
+          echo "ACTIONS_RUNTIME_URL: ${{ steps.set-vars.outputs.actions_runtime_url }}"
 
       - name: Build docker image
         uses: docker/build-push-action@v6
@@ -48,8 +52,8 @@ jobs:
           tags: registry.fly.io/magmooty-api:latest
           build-args: |
             SCCACHE_GHA_ENABLED=on
-            ACTIONS_CACHE_URL="$ACTIONS_CACHE_URL"
-            ACTIONS_RUNTIME_TOKEN="$ACTIONS_RUNTIME_TOKEN"
+            ACTIONS_CACHE_URL="${{ steps.set-vars.outputs.actions_cache_url }}"
+            ACTIONS_RUNTIME_TOKEN="${{ steps.set-vars.outputs.actions_runtime_token }}"
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
