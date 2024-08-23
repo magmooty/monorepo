@@ -45,5 +45,6 @@ RUN --mount=type=cache,target=/root/.cache/sccache cargo build --release
 FROM debian:buster-slim
 
 COPY --from=build /usr/src/target/release /app
+COPY ./apps/api/binaries/linux-x86_64/* /app
 
 CMD ["app/api"]
