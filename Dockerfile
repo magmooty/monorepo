@@ -9,9 +9,6 @@ RUN cargo install sccache
 # Set up sccache caching directory
 ENV SCCACHE_DIR=/usr/local/sccache
 
-# Create a volume for sccache cache
-VOLUME ["/usr/local/sccache"]
-
 WORKDIR /usr/src
 
 # Copy the Cargo files
@@ -45,4 +42,4 @@ FROM gcr.io/distroless/static-debian11
 
 COPY --from=build /usr/src/target/release /
 
-CMD ["/api"]
+CMD ["./api"]
