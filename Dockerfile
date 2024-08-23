@@ -1,29 +1,17 @@
 # Start from the official Rust image
 FROM rust:latest AS build
 
+ENV DEBIAN_FRONTEND=noninteractive
+
 # Install the necessary tools for cross-compilation
 RUN apt-get update
 RUN apt-get install -y libssl-dev pkg-config
 
 # Install sccache
 WORKDIR /usr/deps
-RUN wget https://github.com/mozilla/sccache/releases/download/v0.8.1/sccache-v0.8.1-x86_64-unknown-linux-musl.tar.gz
-RUN tar -xvf sccache-v0.8.1-x86_64-unknown-linux-musl.tar.gz
-RUN mv sccache-v0.8.1-x86_64-unknown-linux-musl/sccache /usr/local/bin/sccache
-
-ARG SCCACHE_GHA_ENABLED
-ARG ACTIONS_CACHE_URL
-ARG ACTIONS_RUNTIME_TOKEN
-
-RUN echo $ACTIONS_CACHE_URL
-
-ENV SCCACHE_LOG=debug
-
-RUN mkdir -p /root/.config/sccache
-RUN touch /root/.config/sccache/config
-
-RUN sccache --start-server
-RUN sccache --show-stats
+RUN wget https://github.com/mozilla/sccache/releases/download/v0.8.1/sccache-v0.8.1-$(arch)-unknown-linux-musl.tar.gz
+RUN tar -xvf sccache-v0.8.1-$(arch)-unknown-linux-musl.tar.gz
+RUN mv sccache-v0.8.1-$(arch)-unknown-linux-musl/sccache /usr/local/bin/sccache
 
 WORKDIR /usr/src
 
@@ -57,5 +45,7 @@ RUN cargo build --release --verbose
 FROM gcr.io/distroless/static-debian11
 
 COPY --from=build /usr/src/target/release /
+
+RUN ls -lha
 
 CMD ["./api"]
