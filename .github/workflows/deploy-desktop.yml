@@ -108,6 +108,7 @@ jobs:
           X86_64_PC_WINDOWS_MSVC_OPENSSL_DIR: ${{ github.workspace }}/vcpkg/packages/openssl_x64-windows
           X86_PC_WINDOWS_MSVC_OPENSSL_DIR: ${{ github.workspace }}/vcpkg/packages/openssl_x32-windows
           RUSTC_WRAPPER: sccache
+          SCCACHE_GHA_ENABLED: true
         with:
           tagName: app-__VERSION__
           releaseName: "App __VERSION__"
