@@ -23,7 +23,7 @@ jobs:
         uses: tj-actions/cargo-bump@v3
         with:
           release_type: patch
-          working-directory: ./apps/desktop
+          working-directory: ./apps/desktop/src-tauri
 
   publish-tauri:
     name: Build and publish desktop app
