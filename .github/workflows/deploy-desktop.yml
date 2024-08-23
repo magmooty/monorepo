@@ -20,19 +20,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: setup node
+      - name: Setup node
         uses: actions/setup-node@v4
         with:
           node-version: lts/*
           cache: "pnpm"
 
-      - name: install Rust stable
+      - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
 
       - name: Rust cache
         uses: swatinem/rust-cache@v2
         with:
-          workspaces: ".apps/desktop/src-tauri -> target"
+          workspaces: "./apps/desktop/src-tauri -> target"
 
       - name: Install frontend dependencies
         run: pnpm install
