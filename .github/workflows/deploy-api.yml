@@ -29,10 +29,12 @@ jobs:
           context: .
           load: true
           tags: registry.fly.io/magmooty-api:latest
-          build-args: |
-            SCCACHE_GHA_ENABLED=on
-            ACTIONS_CACHE_URL="${{ secrets.ACTIONS_CACHE_URL }}"
-            ACTIONS_RUNTIME_TOKEN="${{ secrets.ACTIONS_RUNTIME_TOKEN }}"
+          build-args:
+            SCCACHE_GHA_ENABLED: "on"
+            ACTIONS_CACHE_URL: "${{ secrets.ACTIONS_CACHE_URL }}"
+            ACTIONS_RUNTIME_TOKEN: "${{ secrets.ACTIONS_RUNTIME_TOKEN }}"
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Install Fly.io
         uses: superfly/flyctl-actions/setup-flyctl@master
