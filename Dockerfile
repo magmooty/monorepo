@@ -31,6 +31,7 @@ COPY ./apps/telegram-macros ./apps/telegram-macros
 
 WORKDIR /usr/src/api
 
+# Set the environment variables
 ENV RUSTC_WRAPPER=sccache
 ENV OPENSSL_INCLUDE_DIR=/usr/include/openssl
 ENV X86_64_UNKNOWN_LINUX_GNU_OPENSSL_LIB_DIR=/usr/lib/x86_64-linux-gnu

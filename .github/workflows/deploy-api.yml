@@ -8,8 +8,8 @@ on:
       - apps/api/**/*
       - apps/telegram-bot/**/*
       - apps/telegram-macros/**/*
-      - apps/Dockerfile
-      - apps/fly.toml
+      - Dockerfile
+      - fly.toml
 
 jobs:
   build-and-deploy:
