@@ -17,9 +17,12 @@ ARG ACTIONS_RUNTIME_TOKEN
 
 RUN echo $ACTIONS_CACHE_URL
 
-ENV SCCACHE_DIR=/usr/sccache
-ENV SCCACHE_CACHE_SIZE="2G"
 ENV SCCACHE_LOG=debug
+
+RUN touch /root/.config/sccache/config
+RUN echo "[cache]" > /root/.config/sccache/config
+RUN echo "cache_size=2" > /root/.config/sccache/config
+RUN echo "dir=/usr/sccache" > /root/.config/sccache/config
 
 RUN sccache --start-server
 RUN sccache --show-stats
