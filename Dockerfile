@@ -42,10 +42,8 @@ ENV AARCH64_UNKNOWN_LINUX_GNU_OPENSSL_LIB_DIR=/usr/lib/aarch64-linux-gnu
 RUN --mount=type=cache,target=/root/.cache/sccache cargo build --release --verbose
 
 # Prepare output image with only the exectuable binary
-FROM gcr.io/distroless/static-debian11
+FROM debian:buster-slim
 
-COPY --from=build /usr/src/target/release /
+COPY --from=build /usr/src/target/release /app
 
-RUN ls -lha
-
-CMD ["./api"]
+CMD ["app/api"]
