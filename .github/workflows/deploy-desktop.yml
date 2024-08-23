@@ -44,7 +44,7 @@ jobs:
         uses: johnwason/vcpkg-action@v6
         id: vcpkg
         with:
-          pkgs: openssl
+          pkgs: openssl:x64-windows
           triplet: x64-windows-release
           token: ${{ github.token }}
           github-binarycache: true
