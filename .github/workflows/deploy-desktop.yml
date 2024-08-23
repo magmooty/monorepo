@@ -73,6 +73,14 @@ jobs:
       - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
 
+      - name: Cache cargo
+        uses: actions/cache@v3
+        with:
+          path: ~/.cargo
+          key: ${{ runner.os }}-cargo-registry-desktop-${{ matrix.arch }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-registry-desktop-${{ matrix.arch }}
+
       - name: Run sccache-cache
         uses: mozilla-actions/sccache-action@v0.0.5
 
