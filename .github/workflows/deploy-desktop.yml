@@ -54,7 +54,7 @@ jobs:
           - arch: "x64"
             platform: "windows-latest"
             args: ""
-          - arch: "x32"
+          - arch: "x86"
             platform: "windows-latest"
             args: "--target i686-pc-windows-msvc"
 
