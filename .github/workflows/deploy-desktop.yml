@@ -53,10 +53,10 @@ jobs:
         include:
           - arch: "x64"
             platform: "windows-latest"
-            args: "--debug"
+            args: ""
           - arch: "x86"
             platform: "windows-latest"
-            args: "--debug --target i686-pc-windows-msvc"
+            args: "--target i686-pc-windows-msvc"
 
     runs-on: ${{ matrix.platform }}
     steps:

@@ -8,7 +8,7 @@ use panic_handler::initialize_graceful_panic_handler;
 use process_killer::kill_hanging_sidecars;
 use simple_logger;
 use sync::Syncer;
-use tauri::api::process::CommandChild;
+use tauri::{api::process::CommandChild, Manager};
 
 #[cfg(debug_assertions)]
 use specta::collect_types;
@@ -91,6 +91,11 @@ async fn main() {
             app::open_splash_screen,
             app::close_splash_screen
         ])
+        .setup(|app| {
+            let window = app.get_window("main").unwrap();
+            window.open_devtools();
+            Ok(())
+        })
         .run(tauri::generate_context!())
         .expect("Error while running tauri application");
 }
