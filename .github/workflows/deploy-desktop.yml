@@ -12,8 +12,10 @@ on:
 
 jobs:
   bump-version:
+    name: Bump app version
     runs-on: ubuntu-latest
-    name: Test cargo-bump
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
 
@@ -24,6 +26,8 @@ jobs:
           working_directory: ./apps/desktop
 
   publish-tauri:
+    name: Build and publish desktop app
+    needs: bump-version
     permissions:
       contents: write
     strategy:
