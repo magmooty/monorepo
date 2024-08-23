@@ -36,7 +36,7 @@ jobs:
         with:
           cache-map: |
             {
-              "disk-sccache÷": "/root/.cache/sccache"
+              "disk-sccache": "/root/.cache/sccache"
             }
           skip-extraction: ${{ steps.sccache.outputs.cache-hit }}
 
