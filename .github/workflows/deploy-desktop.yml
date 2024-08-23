@@ -31,7 +31,7 @@ jobs:
             ${{ runner.os }}-cargo-registry-workspaces
 
       - name: Install cargo workspaces
-        run: cargo install cargo-workspaces
+        run: cargo install cargo-workspaces --no-git-tag
 
       - name: Bump version
         run: cargo workspaces version patch
