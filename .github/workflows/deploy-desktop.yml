@@ -96,7 +96,7 @@ jobs:
         id: vcpkg
         with:
           pkgs: openssl:${{ matrix.arch }}-windows
-          triplet: ${{ matrix.arch }}-windows-release
+          triplet: ${{ matrix.arch }}-windows
           token: ${{ github.token }}
           cache-key: vcpkg-cache-${{ matrix.arch }}-windows
           github-binarycache: true
