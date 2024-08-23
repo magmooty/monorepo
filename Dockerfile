@@ -44,8 +44,9 @@ RUN --mount=type=cache,target=/root/.cache/sccache cargo build --release
 # Prepare output image with only the exectuable binary
 FROM debian:buster-slim
 
-COPY --from=build /usr/src/target/release /app
+COPY --from=build /usr/src/target/release/api* /app
+COPY --from=build /usr/src/target/release/lib* /app
 COPY ./apps/api/binaries/linux-x86_64/libtdjson.so /app/libtdjson.so
 COPY ./apps/api/binaries/linux-x86_64/libtdjson.so.1.8.29 /app/libtdjson.so.1.8.29
 
-CMD ["tail", "-f", "/dev/null"]
+CMD ["app/api"]
