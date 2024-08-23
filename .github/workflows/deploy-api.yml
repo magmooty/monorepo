@@ -32,11 +32,16 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-buildx-
 
-      - name: Build Docker Image
-        run: |
-          docker buildx build --load --build-arg SCCACHE_GHA_ENABLED=on --build-arg ACTIONS_CACHE_URL=$ACTIONS_CACHE_URL --build-arg ACTIONS_RUNTIME_TOKEN=$ACTIONS_RUNTIME_TOKEN -t registry.fly.io/magmooty-api:latest .
-        env:
-          DOCKER_BUILDKIT: 1
+      - name: Build docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          load: true
+          tags: registry.fly.io/magmooty-api:latest
+          build-args: |
+            SCCACHE_GHA_ENABLED=on
+            ACTIONS_CACHE_URL="${{ secrets.ACTIONS_CACHE_URL }}"
+            ACTIONS_RUNTIME_TOKEN="${{ secrets.ACTIONS_RUNTIME_TOKEN }}"
 
       - name: Install Fly.io
         uses: superfly/flyctl-actions/setup-flyctl@master
