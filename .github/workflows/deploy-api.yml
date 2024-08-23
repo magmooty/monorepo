@@ -46,6 +46,7 @@ jobs:
           context: .
           load: true
           tags: registry.fly.io/magmooty-api:latest
+          outputs: type=cacheonly
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
