@@ -34,8 +34,6 @@ jobs:
               actions_runtime_token: process.env['ACTIONS_RUNTIME_TOKEN'],
               actions_runtime_url: process.env['ACTIONS_RUNTIME_URL'],
             }
-          result-encoding: string
-          outputs: actions_cache_url,actions_runtime_token,actions_runtime_url
 
       - name: Echo required env vars
         shell: bash
