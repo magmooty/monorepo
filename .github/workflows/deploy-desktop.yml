@@ -95,6 +95,7 @@ jobs:
       - uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
           X86_64_PC_WINDOWS_MSVC_OPENSSL_DIR: ${{ github.workspace }}/vcpkg/packages/openssl_x64-windows
           X86_PC_WINDOWS_MSVC_OPENSSL_DIR: ${{ github.workspace }}/vcpkg/packages/openssl_x32-windows
         with:
