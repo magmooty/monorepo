@@ -4,6 +4,11 @@ on:
   push:
     branches:
       - main
+    paths:
+      - apps/desktop/**/*
+      - apps/telegram-bot/**/*
+      - apps/telegram-macros/**/*
+      - .github/workflows/deploy-desktop.yml
 
 jobs:
   publish-tauri:
@@ -55,10 +60,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           X86_64_PC_WINDOWS_MSVC_OPENSSL_DIR: ${{ github.workspace }}/vcpkg/packages/openssl_x64-windows
         with:
-          tagName: app-v1.0.0
-          releaseName: "App v1.0.0"
+          tagName: app-__VERSION__
+          releaseName: "App __VERSION__"
           releaseBody: "See the assets to download this version and install."
           releaseDraft: true
           prerelease: false
           args: ${{ matrix.args }}
-          working-directory: ./apps/desktop
+

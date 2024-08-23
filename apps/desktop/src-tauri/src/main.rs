@@ -7,9 +7,12 @@ use log::info;
 use panic_handler::initialize_graceful_panic_handler;
 use process_killer::kill_hanging_sidecars;
 use simple_logger;
-use specta::collect_types;
 use sync::Syncer;
 use tauri::api::process::CommandChild;
+
+#[cfg(debug_assertions)]
+use specta::collect_types;
+#[cfg(debug_assertions)]
 use tauri_specta::ts;
 
 mod app;
@@ -29,6 +32,7 @@ static LOG_TARGET: &str = "main";
 static SIDECARS: once_cell::sync::Lazy<Arc<std::sync::Mutex<Vec<CommandChild>>>> =
     once_cell::sync::Lazy::new(|| Arc::new(std::sync::Mutex::new(Vec::new())));
 
+#[cfg(debug_assertions)]
 fn generate_typescript_bindings() {
     ts::export(
         collect_types![

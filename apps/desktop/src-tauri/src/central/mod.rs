@@ -33,10 +33,6 @@ pub enum CheckSyncAvailabilityError {
 pub struct CentralAPI {}
 
 impl CentralAPI {
-    pub fn new() -> Self {
-        Self {}
-    }
-
     async fn generate_signature(
         center_id: String,
         private_key: String,
