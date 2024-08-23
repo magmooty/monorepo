@@ -24,8 +24,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: lts/*
-          cache: "pnpm"
-          cache-dependency-path: ./apps/desktop/pnpm-lock.yaml
 
       - name: Install pnpm
         run: npm install -g pnpm
@@ -41,6 +39,15 @@ jobs:
       - name: Install frontend dependencies
         run: pnpm install
         working-directory: ./apps/desktop
+
+      - name: vcpkg build
+        uses: johnwason/vcpkg-action@v6
+        id: vcpkg
+        with:
+          pkgs: openssl
+          triplet: x64-windows-release
+          token: ${{ github.token }}
+          github-binarycache: true
 
       - uses: tauri-apps/tauri-action@v0
         env:
