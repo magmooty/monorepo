@@ -20,15 +20,9 @@ COPY Cargo.lock .
 COPY ./apps/api/Cargo.toml ./apps/api/
 COPY ./apps/telegram-bot/Cargo.toml ./apps/telegram-bot/
 COPY ./apps/telegram-macros/Cargo.toml ./apps/telegram-macros/
-COPY ./dummy.rs ./apps/api/src/main.rs
-COPY ./dummy.rs ./apps/telegram-bot/src/lib.rs
-COPY ./dummy.rs ./apps/telegram-macros/src/lib.rs
 
 # Fetch the dependencies
 RUN cargo fetch
-
-# Build dependencies
-RUN cargo build --release --verbose
 
 # Copy the source code
 COPY ./apps/api ./apps/api
