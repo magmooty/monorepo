@@ -4,10 +4,15 @@ FROM rust:latest AS build
 # Install the necessary tools for cross-compilation
 RUN apt-get update
 RUN apt-get install -y libssl-dev pkg-config
-RUN cargo install sccache
 
 # Set up sccache caching directory
 ENV SCCACHE_DIR=/usr/local/sccache
+
+# Install sccache
+WORKDIR /usr/deps
+RUN wget https://github.com/mozilla/sccache/releases/download/v0.8.1/sccache-dist-v0.8.1-x86_64-unknown-linux-musl.tar.gz
+RUN tar -xvf sccache-dist-v0.8.1-x86_64-unknown-linux-musl.tar.gz
+RUN mv sccache-dist /usr/local/bin/sccache
 
 ARG SCCACHE_GHA_ENABLED
 ARG ACTIONS_CACHE_URL
