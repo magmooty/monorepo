@@ -11,6 +11,18 @@ on:
       - .github/workflows/deploy-desktop.yml
 
 jobs:
+  bump-version:
+    runs-on: ubuntu-latest
+    name: Test cargo-bump
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Bump version
+        uses: tj-actions/cargo-bump@v3
+        with:
+          release_type: patch
+          working_directory: ./apps/desktop
+
   publish-tauri:
     permissions:
       contents: write
@@ -18,8 +30,12 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - platform: "windows-latest"
+          - arch: "x64"
+            platform: "windows-latest"
             args: ""
+          - arch: "x32"
+            platform: "windows-latest"
+            args: "--target i686-pc-windows-msvc"
 
     runs-on: ${{ matrix.platform }}
     steps:
@@ -45,7 +61,7 @@ jobs:
         run: pnpm install
         working-directory: ./apps/desktop
 
-      - name: vcpkg build
+      - name: vcpkg build x64
         uses: johnwason/vcpkg-action@v6
         id: vcpkg
         with:
@@ -54,11 +70,24 @@ jobs:
           token: ${{ github.token }}
           cache-key: vcpkg-cache-x64-windows
           github-binarycache: true
+        if: matrix.arch == 'x64'
+
+      - name: vcpkg build x32
+        uses: johnwason/vcpkg-action@v6
+        id: vcpkg
+        with:
+          pkgs: openssl:x32-windows
+          triplet: x32-windows-release
+          token: ${{ github.token }}
+          cache-key: vcpkg-cache-x32-windows
+          github-binarycache: true
+        if: matrix.arch == 'x32'
 
       - uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           X86_64_PC_WINDOWS_MSVC_OPENSSL_DIR: ${{ github.workspace }}/vcpkg/packages/openssl_x64-windows
+          X86_PC_WINDOWS_MSVC_OPENSSL_DIR: ${{ github.workspace }}/vcpkg/packages/openssl_x32-windows
         with:
           tagName: app-__VERSION__
           releaseName: "App __VERSION__"
@@ -66,4 +95,3 @@ jobs:
           releaseDraft: true
           prerelease: false
           args: ${{ matrix.args }}
-
