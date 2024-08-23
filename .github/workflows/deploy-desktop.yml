@@ -26,7 +26,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/.cargo/registry
-          key: ${{ runner.os }}-cargo-registry-workspaces }}
+          key: ${{ runner.os }}-cargo-registry-workspaces
           restore-keys: |
             ${{ runner.os }}-cargo-registry-workspaces
 
