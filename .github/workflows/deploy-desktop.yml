@@ -22,10 +22,10 @@ jobs:
       - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Cache cargo registry
+      - name: Cache cargo
         uses: actions/cache@v3
         with:
-          path: ~/.cargo/registry
+          path: ~/.cargo
           key: ${{ runner.os }}-cargo-registry-workspaces
           restore-keys: |
             ${{ runner.os }}-cargo-registry-workspaces
