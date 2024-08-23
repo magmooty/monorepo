@@ -60,20 +60,6 @@ jobs:
           cache-from: type=local,src=./docker_cache
           cache-to: type=local,dest=./docker_cache
 
-      - name: Save Docker cache
-        if: success()
-        run: |
-          tar -cf docker_cache.tar ./docker_cache
-        shell: bash
-
-      - name: Upload Docker cache
-        uses: actions/cache@v3
-        with:
-          path: docker_cache.tar
-          key: docker-tar-${{ hashFiles('Dockerfile', 'apps/api/**/*', 'apps/telegram-bot/**/*', 'apps/telegram-macros/**/*') }}
-          restore-keys: |
-            docker-tar-
-
       - name: Install Fly.io
         uses: superfly/flyctl-actions/setup-flyctl@master
 
