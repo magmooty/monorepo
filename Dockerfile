@@ -7,6 +7,13 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update
 RUN apt-get install -y libssl-dev pkg-config
 
+# Install libssl1.1 for tdjson library
+RUN echo "deb http://deb.debian.org/debian buster main" > /etc/apt/sources.list.d/buster.list && \
+  apt-get update && \
+  apt-get install -y --no-install-recommends libssl1.1 && \
+  rm /etc/apt/sources.list.d/buster.list && \
+  apt-get clean
+
 # Install sccache
 WORKDIR /usr/deps
 RUN wget https://github.com/mozilla/sccache/releases/download/v0.8.1/sccache-v0.8.1-$(arch)-unknown-linux-musl.tar.gz
@@ -41,12 +48,25 @@ ENV AARCH64_UNKNOWN_LINUX_GNU_OPENSSL_LIB_DIR=/usr/lib/aarch64-linux-gnu
 # Build the Rust project
 RUN --mount=type=cache,target=/root/.cache/sccache cargo build --release
 
-# Prepare output image with only the exectuable binary
-FROM debian:buster-slim
+# Start from the official Rust image
+FROM rust:latest
 
-COPY --from=build /usr/src/target/release/api* /app
-COPY --from=build /usr/src/target/release/lib* /app
-COPY ./apps/api/binaries/linux-x86_64/libtdjson.so /app
-COPY ./apps/api/binaries/linux-x86_64/libtdjson.so.1.8.29 /app
+ENV DEBIAN_FRONTEND=noninteractive
 
-CMD ["app/api"]
+# Install the necessary tools for cross-compilation
+RUN apt-get update
+RUN apt-get install -y libssl-dev pkg-config
+
+# Install libssl1.1 for tdjson library
+RUN echo "deb http://deb.debian.org/debian buster main" > /etc/apt/sources.list.d/buster.list && \
+  apt-get update && \
+  apt-get install -y --no-install-recommends libssl1.1 && \
+  rm /etc/apt/sources.list.d/buster.list && \
+  apt-get clean
+
+COPY --from=build /usr/src/target/release/api* /app/
+COPY --from=build /usr/src/target/release/lib* /app/
+COPY --from=build /usr/src/apps/api/binaries/linux-x86_64/libtdjson.so /lib/
+COPY --from=build /usr/src/apps/api/binaries/linux-x86_64/libtdjson.so.1.8.35 /lib/
+
+CMD ["/app/api"]

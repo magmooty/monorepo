@@ -1,0 +1,19 @@
+FROM ubuntu:20.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+WORKDIR /usr/tdlib
+
+RUN apt-get update
+RUN apt-get install -y make git zlib1g-dev libssl-dev gperf php-cli cmake g++
+RUN git clone https://github.com/tdlib/td.git
+
+WORKDIR /usr/tdlib/td
+
+RUN rm -rf build
+RUN mkdir build
+
+WORKDIR /usr/tdlib/td/build
+
+RUN cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=../tdlib -DTD_ENABLE_LTO=ON ..
+RUN cmake --build . --target install
