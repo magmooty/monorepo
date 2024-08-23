@@ -49,15 +49,15 @@ jobs:
           token: ${{ github.token }}
           github-binarycache: true
 
-      - uses: tauri-apps/tauri-action@v0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          X86_64_PC_WINDOWS_MSVC_OPENSSL_DIR: ${{ github.workspace }}/packages/openssl_x64-windows
-        with:
-          tagName: app-v1.0.0
-          releaseName: "App v1.0.0"
-          releaseBody: "See the assets to download this version and install."
-          releaseDraft: true
-          prerelease: false
-          args: ${{ matrix.args }}
-          working-directory: ./apps/desktop
+      # - uses: tauri-apps/tauri-action@v0
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #     X86_64_PC_WINDOWS_MSVC_OPENSSL_DIR: ${{ github.workspace }}/packages/openssl_x64-windows
+      #   with:
+      #     tagName: app-v1.0.0
+      #     releaseName: "App v1.0.0"
+      #     releaseBody: "See the assets to download this version and install."
+      #     releaseDraft: true
+      #     prerelease: false
+      #     args: ${{ matrix.args }}
+      #     working-directory: ./apps/desktop
