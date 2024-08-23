@@ -23,7 +23,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: sccache layer
+      - name: Cache sccache
         uses: actions/cache@v3
         id: sccache
         with:
@@ -31,7 +31,7 @@ jobs:
             disk-sccache
           key: cache-${{ hashFiles('Cargo.lock') }}
 
-      - name: inject cache into docker
+      - name: Inject sccache into Docker
         uses: reproducible-containers/buildkit-cache-dance@v3.1.0
         with:
           cache-map: |

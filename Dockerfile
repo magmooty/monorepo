@@ -39,7 +39,7 @@ ENV X86_64_UNKNOWN_LINUX_GNU_OPENSSL_LIB_DIR=/usr/lib/x86_64-linux-gnu
 ENV AARCH64_UNKNOWN_LINUX_GNU_OPENSSL_LIB_DIR=/usr/lib/aarch64-linux-gnu
 
 # Build the Rust project
-RUN --mount=type=cache,target=/root/.cache/sccache cargo build --release --verbose
+RUN --mount=type=cache,target=/root/.cache/sccache cargo build --release
 
 # Prepare output image with only the exectuable binary
 FROM debian:buster-slim
