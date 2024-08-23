@@ -34,8 +34,7 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          docker buildx build --build-arg SCCACHE_GHA_ENABLED=on --build-arg ACTIONS_CACHE_URL=$ACTIONS_CACHE_URL --build-arg ACTIONS_RUNTIME_TOKEN=$ACTIONS_RUNTIME_TOKEN --cache-from=type=local,src=/tmp/.buildx-cache --cache-to=type=local,dest=/tmp/.buildx-cache -t registry.fly.io/magmooty-api:latest .
-          docker use registry.fly.io/magmooty-api:latest
+          docker buildx build --load --build-arg SCCACHE_GHA_ENABLED=on --build-arg ACTIONS_CACHE_URL=$ACTIONS_CACHE_URL --build-arg ACTIONS_RUNTIME_TOKEN=$ACTIONS_RUNTIME_TOKEN --cache-from=type=local,src=/tmp/.buildx-cache --cache-to=type=local,dest=/tmp/.buildx-cache -t registry.fly.io/magmooty-api:latest .
         env:
           DOCKER_BUILDKIT: 1
 
