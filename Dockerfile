@@ -5,9 +5,6 @@ FROM rust:latest AS build
 RUN apt-get update
 RUN apt-get install -y libssl-dev pkg-config
 
-# Set up sccache caching directory
-ENV SCCACHE_DIR=/usr/local/sccache
-
 # Install sccache
 WORKDIR /usr/deps
 RUN wget https://github.com/mozilla/sccache/releases/download/v0.8.1/sccache-v0.8.1-x86_64-unknown-linux-musl.tar.gz
