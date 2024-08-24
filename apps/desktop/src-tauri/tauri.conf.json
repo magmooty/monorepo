@@ -72,7 +72,10 @@
 				"providerShortName": null,
 				"signingIdentity": null
 			},
-			"resources": [],
+			"resources": [
+				"./binaries/windows-i686/openssl/*.dll",
+				"./binaries/windows-x86_64/openssl/*.dll"
+			],
 			"shortDescription": "Magmooty Desktop App",
 			"targets": "all",
 			"windows": {
@@ -81,6 +84,10 @@
 				"timestampUrl": "",
 				"webviewInstallMode": {
 					"type": "embedBootstrapper"
+				},
+				"wix": {
+					"language": "ar",
+					"dialogImagePath": "icons/128x128.png"
 				}
 			}
 		},
