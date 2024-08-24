@@ -62,13 +62,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup node
+      - name: Install Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: lts/*
-
-      - name: Install pnpm
-        run: npm install -g pnpm
+          node-version: 21
+          cache: "pnpm"
+          cache-dependency-path: apps/desktop/pnpm-lock.yaml
 
       - name: Install Rust toolchain
         uses: actions-rs/toolchain@v1
