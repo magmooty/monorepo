@@ -1,2 +1,2 @@
-<h1>Login Layout</h1>
+<h1>Auth Layout</h1>
 <slot></slot>

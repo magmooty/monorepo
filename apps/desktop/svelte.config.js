@@ -16,6 +16,8 @@ const config = {
 			sdk: './src/sdk',
 			central: './src/central',
 			common: './src/common',
+			components: './src/components',
+			images: './static/images/'
 		}
 	}
 };

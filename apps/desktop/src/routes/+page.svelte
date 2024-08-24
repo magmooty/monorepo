@@ -1,5 +1,1 @@
-<script>
-	import LocalLoginLayout from '../components/localSignIn/LocalLoginLayout .svelte';
-</script>
-
-<LocalLoginLayout />
+<h1>Home</h1>

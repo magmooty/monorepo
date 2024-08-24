@@ -1,5 +1,5 @@
 <script>
-	import Login from '../../../components/Login.svelte';
+	import UserSelector from 'components/localSignIn/UserSelector.svelte';
 </script>
 
-<Login />
+<UserSelector />

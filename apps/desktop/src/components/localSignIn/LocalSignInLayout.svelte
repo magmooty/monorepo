@@ -1,16 +1,14 @@
 <script lang="ts">
-	import { Heading, Button, Listgroup, Avatar } from 'flowbite-svelte';
+	import { Heading, Button } from 'flowbite-svelte';
 	import { ExclamationCircleSolid } from 'flowbite-svelte-icons';
-
 	import { _ } from 'svelte-i18n';
-	import UserSelector from './UserSelector.svelte';
 </script>
 
 <div class=" flex h-screen flex-row items-center text-center">
 	<div class="flex h-screen w-[50%] flex-col items-center justify-center">
 		<div class=" flex flex-col items-center justify-center">
 			<div>
-				<img class="h-[100px] w-[100px]" src="images/logo.png" alt="logo" />
+				<img class="h-[100px] w-[100px]" src="/images/logo.png" alt="logo" />
 			</div>
 			<div>
 				<Heading tag="h1" class="text-4xl text-[#0B8CD2]">{$_('localSignIn.welcomeAgain')}</Heading>
@@ -20,7 +18,7 @@
 			</div>
 		</div>
 		<div class="flex w-[274px] flex-col items-center justify-between">
-			<UserSelector />
+			<slot></slot>
 			<div class="h-[93px] w-[274px]">
 				<Button class="mb-[20px] w-[274px] bg-[#0B8CD2] hover:bg-[#1EA8F3]">
 					{$_('localSignIn.connectToMaster')}
@@ -38,6 +36,6 @@
 		</div>
 	</div>
 	<div class="flex h-screen w-[50%] flex-col items-center justify-center bg-[#0B8CD266]">
-		<img src="images/cuate.png" alt="login local" />
+		<img src="/images/cuate.png" alt="login local" />
 	</div>
 </div>
