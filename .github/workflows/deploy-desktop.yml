@@ -116,17 +116,21 @@ jobs:
           cache-key: vcpkg-cache-${{ matrix.arch }}-windows
           github-binarycache: true
 
+      - name: Copy binaries because Rust is being weird
+        run: |
+          cp ./apps/desktop/src-tauri/binaries/windows-i686/Packet.lib ./apps/desktop/src-tauri/binaries/windows-x86_64/Packet.lib
+
       - name: Setup production environment variables
         run: |
-          echo "VITE_CENTRAL_API_BASE_URL=https://magmooty-api.fly.dev" > ./apps/desktop/.env
-          echo "VITE_REMOTE_SURREAL_URL=https://magmooty-surrealdb.fly.dev/rpc" > ./apps/desktop/.env
+          echo "VITE_CENTRAL_API_BASE_URL=https://magmooty-api.fly.dev" >> ./apps/desktop/.env
+          echo "VITE_REMOTE_SURREAL_URL=https://magmooty-surrealdb.fly.dev/rpc" >> ./apps/desktop/.env
 
       - uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
           TAURI_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
-          OPENSSL_STATIC: 1
+          OPENSSL_STATIC: true
           X86_64_PC_WINDOWS_MSVC_OPENSSL_DIR: ${{ github.workspace }}/vcpkg/packages/openssl_x64-windows
           I686_PC_WINDOWS_MSVC_OPENSSL_DIR: ${{ github.workspace }}/vcpkg/packages/openssl_x86-windows
           RUSTC_WRAPPER: sccache

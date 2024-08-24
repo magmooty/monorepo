@@ -32,5 +32,8 @@ fn main() {
     #[cfg(target_os = "windows")]
     link_libraries();
 
+    #[cfg(target_os = "windows")]
+    static_vcruntime::metabuild();
+
     tauri_build::build();
 }
