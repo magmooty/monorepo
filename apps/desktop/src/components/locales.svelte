@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { locale } from 'svelte-i18n';
+	import { _, locale } from 'svelte-i18n';
 	import { Button } from 'flowbite-svelte';
 	let currentLocale: string | null | undefined;
 

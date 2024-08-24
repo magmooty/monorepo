@@ -6,10 +6,12 @@
 
 	let connected = false;
 
+
 	// Initialization logic goes here
 	app.connect().then(() => {
 		closeSplashScreen();
 		connected = true;
+
 	});
 </script>
 
