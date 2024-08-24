@@ -85,6 +85,9 @@
 				"wix": {
 					"language": "ar-SA",
 					"dialogImagePath": "icons/128x128.png"
+				},
+				"nsis": {
+					"installerIcon": "icons/icon.ico"
 				}
 			}
 		},
