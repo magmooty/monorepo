@@ -1,9 +1,6 @@
 name: Run Tests on Central API
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
     branches:
       - stage
