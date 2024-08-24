@@ -23,9 +23,12 @@ export default {
 					600: '#EF562F',
 					700: '#EB4F27',
 					800: '#CC4522',
-					900: '#A5371B'
+					900: '#A5371B',
 				}
-			}
+
+			}, fontFamily: {
+				'noto-kufi': ['"Noto Kufi Arabic"', 'sans-serif'],
+			},
 		}
 	},
 
