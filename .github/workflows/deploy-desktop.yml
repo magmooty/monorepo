@@ -53,10 +53,12 @@ jobs:
         include:
           - arch: "x64"
             platform: "windows-latest"
-            args: "--verbose"
+            args: ""
+            target: x86_64-pc-windows-msvc
           - arch: "x86"
             platform: "windows-latest"
-            args: "--verbose --target i686-pc-windows-msvc"
+            args: "--target i686-pc-windows-msvc"
+            target: i686-pc-windows-msvc
 
     runs-on: ${{ matrix.platform }}
     steps:
@@ -70,10 +72,13 @@ jobs:
       - name: Install pnpm
         run: npm install -g pnpm
 
-      - name: Install Rust stable
-        uses: dtolnay/rust-toolchain@stable
+      - name: Install Rust toolchain
+        uses: actions-rs/toolchain@v1
         with:
-          targets: "i686-pc-windows-msvc,x86_64-pc-windows-msvc"
+          profile: minimal
+          toolchain: stable
+          target: ${{ matrix.target }}
+          override: true
 
       - name: Cache cargo
         uses: actions/cache@v3
@@ -82,7 +87,7 @@ jobs:
           key: ${{ runner.os }}-cargo-registry-desktop-${{ matrix.arch }}
           restore-keys: |
             ${{ runner.os }}-cargo-registry-desktop-${{ matrix.arch }}
-          
+
       - name: Cache sccache
         uses: actions/cache@v3
         with:
@@ -109,7 +114,7 @@ jobs:
           token: ${{ github.token }}
           cache-key: vcpkg-cache-${{ matrix.arch }}-windows
           github-binarycache: true
-        
+
       - name: Setup production environment variables
         run: |
           echo "VITE_CENTRAL_API_BASE_URL=https://magmooty-api.fly.dev" > ./apps/desktop/.env
