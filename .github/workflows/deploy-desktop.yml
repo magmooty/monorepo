@@ -133,6 +133,7 @@ jobs:
           rm ./apps/desktop/src-tauri/binaries/build-libs/dummy.dll
           cp ./apps/desktop/src-tauri/binaries/windows-${{ matrix.binaries-suffix }}/vcruntime/*.dll ./apps/desktop/src-tauri/binaries/build-libs/
           cp ./apps/desktop/src-tauri/binaries/windows-${{ matrix.binaries-suffix }}/openssl/*.dll ./apps/desktop/src-tauri/binaries/build-libs/
+          cp ./apps/desktop/src-tauri/binaries/windows-${{ matrix.binaries-suffix }}/winpcap/*.dll ./apps/desktop/src-tauri/binaries/build-libs/
 
       - uses: tauri-apps/tauri-action@v0
         env:
