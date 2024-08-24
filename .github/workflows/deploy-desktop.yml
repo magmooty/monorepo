@@ -86,10 +86,10 @@ jobs:
       - name: Cache sccache
         uses: actions/cache@v3
         with:
-          path: C:\hostedtoolcache\windows\sccache
-          key: ${{ runner.os }}-sccache-desktop-${{ matrix.arch }}
+          path: C:\Users\runneradmin\AppData\Local\Mozilla\sccache\cache
+          key: ${{ runner.os }}-sccache-desktop-app-${{ matrix.arch }}
           restore-keys: |
-            ${{ runner.os }}-sccache-desktop-${{ matrix.arch }}
+            ${{ runner.os }}-sccache-desktop-app-${{ matrix.arch }}
 
       - name: Run sccache
         uses: mozilla-actions/sccache-action@v0.0.5
