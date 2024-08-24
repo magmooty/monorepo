@@ -109,6 +109,11 @@ jobs:
           token: ${{ github.token }}
           cache-key: vcpkg-cache-${{ matrix.arch }}-windows
           github-binarycache: true
+        
+      - name: Setup production environment variables
+        run: |
+          echo "VITE_CENTRAL_API_BASE_URL=https://magmooty-api.fly.dev" > ./apps/desktop/.env
+          echo "VITE_REMOTE_SURREAL_URL=https://magmooty-surrealdb.fly.dev/rpc" > ./apps/desktop/.env
 
       - uses: tauri-apps/tauri-action@v0
         env:
