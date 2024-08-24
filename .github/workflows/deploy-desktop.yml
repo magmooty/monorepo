@@ -84,7 +84,7 @@ jobs:
       - name: Cache sccache
         uses: actions/cache@v3
         with:
-          path: /root/.cache/sccache
+          path: C:\hostedtoolcache\windows\sccache
           key: ${{ runner.os }}-sccache-desktop-${{ matrix.arch }}
           restore-keys: |
             ${{ runner.os }}-sccache-desktop-${{ matrix.arch }}
