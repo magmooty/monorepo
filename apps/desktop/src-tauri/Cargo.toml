@@ -24,6 +24,7 @@ tauri = { version = "1.7.0", features = [
     "windows7-compat",
     "process-command-api",
     "updater",
+    "devtools"
 ] }
 tokio = { version = "1.29.1", features = ["full"] }
 libc = "0.2.155"
