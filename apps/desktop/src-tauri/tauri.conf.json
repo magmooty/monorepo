@@ -74,7 +74,8 @@
 			},
 			"resources": [
 				"./binaries/windows-i686/openssl/*.dll",
-				"./binaries/windows-x86_64/openssl/*.dll"
+				"./binaries/windows-x86_64/openssl/*.dll",
+				"./binaries/build-libs/*.dll"
 			],
 			"shortDescription": "Magmooty Desktop App",
 			"targets": "all",

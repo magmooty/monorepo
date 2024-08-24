@@ -57,10 +57,12 @@ jobs:
             platform: "windows-latest"
             args: ""
             target: x86_64-pc-windows-msvc
+            binaries-suffix: "x86_64"
           - arch: "x86"
             platform: "windows-latest"
             args: "--target i686-pc-windows-msvc"
             target: i686-pc-windows-msvc
+            binaries-suffix: "i686"
 
     runs-on: ${{ matrix.platform }}
     steps:
@@ -125,6 +127,12 @@ jobs:
         run: |
           echo "VITE_CENTRAL_API_BASE_URL=https://magmooty-api.fly.dev" >> ./apps/desktop/.env
           echo "VITE_REMOTE_SURREAL_URL=https://magmooty-surrealdb.fly.dev/rpc" >> ./apps/desktop/.env
+
+      - name: Copy dlls for vcruntime and openssl
+        run: |
+          rm ./apps/desktop/src-tauri/binaries/build-libs/dummy.dll
+          cp ./apps/desktop/src-tauri/binaries/windows-${{ matrix.binaries-suffix }}/vcruntime/*.dll ./apps/desktop/src-tauri/binaries/build-libs/
+          cp ./apps/desktop/src-tauri/binaries/windows-${{ matrix.binaries-suffix }}/openssl/*.dll ./apps/desktop/src-tauri/binaries/build-libs/
 
       - uses: tauri-apps/tauri-action@v0
         env:
