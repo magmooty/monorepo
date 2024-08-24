@@ -3,10 +3,10 @@ name: Run Tests on Desktop App
 on:
   push:
     branches:
-      - release
+      - main
   pull_request:
     branches:
-      - main
+      - stage
 
 jobs:
   test-desktop:

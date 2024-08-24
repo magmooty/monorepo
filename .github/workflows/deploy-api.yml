@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - stage
     paths:
       - apps/api/**/*
       - apps/telegram-bot/**/*
