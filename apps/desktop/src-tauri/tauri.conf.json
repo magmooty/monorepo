@@ -87,7 +87,7 @@
 					"type": "embedBootstrapper"
 				},
 				"wix": {
-					"language": "ar",
+					"language": "ar-SA",
 					"dialogImagePath": "icons/128x128.png"
 				}
 			}
