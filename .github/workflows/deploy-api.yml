@@ -3,7 +3,6 @@ name: Build and Deploy API to Fly.io
 on:
   push:
     branches:
-      - main
       - stage
     paths:
       - apps/api/**/*
