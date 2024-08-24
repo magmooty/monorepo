@@ -5,10 +5,13 @@
 	import '../i18n';
 
 	let connected = false;
+
+
 	// Initialization logic goes here
 	app.connect().then(() => {
-		connected = true;
 		closeSplashScreen();
+		connected = true;
+
 	});
 </script>
 

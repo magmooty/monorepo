@@ -1,7 +1,11 @@
 [package]
 name = "telegram-bot"
-version = "0.1.0"
+version = "0.1.15"
 edition = "2021"
+
+[lib]
+name = "telegram_bot"
+path = "src/lib.rs"
 
 [dependencies]
 log = "0.4.22"

@@ -1,7 +1,11 @@
 [package]
 name = "api"
-version = "0.1.0"
+version = "0.1.15"
 edition = "2021"
+
+[[bin]]
+name = "api"
+path = "src/main.rs"
 
 [build-dependencies]
 cc = "1.0"

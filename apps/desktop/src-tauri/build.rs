@@ -4,10 +4,16 @@ use std::{env, path::PathBuf};
 #[cfg(all(target_arch = "x86_64", target_os = "windows"))]
 static BINARIES_DIRECTORY: &str = r"binaries\windows-x86_64";
 
+#[cfg(all(target_arch = "x86", target_os = "windows"))]
+static BINARIES_DIRECTORY: &str = r"binaries\windows-i686";
+
 #[cfg(target_os = "windows")]
 fn link_libraries() {
     #[cfg(all(target_arch = "x86_64", target_os = "windows"))]
     println!("cargo:warning=Compiling for Windows x86_64");
+
+    #[cfg(all(target_arch = "x86", target_os = "windows"))]
+    println!("cargo:warning=Compiling for Windows x86");
 
     let current_dir = env::current_dir().expect("Failed to get current directory");
     let relative_path: PathBuf = current_dir.join(BINARIES_DIRECTORY);
@@ -25,6 +31,9 @@ fn link_libraries() {
 fn main() {
     #[cfg(target_os = "windows")]
     link_libraries();
+
+    #[cfg(target_os = "windows")]
+    static_vcruntime::metabuild();
 
     tauri_build::build();
 }
