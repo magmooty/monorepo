@@ -89,6 +89,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-cargo-registry-desktop-${{ matrix.arch }}
 
+      - name: Run sccache
+        uses: mozilla-actions/sccache-action@v0.0.5
+      - run: |
+          echo "RUSTC_WRAPPER=sccache" >> $GITHUB_ENV
+
       - name: Cache sccache
         uses: actions/cache@v3
         with:
@@ -96,11 +101,6 @@ jobs:
           key: ${{ runner.os }}-sccache-desktop-app-${{ matrix.arch }}
           restore-keys: |
             ${{ runner.os }}-sccache-desktop-app-${{ matrix.arch }}
-
-      - name: Run sccache
-        uses: mozilla-actions/sccache-action@v0.0.5
-      - run: |
-          echo "RUSTC_WRAPPER=sccache" >> $GITHUB_ENV
 
       - name: Install frontend dependencies
         run: pnpm install
