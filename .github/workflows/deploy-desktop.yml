@@ -139,14 +139,12 @@ jobs:
         run: |
           mkdir -p build-artifacts
           cp ./target/release/bundle/nsis/* ./build-artifacts/
-        working-directory: ./apps/desktop
         if: matrix.arch == 'x64'
 
       - name: Copy x86 build artifacts
         run: |
           mkdir -p build-artifacts
           cp ./target/i686-pc-windows-msvc/release/bundle/nsis/* ./build-artifacts/
-        working-directory: ./apps/desktop
         if: matrix.arch == 'x86'
 
       - uses: shallwefootball/s3-upload-action@master
