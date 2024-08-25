@@ -163,12 +163,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          echo ${{ toJson(needs.build.outputs) }}
+          echo ${{ needs.build.outputs.version }}
       - name: Download signatures
         id: sigs
         run: |
-          echo "x64_sig=$(curl https://fly.storage.tigris.dev/magmooty-desktop-releases/${{ needs.build.outputs.version }}/Magmooty_${{ needs.build.outputs.version }}_x64-setup.nsis.zip.sig)" >> "$GITHUB_OUTPUT"
-          echo "x86_sig=$(curl https://fly.storage.tigris.dev/magmooty-desktop-releases/${{ needs.build.outputs.version }}/Magmooty_${{ needs.build.outputs.version }}_x86-setup.nsis.zip.sig)" >> "$GITHUB_OUTPUT"
+          VERSION="${{ needs.build.outputs.version }}"
+          echo "x64_sig=$(curl "https://fly.storage.tigris.dev/magmooty-desktop-releases/${VERSION}/Magmooty_${VERSION}_x64-setup.nsis.zip.sig")" >> "$GITHUB_OUTPUT"
+          echo "x86_sig=$(curl "https://fly.storage.tigris.dev/magmooty-desktop-releases/${VERSION}/Magmooty_${VERSION}_x86-setup.nsis.zip.sig")" >> "$GITHUB_OUTPUT"
 
       - uses: actions/github-script@v7
         id: update-latest-json
