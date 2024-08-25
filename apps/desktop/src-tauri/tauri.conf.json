@@ -97,7 +97,7 @@
 		"updater": {
 			"active": true,
 			"endpoints": [
-				"https://fly.storage.tigris.dev/magmooty-desktop-releases/current_version.json"
+				"https://fly.storage.tigris.dev/magmooty-desktop-releases/metadata/current_version.json"
 			],
 			"dialog": true,
 			"windows": {
