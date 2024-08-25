@@ -38,13 +38,11 @@ jobs:
         run: cargo workspaces version patch --no-git-tag -y
         working-directory: ./apps/desktop/src-tauri
 
-  build-tauri:
+  build:
     name: Build and publish GitHub release for desktop app
     needs: bump-version
     permissions:
       contents: write
-    outputs:
-      version: ${{ steps.output.outputs.x64 }}
     strategy:
       fail-fast: false
       matrix:
@@ -135,12 +133,6 @@ jobs:
           distPath: "./apps/desktop/build"
           args: ${{ matrix.args }}
 
-      - name: output
-        id: output
-        run: |
-          echo "${{ matrix.arch }}=${{ steps.build.outputs.appVersion }}" >> $GITHUB_OUTPUT
-          echo ${{ steps.build.outputs.appVersion }}
-
       - name: Copy x64 build artifacts
         run: |
           mkdir -p build-artifacts
@@ -162,23 +154,28 @@ jobs:
           source_dir: ./build-artifacts
           destination_dir: ${{ steps.build.outputs.appVersion }}
 
+    outputs:
+      version: ${{ steps.build.outputs.appVersion }}
+
   update-latest-json:
     name: Upload latest version JSON
-    needs: build-tauri
+    needs: build
     runs-on: ubuntu-latest
     steps:
+      - run: |
+          echo ${{ toJson(needs.build.outputs) }}
       - name: Download signatures
         id: sigs
         run: |
-          echo "x64_sig=$(curl https://fly.storage.tigris.dev/magmooty-desktop-releases/${{ needs.build-tauri.outputs.version }}/Magmooty_${{ needs.build-tauri.outputs.version }}_x64-setup.nsis.zip.sig)" >> "$GITHUB_OUTPUT"
-          echo "x86_sig=$(curl https://fly.storage.tigris.dev/magmooty-desktop-releases/${{ needs.build-tauri.outputs.version }}/Magmooty_${{ needs.build-tauri.outputs.version }}_x86-setup.nsis.zip.sig)" >> "$GITHUB_OUTPUT"
+          echo "x64_sig=$(curl https://fly.storage.tigris.dev/magmooty-desktop-releases/${{ needs.build.outputs.version }}/Magmooty_${{ needs.build.outputs.version }}_x64-setup.nsis.zip.sig)" >> "$GITHUB_OUTPUT"
+          echo "x86_sig=$(curl https://fly.storage.tigris.dev/magmooty-desktop-releases/${{ needs.build.outputs.version }}/Magmooty_${{ needs.build.outputs.version }}_x86-setup.nsis.zip.sig)" >> "$GITHUB_OUTPUT"
 
       - uses: actions/github-script@v7
         id: update-latest-json
         with:
           script: |
             const latestJSON = {
-              version: "${{ needs.build-tauri.outputs.version }}",
+              version: "${{ needs.build.outputs.version }}",
               notes: "See the assets to download this version and install.",
               pub_date: new Date().toISOString(),
               platforms: {}
