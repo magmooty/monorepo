@@ -44,7 +44,7 @@ jobs:
     permissions:
       contents: write
     outputs:
-      version: ${{ steps.build-x64.outputs.appVersion }}
+      version: ${{ steps.build.outputs.appVersion }}
     strategy:
       fail-fast: false
       matrix:
@@ -120,7 +120,7 @@ jobs:
           cp ./apps/desktop/src-tauri/binaries/windows-${{ matrix.binaries-suffix }}/winpcap/*.dll ./apps/desktop/src-tauri/binaries/build-libs/
 
       - uses: tauri-apps/tauri-action@v0
-        id: build-${{ matrix.arch }}
+        id: build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
@@ -142,7 +142,7 @@ jobs:
           aws_secret_access_key: ${{ secrets.FLY_AWS_SECRET_ACCESS_KEY }}
           aws_bucket: magmooty-desktop-releases
           source_dir: ./target/release/bundle/nsis
-          destination_dir: ${{ steps.build-${{ matrix.arch }}.outputs.appVersion }}
+          destination_dir: ${{ steps.build.outputs.appVersion }}
 
   update-latest-json:
     name: Upload latest version JSON
@@ -154,19 +154,19 @@ jobs:
         with:
           script: |
             const latestJSON = {
-              version: "${{ needs.build-tauri.outputs.version }}",
+              version: "${{ needs.build-tauri.outputs.version[0] }}",
               notes: "See the assets to download this version and install.",
               pub_date: new Date().toISOString(),
               platforms: {}
             };
 
             latestJSON.platforms['windows-x86_64'] = {
-              url: `https://magmooty-desktop-releases.fly.dev/${{ needs.build-tauri.outputs.version }}/Magmooty_${latestJSON.version}_x64-setup.nsis.zip`,
+              url: `https://magmooty-desktop-releases.fly.dev/${latestJSON.version}/Magmooty_${latestJSON.version}_x64-setup.nsis.zip`,
               signature: "TODO"
             };
 
             latestJSON.platforms['windows-i686'] = {
-              url: `https://magmooty-desktop-releases.fly.dev/${{ needs.build-tauri.outputs.version }}/Magmooty_${latestJSON.version}_x86-setup.nsis.zip`,
+              url: `https://magmooty-desktop-releases.fly.dev/${latestJSON.version}/Magmooty_${latestJSON.version}_x86-setup.nsis.zip`,
               signature: "TODO"
             };
 
