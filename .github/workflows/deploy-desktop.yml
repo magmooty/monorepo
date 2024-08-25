@@ -205,3 +205,4 @@ jobs:
           aws_secret_access_key: ${{ secrets.FLY_AWS_SECRET_ACCESS_KEY }}
           aws_bucket: magmooty-desktop-releases
           source_dir: latest
+          destination_dir: metadata
