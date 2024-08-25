@@ -44,7 +44,7 @@ jobs:
     permissions:
       contents: write
     outputs:
-      version: ${{ steps.build.outputs.appVersion }}
+      version: ${{ steps.output.outputs.x64 }}
     strategy:
       fail-fast: false
       matrix:
@@ -135,6 +135,12 @@ jobs:
           distPath: "./apps/desktop/build"
           args: ${{ matrix.args }}
 
+      - name: output
+        id: output
+        run: |
+          echo "${{ matrix.arch }}=${{ steps.build.outputs.appVersion }}" >> $GITHUB_OUTPUT
+          echo ${{ steps.build.outputs.appVersion }}
+
       - name: Copy x64 build artifacts
         run: |
           mkdir -p build-artifacts
@@ -164,15 +170,15 @@ jobs:
       - name: Download signatures
         id: sigs
         run: |
-          echo "x64_sig=$(curl https://fly.storage.tigris.dev/magmooty-desktop-releases/${latestJSON.version}/Magmooty_${latestJSON.version}_x64-setup.nsis.zip.sig)" >> "$GITHUB_OUTPUT"
-          echo "x86_sig=$(curl https://fly.storage.tigris.dev/magmooty-desktop-releases/${latestJSON.version}/Magmooty_${latestJSON.version}_x86-setup.nsis.zip.sig)" >> "$GITHUB_OUTPUT"
+          echo "x64_sig=$(curl https://fly.storage.tigris.dev/magmooty-desktop-releases/${{ needs.build-tauri.outputs.version }}/Magmooty_${{ needs.build-tauri.outputs.version }}_x64-setup.nsis.zip.sig)" >> "$GITHUB_OUTPUT"
+          echo "x86_sig=$(curl https://fly.storage.tigris.dev/magmooty-desktop-releases/${{ needs.build-tauri.outputs.version }}/Magmooty_${{ needs.build-tauri.outputs.version }}_x86-setup.nsis.zip.sig)" >> "$GITHUB_OUTPUT"
 
       - uses: actions/github-script@v7
         id: update-latest-json
         with:
           script: |
             const latestJSON = {
-              version: "${{ needs.build-tauri.outputs.version[0] }}",
+              version: "${{ needs.build-tauri.outputs.version }}",
               notes: "See the assets to download this version and install.",
               pub_date: new Date().toISOString(),
               platforms: {}
@@ -191,7 +197,8 @@ jobs:
             core.setOutput('latestJSON', JSON.stringify(latestJSON));
 
       - run: |
-          echo "${{ steps.update-latest-json.outputs.latestJSON }}" > current_version.json
+          mkdir -p latest
+          echo "${{ steps.update-latest-json.outputs.latestJSON }}" > latest/current_version.json
 
       - uses: shallwefootball/s3-upload-action@master
         with:
@@ -199,4 +206,4 @@ jobs:
           aws_key_id: ${{ secrets.FLY_AWS_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.FLY_AWS_SECRET_ACCESS_KEY }}
           aws_bucket: magmooty-desktop-releases
-          source_dir: current_version.json
+          source_dir: latest
