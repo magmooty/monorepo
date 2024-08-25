@@ -13,8 +13,9 @@ jobs:
 
     steps:
       - run: |
-          mkdir artifacts
-          echo "Uploading files to S3" > artifacts/file.txt
+          wget https://github.com/magmooty/monorepo/releases/download/app-0.0.25/Magmooty_0.0.25_x64-setup.exe
+          mv Magmooty_0.0.25_x64-setup.exe artifacts/
+
       - uses: shallwefootball/s3-upload-action@master
         with:
           endpoint: https://fly.storage.tigris.dev
