@@ -153,7 +153,7 @@ jobs:
           aws_key_id: ${{ secrets.FLY_AWS_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.FLY_AWS_SECRET_ACCESS_KEY }}
           aws_bucket: magmooty-desktop-releases
-          source_dir: ./build-artifacts target/release/bundle/nsis
+          source_dir: ./build-artifacts
           destination_dir: ${{ steps.build.outputs.appVersion }}
 
   update-latest-json:
