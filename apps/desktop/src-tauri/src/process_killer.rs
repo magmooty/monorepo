@@ -1,6 +1,8 @@
 use std::process::Command;
-
 use log::debug;
+
+#[cfg(target_os = "windows")]
+use std::os::windows::process::CommandExt;
 
 static LOG_TARGET: &str = "Process Killer";
 
@@ -49,6 +51,7 @@ fn shutdown_process(process_id: u32) -> Result<(), std::io::Error> {
     output = Command::new("taskkill")
         .arg("/PID")
         .arg(process_id.to_string())
+        .creation_flags(0x08000000)
         .output()
         .expect("Failed to execute lsof command");
 
@@ -67,6 +70,7 @@ fn find_process_on_port(port: u16) -> Option<u32> {
         .arg("-ano")
         .arg("-p")
         .arg("TCP")
+        .creation_flags(0x08000000)
         .output()
         .expect("Failed to execute netstat command");
 

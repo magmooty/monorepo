@@ -41,6 +41,8 @@ Because we're building Tauri with MSVC, we have to install OpenSSL the Microsoft
 
 ```sh
 git clone https://github.com/microsoft/vcpkg.git
+cd vcpkg
+./bootstrap-vcpkg.sh
 ./vcpkg.exe integrate install
 ./vcpkg.exe install openssl:x64-windows
 ./vcpkg.exe install openssl:x86-windows
