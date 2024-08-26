@@ -1,5 +1,5 @@
-use std::process::Command;
 use log::debug;
+use std::process::Command;
 
 #[cfg(target_os = "windows")]
 use std::os::windows::process::CommandExt;
@@ -49,6 +49,7 @@ fn shutdown_process(process_id: u32) -> Result<(), std::io::Error> {
     let output;
 
     output = Command::new("taskkill")
+        .arg("/F")
         .arg("/PID")
         .arg(process_id.to_string())
         .creation_flags(0x08000000)
