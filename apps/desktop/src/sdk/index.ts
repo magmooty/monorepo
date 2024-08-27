@@ -11,6 +11,7 @@ import { AcademicYearController } from './academic-year';
 import { EnrollmentsController } from './enrollment';
 import { GroupController } from './group';
 import { UserController } from './user';
+import { AppEventHandler } from './events';
 
 const LOG_TARGET = 'sdk';
 
@@ -27,6 +28,7 @@ export class App {
 	public groups: GroupController;
 	public enrollments: EnrollmentsController;
 	public users: UserController;
+	public events: AppEventHandler;
 
 	private surrealDbUrl = 'http://127.0.0.1:5004/rpc';
 
@@ -44,6 +46,7 @@ export class App {
 		this.groups = new GroupController(this);
 		this.enrollments = new EnrollmentsController(this);
 		this.users = new UserController(this);
+		this.events = new AppEventHandler();
 	}
 
 	/**
@@ -83,4 +86,14 @@ export class App {
 	}
 }
 
-export const app: App = new App();
+export let app: App = new App();
+
+// Hot reloading cleanup logic
+if (import.meta.hot) {
+	import.meta.hot.accept();
+	import.meta.hot.dispose(() => {
+		logger.debug('CLEANUP', 'Cleaning up app');
+		app.events.destroy();
+		(app as unknown) = null;
+	});
+}

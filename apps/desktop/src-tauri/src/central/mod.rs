@@ -20,6 +20,7 @@ struct CheckSyncAvailabilityPayload {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all = "snake_case")]
 pub enum CheckSyncAvailabilityError {
     CenterNotFound,
     CenterSignatureInvalid,
@@ -28,6 +29,7 @@ pub enum CheckSyncAvailabilityError {
     SignatureGenerationError,
     NetworkError,
     ResponseReadError,
+    UnknownError
 }
 
 pub struct CentralAPI {}
