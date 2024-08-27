@@ -9,8 +9,8 @@ primary_region = 'cdg'
 [build]
 
 [[mounts]]
-  source = 'whatsapp_telegram_data'
-  destination = '/data'
+  source = 'third_party_data'
+  destination = '/third_party'
 
 [http_service]
   internal_port = 4000
