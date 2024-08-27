@@ -13,12 +13,12 @@ build() {
     darwin-arm64)
       echo "Building WhatsApp Bot for darwin arm64..."
       mkdir -p target/lib/darwin-arm64
-      CGO_ENABLED=1 GOOS=darwin GOARCH=arm64 go build -o target/lib/darwin-arm64/libwhatsapp.a -buildmode=c-archive lib.go
+      CGO_ENABLED=1 GOOS=darwin GOARCH=arm64 go build -o target/lib/darwin-arm64/libwhatsapp.a -buildmode=c-archive ./pkg/lib/lib.go
       ;;
     windows-x86_64)
       echo "Building WhatsApp Bot for Windows x86_64..."
       mkdir -p target/lib/windows-x86_64
-      CGO_ENABLED=1 GOOS=windows GOARCH=amd64 CC=x86_64-w64-mingw32-gcc CXX=x86_64-w64-mingw32-g++ go build -o target/lib/windows-x86_64/libwhatsapp.a -buildmode=c-archive lib.go
+      CGO_ENABLED=1 GOOS=windows GOARCH=amd64 CC=x86_64-w64-mingw32-gcc CXX=x86_64-w64-mingw32-g++ go build -o target/lib/windows-x86_64/libwhatsapp.a -buildmode=c-archive ./pkg/lib/lib.go
       ;;
     linux-x86_64)
       echo "Building WhatsApp Bot for Linux x86_64..."
