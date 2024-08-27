@@ -1,11 +1,13 @@
 package main
 
 import (
+	"github.com/containers/winquit/pkg/winquit"
 	"github.com/gin-gonic/gin"
 	"net"
 	"net/http"
 	"os"
 	"os/signal"
+	"runtime"
 	"syscall"
 	whatsapp "whatsapp-bot/whatsapp"
 )
@@ -111,10 +113,15 @@ func main() {
 
 	// Handle graceful exit
 	go func() {
-		quit := make(chan os.Signal, 1)
-		signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
-		signal.Notify(quit, os.Interrupt, syscall.SIGINT)
-		<-quit
+		if runtime.GOOS == "windows" {
+			winQuit := make(chan bool, 1)
+			winquit.NotifyOnQuit(winQuit)
+			<-winQuit
+		} else {
+			quit := make(chan os.Signal, 1)
+			signal.Notify(quit, os.Interrupt, syscall.SIGTERM, syscall.SIGINT)
+			<-quit
+		}
 
 		println("Closing WhatsApp database file")
 		whatsAppBot.Shutdown()

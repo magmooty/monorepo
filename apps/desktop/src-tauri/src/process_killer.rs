@@ -49,7 +49,6 @@ fn shutdown_process(process_id: u32) -> Result<(), std::io::Error> {
     let output;
 
     output = Command::new("taskkill")
-        .arg("/F")
         .arg("/PID")
         .arg(process_id.to_string())
         .creation_flags(0x08000000)
