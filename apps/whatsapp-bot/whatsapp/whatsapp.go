@@ -3,13 +3,13 @@ package whatsapp
 import (
 	"context"
 
+	_ "github.com/mattn/go-sqlite3"
 	"go.mau.fi/whatsmeow"
 	waProto "go.mau.fi/whatsmeow/binary/proto"
 	"go.mau.fi/whatsmeow/store/sqlstore"
 	waLog "go.mau.fi/whatsmeow/util/log"
 	"google.golang.org/protobuf/proto"
-
-	_ "github.com/mattn/go-sqlite3"
+	"os"
 )
 
 type WhatsAppBot struct {
@@ -20,7 +20,16 @@ type WhatsAppBot struct {
 
 func New(logLevel string) (*WhatsAppBot, error) {
 	dbLog := waLog.Stdout("Database", logLevel, true)
-	container, err := sqlstore.New("sqlite3", "file:whatsapp.db?_foreign_keys=on", dbLog)
+
+	// Create directory third_party if it doesn't exist
+	if _, err := os.Stat("third_party"); os.IsNotExist(err) {
+		err := os.Mkdir("third_party", 0755)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	container, err := sqlstore.New("sqlite3", "file:third_party/whatsapp.db?_foreign_keys=on", dbLog)
 	if err != nil {
 		return nil, err
 	}
