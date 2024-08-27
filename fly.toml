@@ -8,6 +8,10 @@ primary_region = 'cdg'
 
 [build]
 
+[[mounts]]
+  source = 'whatsapp_telegram_data'
+  destination = '/data'
+
 [http_service]
   internal_port = 4000
   force_https = true

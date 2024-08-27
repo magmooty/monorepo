@@ -1,6 +1,7 @@
 use crate::tdlib::ClientId;
 use crate::{requests::TdLibType, TelegramClient, TelegramRequest};
 use serde::{Deserialize, Serialize};
+use std::fs;
 
 #[derive(Serialize, Deserialize, Debug, Clone, TelegramRequest)]
 pub struct SetTdLibParameters {
@@ -46,13 +47,16 @@ pub struct SetTdLibParameters {
 
 impl SetTdLibParameters {
     pub fn new(client: &TelegramClient, api_id: i32, api_hash: String) -> Self {
+        // Create directory third_party if it doesn't exist
+        fs::create_dir_all("third_party").unwrap();
+
         Self {
             td_type: TdLibType::SetTdlibParameters,
             client_id: client.client_id,
             extra: client.generate_extra_handle(),
             use_test_dc: false,
-            database_directory: "td".to_string(),
-            files_directory: "td_files".to_string(),
+            database_directory: "third_party/td".to_string(),
+            files_directory: "third_party/td_files".to_string(),
             use_file_database: true,
             use_chat_info_database: true,
             use_message_database: false,

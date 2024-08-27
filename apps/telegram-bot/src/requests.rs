@@ -67,6 +67,8 @@ pub enum TdLibType {
     CreatePrivateChat,
     UpdateChatActiveStories,
     UpdateGroupCall,
+    UpdateChatTheme,
+    UpdateChatBackground,
     UpdateUnconfirmedSession,
     UpdateContactCloseBirthdays,
     UpdateDeleteMessages,
