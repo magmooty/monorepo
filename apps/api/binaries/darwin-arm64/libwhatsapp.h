@@ -21,8 +21,9 @@ typedef struct { const char *p; ptrdiff_t n; } _GoString_;
 
 #line 3 "lib.go"
 
+#include <unistd.h>
 #include <stdlib.h>
-#include <stdbool.h>
+#include <stdint.h>
 
 typedef struct {
     char* status;
