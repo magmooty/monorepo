@@ -8,7 +8,8 @@ export enum AppEventName {
 	SyncCollectingChangesFailed = 'sync_collecting_changes_failed',
 	SyncStarted = 'sync_started',
 	SyncProgress = 'sync_progress',
-	SyncSleep = 'sync_sleep'
+	SyncSleep = 'sync_sleep',
+	SyncUploadFailed = 'sync_upload_failed'
 }
 
 export interface AppEventPayloads {
@@ -19,6 +20,7 @@ export interface AppEventPayloads {
 	[AppEventName.SyncStarted]: number;
 	[AppEventName.SyncProgress]: number;
 	[AppEventName.SyncSleep]: never;
+	[AppEventName.SyncUploadFailed]: string;
 }
 
 export interface AppEvent<T> extends TauriEvent<T> {

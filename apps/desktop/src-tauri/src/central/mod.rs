@@ -1,7 +1,10 @@
+use crate::sync::SyncEvent;
 use base64::Engine;
 use jsonwebtoken::{Algorithm, EncodingKey, Header};
 use log::debug;
-use openssl::rsa::Rsa;
+use rsa::pkcs1v15::SigningKey;
+use rsa::signature::SignatureEncoding;
+use rsa::{pkcs1::DecodeRsaPrivateKey, sha2::Sha256, signature::SignerMut, RsaPrivateKey};
 use serde::{Deserialize, Serialize};
 use tauri::api::http::{Body, ClientBuilder, HttpRequestBuilder, ResponseData};
 
@@ -29,7 +32,27 @@ pub enum CheckSyncAvailabilityError {
     SignatureGenerationError,
     NetworkError,
     ResponseReadError,
-    UnknownError
+    UnknownError,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all = "snake_case")]
+pub enum SyncUploadChunkError {
+    SerializationError,
+    CenterNotFound,
+    SignatureInvalid,
+    Base64DecodeError,
+    PrivateKeyParseError,
+    SignatureGenerationError,
+    NetworkError,
+    ResponseReadError,
+    UnknownError,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+struct SyncUploadChunkPayload {
+    signature: String,
+    chunk: Vec<SyncEvent>,
 }
 
 pub struct CentralAPI {}
@@ -46,14 +69,8 @@ impl CentralAPI {
                 .decode(private_key)
                 .map_err(|_| CheckSyncAvailabilityError::Base64DecodeError)?;
 
-            // Load RSA private key
-            let rsa_private_key = Rsa::private_key_from_der(&private_key_der)
-                .map_err(|_| CheckSyncAvailabilityError::PrivateKeyParseError)?
-                .private_key_to_der()
-                .map_err(|_| CheckSyncAvailabilityError::PrivateKeyParseError)?;
-
             // Convert the RSA key into the correct format for jsonwebtoken
-            let encoding_key = EncodingKey::from_rsa_der(&rsa_private_key);
+            let encoding_key = EncodingKey::from_rsa_der(&private_key_der);
 
             // Define your claims
             let my_claims = serde_json::json!({ "center_id": center_id });
@@ -71,9 +88,82 @@ impl CentralAPI {
         .map_err(|_| CheckSyncAvailabilityError::SignatureGenerationError)?
     }
 
+    async fn sign_chunk(body: String, private_key: String) -> Result<String, SyncUploadChunkError> {
+        tokio::task::spawn_blocking(move || {
+            debug!(target: LOG_TARGET, "Loading private key");
+
+            let private_key_der = base64::prelude::BASE64_STANDARD
+                .decode(private_key)
+                .map_err(|_| SyncUploadChunkError::Base64DecodeError)?;
+
+            let private_key = RsaPrivateKey::from_pkcs1_der(&private_key_der)
+                .map_err(|_| SyncUploadChunkError::PrivateKeyParseError)?;
+
+            let mut signing_key = SigningKey::<Sha256>::new(private_key);
+
+            let signature = signing_key.sign(body.as_bytes());
+
+            Ok(base64::prelude::BASE64_STANDARD.encode(signature.to_bytes()))
+        })
+        .await
+        .map_err(|_| SyncUploadChunkError::SignatureGenerationError)?
+    }
+
+    pub async fn sync_upload_chunk(
+        events: &[SyncEvent],
+        private_key: &String,
+    ) -> Result<(), SyncUploadChunkError> {
+        let chunk = match serde_json::to_string(events) {
+            Ok(json) => Ok(json),
+            Err(_) => Err(SyncUploadChunkError::SerializationError),
+        }?;
+
+        let url = format!("{}/sync/upload_chunk", CENTRAL_API);
+
+        let client = ClientBuilder::new().build().unwrap();
+
+        let request = HttpRequestBuilder::new("POST", url).unwrap();
+
+        let request = request.body(Body::Json(
+            serde_json::to_value(SyncUploadChunkPayload {
+                signature: Self::sign_chunk(chunk, private_key.clone()).await?,
+                chunk: events.to_vec(),
+            })
+            .unwrap(),
+        ));
+
+        dbg!(&request);
+
+        debug!(target: LOG_TARGET, "Sending request to Central API");
+        let response = client
+            .send(request)
+            .await
+            .map_err(|_| SyncUploadChunkError::NetworkError)?;
+
+        debug!(target: LOG_TARGET, "Parsing response");
+        let ResponseData { data, .. } = response
+            .read()
+            .await
+            .map_err(|_| SyncUploadChunkError::ResponseReadError)?;
+
+        let status = data
+            .get("status")
+            .ok_or(SyncUploadChunkError::ResponseReadError)?;
+
+        match status {
+            serde_json::Value::String(status) => match status.as_str() {
+                "center_not_found" => Err(SyncUploadChunkError::CenterNotFound),
+                "signature_invalid" => Err(SyncUploadChunkError::SignatureInvalid),
+                "accepted" => Ok(()),
+                _ => Err(SyncUploadChunkError::ResponseReadError),
+            },
+            _ => Err(SyncUploadChunkError::ResponseReadError),
+        }
+    }
+
     pub async fn check_sync_availability(
-        center_id: String,
-        private_key: String,
+        center_id: &String,
+        private_key: &String,
     ) -> Result<(), CheckSyncAvailabilityError> {
         debug!(target: LOG_TARGET, "Checking sync availability");
         let url = format!("{}/sync/check_sync_availability", CENTRAL_API);
@@ -85,11 +175,9 @@ impl CentralAPI {
         debug!(target: LOG_TARGET, "Generating signature");
         let signature = Self::generate_signature(center_id.clone(), private_key.clone()).await?;
 
-        println!("sig: {}", &signature);
-
         let request = request.body(Body::Json(
             serde_json::to_value(CheckSyncAvailabilityPayload {
-                center_id,
+                center_id: center_id.clone(),
                 signature,
             })
             .unwrap(),

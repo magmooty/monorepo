@@ -7,11 +7,11 @@ use tauri::Window;
 use tokio::time::{sleep, Duration};
 
 use crate::app::{get_global_key, GlobalKey};
-use crate::central::{CentralAPI, CheckSyncAvailabilityError};
+use crate::central::{CentralAPI, CheckSyncAvailabilityError, SyncUploadChunkError};
 
 static LOG_TARGET: &str = "Sync";
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct SyncEvent {
     record_id: Thing,
     event: String,
@@ -38,7 +38,7 @@ impl Syncer {
         tokio::spawn(async move {
             loop {
                 // Run every minute
-                sleep(Duration::from_secs(10)).await;
+                sleep(Duration::from_secs(5)).await;
 
                 debug!(target: LOG_TARGET, "Syncing started");
 
@@ -81,7 +81,7 @@ impl Syncer {
                 };
 
                 // Check if sync is available
-                match CentralAPI::check_sync_availability(center_id, private_key).await {
+                match CentralAPI::check_sync_availability(&center_id, &private_key).await {
                     Ok(_) => {
                         debug!(target: LOG_TARGET, "Sync is available");
                         window.emit("sync_available", "").unwrap_or_default();
@@ -144,7 +144,25 @@ impl Syncer {
                 for chunk in sync_events.chunks(10) {
                     uploaded += chunk.len();
 
-                    window.emit("sync_progress", uploaded).unwrap_or_default();
+                    match CentralAPI::sync_upload_chunk(chunk, &private_key).await {
+                        Ok(_) => {
+                            debug!(target: LOG_TARGET, "Chunk uploaded");
+                            window.emit("sync_progress", uploaded).unwrap_or_default();
+                        }
+                        Err(error) => {
+                            debug!(target: LOG_TARGET, "Sync failed with error: {:?}", error);
+                            window
+                                .emit(
+                                    "sync_upload_chunk_failed",
+                                    serde_json::to_string(&error).unwrap_or(
+                                        serde_json::to_string(&SyncUploadChunkError::UnknownError)
+                                            .unwrap(),
+                                    ),
+                                )
+                                .unwrap_or_default();
+                            continue;
+                        }
+                    };
                 }
 
                 window.emit("sync_sleep", 60).unwrap_or_default();
