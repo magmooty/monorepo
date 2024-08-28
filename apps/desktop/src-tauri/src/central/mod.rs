@@ -7,6 +7,7 @@ use rsa::signature::SignatureEncoding;
 use rsa::{pkcs1::DecodeRsaPrivateKey, sha2::Sha256, signature::SignerMut, RsaPrivateKey};
 use serde::{Deserialize, Serialize};
 use tauri::api::http::{Body, ClientBuilder, HttpRequestBuilder, ResponseData};
+use tauri::http::header::HeaderMap;
 
 #[cfg(debug_assertions)]
 static CENTRAL_API: &str = "http://127.0.0.1:4000";
@@ -20,6 +21,11 @@ static LOG_TARGET: &str = "Central API";
 struct CheckSyncAvailabilityPayload {
     pub center_id: String,
     pub signature: String,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+struct UploadChunkPayload {
+    chunk: Vec<SyncEvent>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -47,12 +53,6 @@ pub enum SyncUploadChunkError {
     NetworkError,
     ResponseReadError,
     UnknownError,
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-struct SyncUploadChunkPayload {
-    signature: String,
-    chunk: Vec<SyncEvent>,
 }
 
 pub struct CentralAPI {}
@@ -88,7 +88,13 @@ impl CentralAPI {
         .map_err(|_| CheckSyncAvailabilityError::SignatureGenerationError)?
     }
 
-    async fn sign_chunk(body: String, private_key: String) -> Result<String, SyncUploadChunkError> {
+    async fn sign_chunk(
+        body: &String,
+        private_key: &String,
+    ) -> Result<String, SyncUploadChunkError> {
+        let body = body.clone();
+        let private_key = private_key.clone();
+
         tokio::task::spawn_blocking(move || {
             debug!(target: LOG_TARGET, "Loading private key");
 
@@ -112,27 +118,32 @@ impl CentralAPI {
     pub async fn sync_upload_chunk(
         events: &[SyncEvent],
         private_key: &String,
+        center_id: &String,
     ) -> Result<(), SyncUploadChunkError> {
-        let chunk = match serde_json::to_string(events) {
+        let url = format!("{}/sync/upload_chunk", CENTRAL_API);
+        let client = ClientBuilder::new().build().unwrap();
+        let request = HttpRequestBuilder::new("POST", url).unwrap();
+
+        let payload = UploadChunkPayload {
+            chunk: events.to_vec(),
+        };
+
+        let chunk = match serde_json::to_string(&payload) {
             Ok(json) => Ok(json),
             Err(_) => Err(SyncUploadChunkError::SerializationError),
         }?;
 
-        let url = format!("{}/sync/upload_chunk", CENTRAL_API);
+        let signature = Self::sign_chunk(&chunk, &private_key).await?;
 
-        let client = ClientBuilder::new().build().unwrap();
+        let mut headers = HeaderMap::new();
 
-        let request = HttpRequestBuilder::new("POST", url).unwrap();
+        headers.append("Content-Type", "application/json".parse().unwrap());
+        headers.append("Signature", signature.parse().unwrap());
+        headers.append("Center-ID", center_id.parse().unwrap());
 
-        let request = request.body(Body::Json(
-            serde_json::to_value(SyncUploadChunkPayload {
-                signature: Self::sign_chunk(chunk, private_key.clone()).await?,
-                chunk: events.to_vec(),
-            })
-            .unwrap(),
-        ));
-
-        dbg!(&request);
+        let request = request
+            .body(Body::Bytes(chunk.bytes().collect()))
+            .headers(headers);
 
         debug!(target: LOG_TARGET, "Sending request to Central API");
         let response = client

@@ -189,6 +189,7 @@ dependencies = [
  "quote",
  "rand 0.8.5",
  "regex",
+ "rsa",
  "serde",
  "serde_json",
  "serde_variant",

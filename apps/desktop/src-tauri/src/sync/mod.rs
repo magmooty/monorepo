@@ -144,7 +144,7 @@ impl Syncer {
                 for chunk in sync_events.chunks(10) {
                     uploaded += chunk.len();
 
-                    match CentralAPI::sync_upload_chunk(chunk, &private_key).await {
+                    match CentralAPI::sync_upload_chunk(chunk, &private_key, &center_id).await {
                         Ok(_) => {
                             debug!(target: LOG_TARGET, "Chunk uploaded");
                             window.emit("sync_progress", uploaded).unwrap_or_default();
