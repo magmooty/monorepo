@@ -141,7 +141,7 @@ impl Syncer {
                 debug!(target: LOG_TARGET, "Uploading chunks of data");
                 let mut uploaded = 0;
 
-                for chunk in sync_events.chunks(10) {
+                for chunk in sync_events.chunks(100) {
                     uploaded += chunk.len();
 
                     match CentralAPI::sync_upload_chunk(chunk, &private_key, &center_id).await {
