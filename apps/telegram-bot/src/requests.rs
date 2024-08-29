@@ -79,6 +79,7 @@ pub enum TdLibType {
     UpdateChatPhoto,
     UpdateChatMessageSender,
     UpdateSuggestedActions,
+    UpdateChatAction,
     UpdateMessageContentOpened,
     Users,
     User,

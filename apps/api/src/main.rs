@@ -64,16 +64,14 @@ async fn main() {
         TelegramClient::init::<ConsoleAuthorizationHandler, ConsoleConnectionHandler>().await;
 
     debug!(target: LOG_TARGET, "Connecting to the database");
-    let database = Arc::new(Database::new());
-    database
-        .connect(
-            &APP_SETTINGS.surrealdb_endpoint,
-            Some(Root {
-                username: &APP_SETTINGS.surrealdb_root_username,
-                password: &APP_SETTINGS.surrealdb_root_password,
-            }),
-        )
-        .await;
+    let database = Arc::new(Database::new(
+        &APP_SETTINGS.surrealdb_endpoint,
+        Some(Root {
+            username: &APP_SETTINGS.surrealdb_root_username,
+            password: &APP_SETTINGS.surrealdb_root_password,
+        }),
+    ));
+    database.connect().await;
 
     debug!(target: LOG_TARGET, "Defining database schema");
     database.define_database().await;

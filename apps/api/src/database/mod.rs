@@ -7,6 +7,10 @@ use surrealdb::sql::Thing;
 mod center;
 mod signin_code;
 mod user;
+mod sync;
+
+mod schema;
+mod local_structs;
 
 mod test_center;
 mod test_signin_code;
@@ -14,6 +18,7 @@ mod test_user;
 
 pub use center::*;
 pub use signin_code::*;
+pub use sync::*;
 pub use user::*;
 
 static LOG_TARGET: &str = "Database";
@@ -35,33 +40,41 @@ pub struct Database {
     pub signin_code: SignInCodeRepository,
     pub user: UserRepository,
     pub center: CenterRepository,
+    pub sync: SyncRepository,
+
+    endpoint: &'static str,
+    credentials: Option<Root<'static>>,
 }
 
 impl Database {
-    pub fn new() -> Self {
+    pub fn new(endpoint: &'static str, credentials: Option<Root<'static>>) -> Self {
         let surreal = Arc::new(surrealdb::Surreal::init());
         let signin_code = SignInCodeRepository::new(surreal.clone());
         let user = UserRepository::new(surreal.clone());
         let center = CenterRepository::new(surreal.clone());
+        let sync = SyncRepository::new(endpoint, credentials);
 
         Self {
             surreal,
             signin_code,
             user,
             center,
+            sync,
+            endpoint,
+            credentials,
         }
     }
 
     pub async fn in_memory() -> Self {
-        let db = Database::new();
+        let db = Database::new("mem://", None);
 
-        db.connect("mem://", None).await;
+        db.connect().await;
 
         db
     }
 
-    pub async fn connect<'a>(&self, endpoint: &str, credentials: Option<Root<'a>>) {
-        let connection = self.surreal.connect(endpoint).await;
+    pub async fn connect(&self) {
+        let connection = self.surreal.connect(self.endpoint).await;
 
         match connection {
             Ok(_) => {
@@ -71,7 +84,7 @@ impl Database {
                     .await
                     .unwrap();
 
-                if let Some(credentials) = credentials {
+                if let Some(credentials) = self.credentials {
                     self.surreal.signin(credentials).await.unwrap();
                 }
 

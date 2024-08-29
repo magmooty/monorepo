@@ -13,7 +13,7 @@ export enum AppEventName {
 }
 
 export interface AppEventPayloads {
-	[AppEventName.SyncUnavailable]: never;
+	[AppEventName.SyncUnavailable]: string;
 	[AppEventName.SyncAvailable]: never;
 	[AppEventName.SyncCollectingChanges]: never;
 	[AppEventName.SyncCollectingChangesFailed]: string;

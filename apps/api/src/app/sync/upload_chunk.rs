@@ -1,6 +1,7 @@
 use std::sync::Arc;
 
 use crate::app::{validate_payload, AppState};
+use crate::database::SyncEvent;
 use axum::body::Bytes;
 use axum::extract::State;
 use axum::http::HeaderMap;
@@ -12,20 +13,10 @@ use rsa::signature::Verifier;
 use rsa::{pkcs1::DecodeRsaPublicKey, sha2::Sha256, RsaPublicKey};
 use serde;
 use serde::{Deserialize, Serialize};
-use serde_json::Value;
-use surrealdb::sql::Datetime;
 use utoipa::ToSchema;
 use validator::Validate;
 
 static LOG_TARGET: &str = "Upload chunk";
-
-#[derive(Serialize, Deserialize, Debug, ToSchema)]
-pub struct SyncEvent {
-    record_id: Value,
-    event: String,
-    content: Value,
-    created_at: Datetime,
-}
 
 #[derive(Serialize, Deserialize, Validate, Debug, ToSchema)]
 pub struct UploadChunkPayload {
@@ -42,6 +33,7 @@ pub enum UploadChunkStatus {
     MissingHeaders,
     Base64DecodeError,
     PrivateKeyParseError,
+    DatabaseUploadError,
 }
 
 #[derive(Serialize, Debug, ToSchema)]
@@ -57,6 +49,14 @@ async fn verify_chunk(
     let body = body.clone();
     let signature = signature.clone();
     let public_key = public_key.clone();
+
+    #[cfg(any(debug_assertions, test))]
+    {
+        if signature.eq("debug") {
+            debug!(target: LOG_TARGET, "Automatically verifying signature for debug mode");
+            return Ok(());
+        }
+    }
 
     tokio::task::spawn_blocking(move || {
         let public_key = base64::prelude::BASE64_STANDARD
@@ -137,6 +137,10 @@ fn parse_payload(
     tag = "Synchronization",
     path = "/sync/upload_chunk",
     request_body = UploadChunkPayload,
+    params(
+        ("Signature", Header, description = "Signature of raw request body"),
+        ("Center-ID", Header, description = "Center ID"),
+    ),
     responses(
         (status = OK, description = "Chunk uploaded", body = UploadChunkResponse, example = json!({ "status": "accepted" })),
         (status = UNAUTHORIZED, description = "Invalid or manipulated signature", body = UploadChunkResponse, example = json!({ "status": "signature_invalid" })),
@@ -200,10 +204,27 @@ pub async fn upload_chunk(
 
     info!(target: LOG_TARGET, "Received chunk of {} for center {}", payload.chunk.len(), &center_id);
 
-    (
-        StatusCode::OK,
-        Json(UploadChunkResponse {
-            status: UploadChunkStatus::Accepted,
-        }),
-    )
+    match state
+        .db
+        .clone()
+        .sync
+        .insert_sync_events(&center_id, payload.chunk)
+        .await
+    {
+        Ok(_) => (
+            StatusCode::OK,
+            Json(UploadChunkResponse {
+                status: UploadChunkStatus::Accepted,
+            }),
+        ),
+        Err(err) => {
+            warn!(target: LOG_TARGET, "Error inserting chunk: {:?}", err);
+            (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                Json(UploadChunkResponse {
+                    status: UploadChunkStatus::DatabaseUploadError,
+                }),
+            )
+        }
+    }
 }
