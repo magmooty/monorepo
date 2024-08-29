@@ -4,5 +4,5 @@
 </script>
 
 <LocalSignInLayout>
-	<UserSelector />
+	<UserSelector slot="user-selector" />
 </LocalSignInLayout>

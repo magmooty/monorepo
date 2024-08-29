@@ -18,7 +18,7 @@
 			</div>
 		</div>
 		<div class="flex w-[274px] flex-col items-center justify-between">
-			<slot></slot>
+			<slot name="user-selector"></slot>
 			<div class="h-[93px] w-[274px]">
 				<Button class="mb-[20px] w-[274px] bg-[#0B8CD2] hover:bg-[#1EA8F3]">
 					{$_('localSignIn.connectToMaster')}
