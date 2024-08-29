@@ -46,10 +46,6 @@
 						"args": []
 					}
 				]
-			},
-			"fs": {
-				"writeFile": true,
-				"scope": ["../../api/schema.surrealql"]
 			}
 		},
 		"bundle": {
