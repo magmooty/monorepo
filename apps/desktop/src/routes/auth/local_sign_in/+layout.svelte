@@ -3,5 +3,5 @@
 </script>
 
 <LocalSignInLayout>
-	<slot></slot>
+	<slot name="login-layout"></slot>
 </LocalSignInLayout>

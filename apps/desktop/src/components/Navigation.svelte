@@ -8,11 +8,11 @@
 			<a href="/">Home</a>
 		</BottomNavItem>
 		<BottomNavItem appBtnPosition="middle">
-			<a href="/auth/localSignIn">localSignIn</a>
+			<a href="/auth/local_sign_in">localSignIn</a>
 		</BottomNavItem>
 
 		<BottomNavItem appBtnPosition="middle">
-			<a href="/auth/remoteSignIn">remoteSignIn</a>
+			<a href="/auth/remote_sign_in">remoteSignIn</a>
 		</BottomNavItem>
 		<BottomNavItem appBtnPosition="right">
 			<a href="/dashboard">Dashboard</a>
