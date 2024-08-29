@@ -11,8 +11,14 @@
 				<img class="h-[100px] w-[100px]" src="/images/logo.png" alt="logo" />
 			</div>
 			<div>
-				<Heading tag="h1" class="text-4xl text-[#0B8CD2]">{$_('localSignIn.welcomeAgain')}</Heading>
-				<Heading tag="h1" class="text-4xl  text-[#0B8CD2]"
+				<Heading
+					tag="h1"
+					class="text-base text-[#0B8CD2] sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl"
+					>{$_('localSignIn.welcomeAgain')}</Heading
+				>
+				<Heading
+					tag="h1"
+					class="text-base text-[#0B8CD2] sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl"
 					>{$_('localSignIn.chooseAccountToSignIn')}</Heading
 				>
 			</div>
