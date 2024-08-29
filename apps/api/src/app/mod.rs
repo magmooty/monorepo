@@ -13,8 +13,10 @@ use crate::database::Database;
 
 mod admin;
 mod auth;
-mod sync;
 mod common;
+mod sync;
+
+use sync::ChunkUploadSchemasAddon;
 
 #[utoipauto(paths = "./apps/api/src/app")]
 #[derive(OpenApi)]
@@ -23,7 +25,7 @@ mod common;
         title = "Magmooty Central API",
         description = "Handles authorization and offline -> remote syncing"
     ),
-    modifiers(&VersionAddon, &AdminSecurityAddon)
+    modifiers(&VersionAddon, &AdminSecurityAddon, &ChunkUploadSchemasAddon)
 )]
 struct ApiDoc;
 

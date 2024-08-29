@@ -1,6 +1,7 @@
 use std::sync::Arc;
 
 use crate::app::{validate_payload, AppState};
+use crate::database::local_structs::{self, Content};
 use crate::database::SyncEvent;
 use axum::body::Bytes;
 use axum::extract::State;
@@ -13,7 +14,8 @@ use rsa::signature::Verifier;
 use rsa::{pkcs1::DecodeRsaPublicKey, sha2::Sha256, RsaPublicKey};
 use serde;
 use serde::{Deserialize, Serialize};
-use utoipa::ToSchema;
+use utoipa::openapi::{KnownFormat, ObjectBuilder, RefOr, Schema, SchemaFormat, SchemaType};
+use utoipa::{Modify, ToSchema};
 use validator::Validate;
 
 static LOG_TARGET: &str = "Upload chunk";
@@ -21,6 +23,78 @@ static LOG_TARGET: &str = "Upload chunk";
 #[derive(Serialize, Deserialize, Validate, Debug, ToSchema)]
 pub struct UploadChunkPayload {
     pub chunk: Vec<SyncEvent>,
+}
+
+pub struct ChunkUploadSchemasAddon;
+
+impl Modify for ChunkUploadSchemasAddon {
+    fn modify(&self, openapi: &mut utoipa::openapi::OpenApi) {
+        let mut components = openapi.components.take().unwrap();
+
+        let thing = ObjectBuilder::new()
+            .title(Some("Thing"))
+            .property(
+                "tb",
+                ObjectBuilder::new().schema_type(SchemaType::String).build(),
+            )
+            .property(
+                "id",
+                ObjectBuilder::new()
+                    .schema_type(SchemaType::Object)
+                    .property(
+                        "String",
+                        ObjectBuilder::new().schema_type(SchemaType::String),
+                    ),
+            );
+
+        components
+            .schemas
+            .insert("Thing".to_string(), RefOr::T(Schema::Object(thing.build())));
+
+        let date_time = ObjectBuilder::new()
+            .schema_type(SchemaType::String)
+            .format(Some(SchemaFormat::KnownFormat(KnownFormat::DateTime)));
+
+        components.schemas.insert(
+            "Datetime".to_string(),
+            RefOr::T(Schema::Object(date_time.build())),
+        );
+
+        let (name, schema) = UploadChunkPayload::schema();
+        components.schemas.insert(name.to_string(), schema);
+
+        let (name, schema) = SyncEvent::schema();
+        components.schemas.insert(name.to_string(), schema);
+
+        let (name, schema) = local_structs::AcademicYear::schema();
+        components.schemas.insert(name.to_string(), schema);
+
+        let (name, schema) = local_structs::AcademicYearCourse::schema();
+        components.schemas.insert(name.to_string(), schema);
+
+        let (name, schema) = Content::schema();
+        components.schemas.insert(name.to_string(), schema);
+
+        let (name, schema) = local_structs::Enrollment::schema();
+        components.schemas.insert(name.to_string(), schema);
+
+        let (name, schema) = local_structs::Group::schema();
+        components.schemas.insert(name.to_string(), schema);
+
+        let (name, schema) = local_structs::Scope::schema();
+        components.schemas.insert(name.to_string(), schema);
+
+        let (name, schema) = local_structs::Space::schema();
+        components.schemas.insert(name.to_string(), schema);
+
+        let (name, schema) = local_structs::Student::schema();
+        components.schemas.insert(name.to_string(), schema);
+
+        let (name, schema) = local_structs::User::schema();
+        components.schemas.insert(name.to_string(), schema);
+
+        openapi.components = Some(components);
+    }
 }
 
 #[derive(Serialize, Debug, ToSchema)]
