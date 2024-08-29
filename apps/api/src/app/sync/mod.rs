@@ -6,6 +6,7 @@ pub mod check_sync_availability;
 pub mod upload_chunk;
 
 mod test_check_sync_availability;
+mod test_upload_chunk;
 
 pub use check_sync_availability::*;
 pub use upload_chunk::*;

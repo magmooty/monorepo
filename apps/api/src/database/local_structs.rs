@@ -5,9 +5,9 @@ use utoipa::ToSchema;
 
 #[derive(Serialize, Deserialize, Debug, ToSchema)]
 pub struct User {
-    name: String,
-    phone_number: String,
-    password: String,
+    pub name: String,
+    pub phone_number: String,
+    pub password: String,
 }
 
 #[derive(Serialize, Deserialize, Debug, ToSchema)]

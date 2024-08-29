@@ -42,10 +42,12 @@ pub struct UploadChunkResponse {
 }
 
 async fn verify_chunk(
+    center_id: &String,
     body: &Bytes,
     signature: &String,
     public_key: &String,
 ) -> Result<(), UploadChunkStatus> {
+    let center_id = center_id.clone();
     let body = body.clone();
     let signature = signature.clone();
     let public_key = public_key.clone();
@@ -75,8 +77,12 @@ async fn verify_chunk(
 
         let verifying_key = VerifyingKey::<Sha256>::new(public_key);
 
+        let mut bytes_to_sign = center_id.as_bytes().to_vec();
+
+        bytes_to_sign.extend(body);
+
         verifying_key
-            .verify(&body, &signature)
+            .verify(&bytes_to_sign, &signature)
             .map_err(|_| UploadChunkStatus::SignatureInvalid)?;
 
         Ok(())
@@ -105,9 +111,9 @@ fn extract_header(
         None => {
             warn!(target: LOG_TARGET, "No signature provided");
             return Err((
-                StatusCode::UNAUTHORIZED,
+                StatusCode::BAD_REQUEST,
                 Json(UploadChunkResponse {
-                    status: UploadChunkStatus::SignatureInvalid,
+                    status: UploadChunkStatus::MissingHeaders,
                 }),
             ));
         }
@@ -184,7 +190,7 @@ pub async fn upload_chunk(
 
     debug!(target: LOG_TARGET, "Checking chunk signature for center {}", &center_id);
 
-    match verify_chunk(&payload, &signature, &center.public_key).await {
+    match verify_chunk(&center_id, &payload, &signature, &center.public_key).await {
         Ok(_) => {}
         Err(response) => {
             warn!(target: LOG_TARGET, "Invalid chunk signature for center {}: {:?}", &center_id, &response);

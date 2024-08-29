@@ -6,15 +6,17 @@ use surrealdb::sql::Thing;
 
 mod center;
 mod signin_code;
-mod user;
 mod sync;
-
+mod user;
 mod schema;
-mod local_structs;
+
+pub mod local_structs;
 
 mod test_center;
 mod test_signin_code;
+mod test_sync;
 mod test_user;
+mod test_schema;
 
 pub use center::*;
 pub use signin_code::*;
@@ -52,7 +54,7 @@ impl Database {
         let signin_code = SignInCodeRepository::new(surreal.clone());
         let user = UserRepository::new(surreal.clone());
         let center = CenterRepository::new(surreal.clone());
-        let sync = SyncRepository::new(endpoint, credentials);
+        let sync = SyncRepository::new(surreal.clone(), endpoint, credentials);
 
         Self {
             surreal,

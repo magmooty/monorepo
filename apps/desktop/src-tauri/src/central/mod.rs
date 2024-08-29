@@ -89,9 +89,11 @@ impl CentralAPI {
     }
 
     async fn sign_chunk(
+        center_id: &String,
         body: &String,
         private_key: &String,
     ) -> Result<String, SyncUploadChunkError> {
+        let center_id = center_id.clone();
         let body = body.clone();
         let private_key = private_key.clone();
 
@@ -107,7 +109,11 @@ impl CentralAPI {
 
             let mut signing_key = SigningKey::<Sha256>::new(private_key);
 
-            let signature = signing_key.sign(body.as_bytes());
+            let mut bytes_to_sign = center_id.as_bytes().to_vec();
+
+            bytes_to_sign.extend(body.as_bytes());
+
+            let signature = signing_key.sign(&bytes_to_sign);
 
             Ok(base64::prelude::BASE64_STANDARD.encode(signature.to_bytes()))
         })
@@ -133,7 +139,7 @@ impl CentralAPI {
             Err(_) => Err(SyncUploadChunkError::SerializationError),
         }?;
 
-        let signature = Self::sign_chunk(&chunk, &private_key).await?;
+        let signature = Self::sign_chunk(&center_id, &chunk, &private_key).await?;
 
         let mut headers = HeaderMap::new();
 

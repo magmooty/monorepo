@@ -1,6 +1,6 @@
 use super::local_structs::Content;
 use serde::{Deserialize, Serialize};
-use std::str::FromStr;
+use std::{str::FromStr, sync::Arc};
 use utoipa::ToSchema;
 
 use surrealdb::{
@@ -14,10 +14,10 @@ use super::{schema::LOCAL_SCHEMA, Record};
 
 #[derive(Serialize, Deserialize, Debug, ToSchema)]
 pub struct SyncEvent {
-    record_id: Thing,
-    event: String,
-    content: Content,
-    created_at: Datetime,
+    pub record_id: Thing,
+    pub event: String,
+    pub content: Content,
+    pub created_at: Datetime,
 }
 
 #[derive(Serialize, Debug, ToSchema)]
@@ -34,13 +34,19 @@ pub enum InsertSyncEventsError {
 
 #[derive(Clone)]
 pub struct SyncRepository {
+    db: Arc<Surreal<Any>>,
     endpoint: &'static str,
     credentials: Option<Root<'static>>,
 }
 
 impl SyncRepository {
-    pub fn new(endpoint: &'static str, credentials: Option<Root<'static>>) -> Self {
+    pub fn new(
+        db: Arc<Surreal<Any>>,
+        endpoint: &'static str,
+        credentials: Option<Root<'static>>,
+    ) -> Self {
         Self {
+            db,
             endpoint,
             credentials,
         }
@@ -54,24 +60,39 @@ impl SyncRepository {
         let center_id =
             Thing::from_str(center_id).map_err(|_| InsertSyncEventsError::InvalidCenterID)?;
 
-        let db: Surreal<Any> = Surreal::init();
+        let db: Arc<Surreal<Any>>;
 
-        db.connect(self.endpoint)
-            .await
-            .map_err(|_| InsertSyncEventsError::DatabaseConnectionError)?;
+        #[cfg(test)]
+        {
+            db = self.db.clone();
 
-        db.use_ns("magmooty")
-            .use_db(center_id.id.to_string())
-            .await
-            .map_err(|_| InsertSyncEventsError::DatabaseConnectionError)?;
+            db.use_ns("magmooty")
+                .use_db(center_id.id.to_string())
+                .await
+                .map_err(|_| InsertSyncEventsError::DatabaseConnectionError)?;
+        }
 
-        let credentials = self
-            .credentials
-            .ok_or_else(|| InsertSyncEventsError::DatabaseConnectionError)?;
+        #[cfg(not(test))]
+        {
+            db = Arc::new(Surreal::init());
 
-        db.signin(credentials)
-            .await
-            .map_err(|_| InsertSyncEventsError::DatabaseConnectionError)?;
+            db.connect(self.endpoint)
+                .await
+                .map_err(|_| InsertSyncEventsError::DatabaseConnectionError)?;
+
+            db.use_ns("magmooty")
+                .use_db(center_id.id.to_string())
+                .await
+                .map_err(|_| InsertSyncEventsError::DatabaseConnectionError)?;
+
+            let credentials = self
+                .credentials
+                .ok_or_else(|| InsertSyncEventsError::DatabaseConnectionError)?;
+
+            db.signin(credentials)
+                .await
+                .map_err(|_| InsertSyncEventsError::DatabaseConnectionError)?;
+        }
 
         db.query(LOCAL_SCHEMA)
             .await
@@ -81,7 +102,7 @@ impl SyncRepository {
             match event.event.as_str() {
                 "CREATE" => {
                     let _: Record = db
-                        .create(event.record_id)
+                        .update(event.record_id)
                         .content(event.content)
                         .await
                         .map_err(|err| {
