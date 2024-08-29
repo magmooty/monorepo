@@ -8,7 +8,7 @@ use panic_handler::initialize_graceful_panic_handler;
 use process_killer::kill_hanging_sidecars;
 use simple_logger;
 use sync::Syncer;
-use tauri::api::process::CommandChild;
+use tauri::{api::process::CommandChild, Manager};
 
 #[cfg(debug_assertions)]
 use specta::collect_types;
@@ -75,10 +75,6 @@ async fn main() {
     info!(target: LOG_TARGET, "Running local SurrealDB");
     run_surreal_sidecar().await;
 
-    info!(target: LOG_TARGET, "Running syncer");
-    let syncer = Syncer::new();
-    syncer.start_syncing().await;
-
     // Run App
     info!(target: LOG_TARGET, "Running main application window");
     tauri::Builder::default()
@@ -91,6 +87,17 @@ async fn main() {
             app::open_splash_screen,
             app::close_splash_screen
         ])
+        .setup(|app| {
+            let window = app.get_window("main").expect("Main window not found");
+
+            tokio::spawn(async move {
+                info!(target: LOG_TARGET, "Running syncer");
+                let syncer = Syncer::new();
+                syncer.start_syncing(window).await;
+            });
+
+            Ok(())
+        })
         .run(tauri::generate_context!())
         .expect("Error while running tauri application");
 }

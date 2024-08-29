@@ -11,3 +11,11 @@ export default defineConfig({
 		include: ['src/**/*.{test,spec}.{js,ts}']
 	}
 });
+
+import fs from 'fs';
+import path from 'path';
+import { generateDatabaseSchema } from './src/sdk/schema';
+
+const schema = `pub static LOCAL_SCHEMA: &str = "${generateDatabaseSchema()}";`;
+
+fs.writeFileSync(path.join(__dirname, '../api/src/database/schema.rs'), schema);

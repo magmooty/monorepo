@@ -1,5 +1,5 @@
 import { App } from 'sdk';
-import { LocalUserScope } from 'sdk/user';
+import { LocalUserScope } from 'sdk/static-types';
 import { RecordId } from 'surrealdb.js';
 import { beforeAll, describe, expect, it, vi } from 'vitest';
 

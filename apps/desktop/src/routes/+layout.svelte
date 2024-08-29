@@ -1,5 +1,5 @@
 <script>
-	import { closeSplashScreen } from '$lib/bindings';
+	import { closeSplashScreen, generateKeyPair } from '$lib/bindings';
 	import '../app.css';
 	import { app } from 'sdk';
 	import '../i18n';
