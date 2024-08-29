@@ -164,7 +164,7 @@ checksum = "b3d1d046238990b9cf5bcde22a3fb3584ee5cf65fb2765f454ed428c7a0063da"
 
 [[package]]
 name = "api"
-version = "0.1.32"
+version = "0.1.33"
 dependencies = [
  "axum",
  "axum-test",
@@ -208,7 +208,7 @@ dependencies = [
 
 [[package]]
 name = "app"
-version = "0.0.34"
+version = "0.0.35"
 dependencies = [
  "base64 0.22.1",
  "cc",
@@ -652,7 +652,7 @@ dependencies = [
 
 [[package]]
 name = "bluetooth-advert-receiver"
-version = "0.1.32"
+version = "0.1.33"
 dependencies = [
  "btleplug",
  "rand 0.8.5",
@@ -7064,7 +7064,7 @@ dependencies = [
 
 [[package]]
 name = "telegram-bot"
-version = "0.1.32"
+version = "0.1.33"
 dependencies = [
  "async-trait",
  "log",
@@ -7077,7 +7077,7 @@ dependencies = [
 
 [[package]]
 name = "telegram-macros"
-version = "0.1.32"
+version = "0.1.33"
 dependencies = [
  "quote",
  "syn 2.0.72",
