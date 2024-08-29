@@ -148,6 +148,31 @@ impl Syncer {
                         Ok(_) => {
                             debug!(target: LOG_TARGET, "Chunk uploaded");
                             window.emit("sync_progress", uploaded).unwrap_or_default();
+
+                            debug!(target: LOG_TARGET, "Marking sync events as uploaded");
+                            for sync_event in chunk {
+                                match surreal
+                                    .query(
+                                        format!(
+                                            "UPDATE sync SET pushed = true WHERE record_id = '{}'",
+                                            sync_event.record_id
+                                        )
+                                        .as_str(),
+                                    )
+                                    .await
+                                {
+                                    Ok(_) => {
+                                        debug!(target: LOG_TARGET, "Sync event marked as uploaded");
+                                    }
+                                    Err(err) => {
+                                        error!(target: LOG_TARGET, "Error marking sync event as uploaded: {:?}", err);
+                                        window
+                                            .emit("sync_upload_chunk_failed", err.to_string())
+                                            .unwrap_or_default();
+                                        continue;
+                                    }
+                                }
+                            }
                         }
                         Err(error) => {
                             debug!(target: LOG_TARGET, "Sync failed with error: {:?}", error);
