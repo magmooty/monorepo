@@ -1,5 +1,8 @@
 <script>
+	import LocalSignInLayout from 'components/localSignIn/LocalSignInLayout.svelte';
 	import UserSelector from 'components/localSignIn/UserSelector.svelte';
 </script>
 
-<UserSelector />
+<LocalSignInLayout>
+	<UserSelector />
+</LocalSignInLayout>
