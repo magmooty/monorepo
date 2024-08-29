@@ -4,15 +4,21 @@
 	import { _ } from 'svelte-i18n';
 </script>
 
-<div class=" flex h-screen flex-row items-center text-center">
-	<div class="flex h-screen w-[50%] flex-col items-center justify-center">
+<div class="flex h-screen w-full flex-row text-center">
+	<div class="flex h-screen w-full flex-col items-center justify-center">
 		<div class=" flex flex-col items-center justify-center">
 			<div>
 				<img class="h-[100px] w-[100px]" src="/images/logo.png" alt="logo" />
 			</div>
 			<div>
-				<Heading tag="h1" class="text-4xl text-[#0B8CD2]">{$_('localSignIn.welcomeAgain')}</Heading>
-				<Heading tag="h1" class="text-4xl  text-[#0B8CD2]"
+				<Heading
+					tag="h1"
+					class="text-base text-[#0B8CD2] sm:text-xl md:block md:text-2xl lg:text-3xl xl:text-4xl"
+					>{$_('localSignIn.welcomeAgain')}</Heading
+				>
+				<Heading
+					tag="h1"
+					class="text-base text-[#0B8CD2] sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl"
 					>{$_('localSignIn.chooseAccountToSignIn')}</Heading
 				>
 			</div>
@@ -35,7 +41,9 @@
 			</Button>
 		</div>
 	</div>
-	<div class="flex h-screen w-[50%] flex-col items-center justify-center bg-[#0B8CD266]">
+	<div
+		class="flex hidden h-screen w-full flex-col items-center justify-center bg-[#0B8CD266] md:flex"
+	>
 		<img src="/images/cuate.png" alt="login local" />
 	</div>
 </div>
