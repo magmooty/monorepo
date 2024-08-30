@@ -4,6 +4,7 @@ import type { Space } from './space';
 import type { CreatePayload, LinkedObject } from 'common';
 import type { AcademicYear } from './academic-year';
 import type { RecordId } from 'surrealdb.js';
+import type { AcademicYearCourse } from './academic-year-course';
 
 export enum Day {
 	Saturday = 'Saturday',
@@ -38,6 +39,7 @@ export type Group = {
 	id: RecordId<string>;
 	schedule: ClassSchedule[];
 	academic_year: LinkedObject<AcademicYear>;
+	course: LinkedObject<AcademicYearCourse>;
 	space: LinkedObject<Space>;
 };
 

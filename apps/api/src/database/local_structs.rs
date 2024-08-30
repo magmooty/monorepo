@@ -40,6 +40,7 @@ pub struct AcademicYearCourse {
 pub struct Group {
     schedule: Vec<Value>,
     academic_year: Thing,
+    course: Thing,
     space: Thing,
 }
 

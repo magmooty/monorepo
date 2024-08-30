@@ -60,6 +60,7 @@ export function generateDatabaseSchema() {
 					FOR CREATE, UPDATE, DELETE WHERE ${CenterManagerScope} OR ${SpaceManagerScope} OR ${CustomScope(LocalUserScope.ManageGroups)};
 			DEFINE FIELD schedule ON TABLE group FLEXIBLE TYPE array<object>;
 			DEFINE FIELD academic_year ON TABLE group TYPE record<academic_year>;
+			DEFINE FIELD course ON TABLE group TYPE record<academic_year_course>;
 			DEFINE FIELD space ON TABLE group TYPE record<space>;
 
 			DEFINE ANALYZER name_analyzer TOKENIZERS blank FILTERS edgengram(2,10);
