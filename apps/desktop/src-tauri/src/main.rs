@@ -19,6 +19,7 @@ mod app;
 mod central;
 mod network_discovery;
 mod panic_handler;
+mod pdf;
 mod process_killer;
 mod surreal_sidecar;
 mod sync;
@@ -42,7 +43,8 @@ fn generate_typescript_bindings() {
             app::discover_network,
             app::get_root_database_credentials,
             app::open_splash_screen,
-            app::close_splash_screen
+            app::close_splash_screen,
+            app::generate_report,
         ],
         "../src/lib/bindings.ts",
     )
@@ -85,7 +87,8 @@ async fn main() {
             app::discover_network,
             app::get_root_database_credentials,
             app::open_splash_screen,
-            app::close_splash_screen
+            app::close_splash_screen,
+            app::generate_report,
         ])
         .setup(|app| {
             let window = app.get_window("main").expect("Main window not found");

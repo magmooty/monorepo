@@ -72,7 +72,7 @@
 				"providerShortName": null,
 				"signingIdentity": null
 			},
-			"resources": { "./binaries/build-libs/*.dll": "." },
+			"resources": { "./binaries/build-libs/*.dll": ".", "./fonts/NotoKufiArabic*.ttf": "./fonts" },
 			"shortDescription": "Magmooty Desktop App",
 			"targets": "all",
 			"windows": {
