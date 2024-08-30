@@ -195,6 +195,7 @@ describe('Students', () => {
 		group = (
 			await app.groups.create({
 				academic_year: academicYear,
+				course: academicYearCourse,
 				schedule: [
 					{ class_order: 1, day: Day.Saturday, start: 480, end: 540 },
 					{ class_order: 2, day: Day.Tuesday, start: 480, end: 540 }

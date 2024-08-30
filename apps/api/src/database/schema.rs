@@ -50,6 +50,7 @@ pub static LOCAL_SCHEMA: &str = "
 					FOR CREATE, UPDATE, DELETE WHERE (SELECT * FROM scope WHERE user = $auth.id AND scope_name = 'manage_center') OR space IN (SELECT space FROM scope WHERE user = $auth.id AND scope_name = 'manage_space' GROUP BY space).space OR space IN (SELECT space FROM scope WHERE user = $auth.id AND scope_name = 'manage_groups' GROUP BY space);
 			DEFINE FIELD schedule ON TABLE group FLEXIBLE TYPE array<object>;
 			DEFINE FIELD academic_year ON TABLE group TYPE record<academic_year>;
+			DEFINE FIELD course ON TABLE group TYPE record<academic_year_course>;
 			DEFINE FIELD space ON TABLE group TYPE record<space>;
 
 			DEFINE ANALYZER name_analyzer TOKENIZERS blank FILTERS edgengram(2,10);
