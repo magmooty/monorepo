@@ -38,7 +38,7 @@ impl Syncer {
         tokio::spawn(async move {
             loop {
                 // Run every minute
-                sleep(Duration::from_secs(5)).await;
+                sleep(Duration::from_secs(60)).await;
 
                 debug!(target: LOG_TARGET, "Syncing started");
 
