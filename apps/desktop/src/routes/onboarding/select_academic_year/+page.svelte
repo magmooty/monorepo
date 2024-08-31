@@ -4,8 +4,8 @@
 	import { _ } from 'svelte-i18n';
 </script>
 
-<div class="flex h-screen w-screen flex-col items-center justify-center gap-4">
-	<h1>{$_('onboarding.academicYearQuestion')}</h1>
+<div class="flex h-screen w-screen flex-col items-center justify-center gap-5">
+	<h1 class="text-3xl">{$_('onboarding.academicYearQuestion')}</h1>
 	<AcademicYearSelector />
 	<Button class="w-[300px]">{$_('common.continue')}</Button>
 </div>
