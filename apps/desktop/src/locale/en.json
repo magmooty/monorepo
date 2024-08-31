@@ -1,9 +1,15 @@
 {
- "onboarding": {
-      "yourPhoneNumber": "Your Phone Number",
-      "sendCode": "Send Code",
-      "code": "Code",
-      "signIn": "Sign In",
-      "isSignedIn": "User Is Signed In"
- }
+	"common": {
+		"continue": "Continue",
+		"choose": "Choose"
+	},
+	"onboarding": {
+		"yourPhoneNumber": "Your Phone Number",
+		"sendCode": "Send Code",
+		"code": "Code",
+		"signIn": "Sign In",
+		"isSignedIn": "User Is Signed In",
+		"academicYear": "Academic Year",
+		"academicYearQuestion": "Academic Year?"
+	}
 }
