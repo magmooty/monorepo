@@ -16,11 +16,11 @@ describe('Text Filter', () => {
 		expect(nameFilter('عبدالرحمن')).toEqual('عبد الرحمن');
 		expect(nameFilter('عبدالله')).toEqual('عبد الله');
 		expect(nameFilter('عبد الملك')).toEqual('عبد الملك');
-    expect(nameFilter('عبد ربه')).toEqual('عبدربه');
-    expect(nameFilter('عبد الاه')).toEqual('عبدالاه');
+		expect(nameFilter('عبد ربه')).toEqual('عبدربه');
+		expect(nameFilter('عبد الاه')).toEqual('عبدالاه');
 	});
 
-  it('should not normalize valid names with Abd prefixes', () => {
+	it('should not normalize valid names with Abd prefixes', () => {
 		expect(nameFilter('عبدون')).toEqual('عبدون');
 		expect(nameFilter('عبده')).toEqual('عبده');
 		expect(nameFilter('عبدربه')).toEqual('عبدربه');

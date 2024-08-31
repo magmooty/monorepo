@@ -1,4 +1,4 @@
-import type { RecordId } from "surrealdb.js";
+import type { RecordId } from 'surrealdb.js';
 
 export enum Governorate {
 	Cairo = 'cairo',
