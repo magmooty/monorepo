@@ -1,5 +1,6 @@
 <script>
 	import Button from 'components/common/button/Button.svelte';
+	import Locales from 'components/locales.svelte';
 	import { ArrowRightOutline } from 'flowbite-svelte-icons';
 </script>
 

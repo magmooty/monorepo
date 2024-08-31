@@ -1,5 +1,6 @@
 <script>
 	import { BottomNav, BottomNavItem } from 'flowbite-svelte';
+	import Locales from './locales.svelte';
 </script>
 
 <div id="dev-nav">
@@ -17,6 +18,7 @@
 		<BottomNavItem appBtnPosition="right">
 			<a href="/dashboard">Dashboard</a>
 		</BottomNavItem>
+		<Locales />
 	</BottomNav>
 </div>
 

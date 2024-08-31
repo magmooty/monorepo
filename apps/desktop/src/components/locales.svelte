@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { _, locale } from 'svelte-i18n';
-	import { Button } from 'flowbite-svelte';
+	import Button from 'components/common/button/Button.svelte';
 	let currentLocale: string | null | undefined;
 
 	const toggleLocale = () => {
