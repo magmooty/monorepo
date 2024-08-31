@@ -3,7 +3,7 @@
 	export let variant: 'primary' | 'secondary' | 'link' | 'transparent' = 'primary';
 	export let loading: boolean = false;
 
-	let classList;
+	let classList: string;
 
 	const isSecondary = variant === 'secondary';
 
@@ -18,7 +18,7 @@
 	}
 </script>
 
-<Button class={classList} on:click outline={isSecondary} {...$$restProps}>
+<Button {...$$restProps} class={`${classList} ${$$restProps.class}`} on:click outline={isSecondary}>
 	{#if loading}
 		<Spinner class="me-3" size="4" color="white" />
 	{/if}
