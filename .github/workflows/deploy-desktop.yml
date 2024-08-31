@@ -196,7 +196,7 @@ jobs:
 
       - run: |
           mkdir -p latest
-          echo "${{ steps.update-latest-json.outputs.latestJSON }}" > latest/current_version.json
+          echo '${{ steps.update-latest-json.outputs.latestJSON }}' > latest/current_version.json
 
       - uses: shallwefootball/s3-upload-action@master
         with:
