@@ -12,7 +12,8 @@ export default {
 	theme: {
 		extend: {
 			colors: {
-				primary: '#0B8CD2'
+				primary: '#0B8CD2',
+				secondary: '#F5F5F5'
 			},
 			fontFamily: {
 				'noto-kufi': ['"Noto Kufi Arabic"', 'sans-serif']
