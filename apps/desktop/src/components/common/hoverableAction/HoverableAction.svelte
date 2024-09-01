@@ -9,7 +9,7 @@
 <button
 	type="button"
 	on:click
-	class={`text-primary bg-secondary hover:bg-primary flex w-1/2 cursor-pointer flex-col items-center justify-center rounded-md p-2 text-center hover:text-white ${$$props.class}`}
+	class={`text-primary hover:bg-secondary flex w-1/2 cursor-pointer flex-col items-center justify-center rounded-md p-2 text-center ${$$props.class}`}
 >
 	<img src={imageSrc} class="w-full" alt="hoverable_action_image" />
 	<slot />
