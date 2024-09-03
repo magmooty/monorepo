@@ -1,7 +1,10 @@
 {
 	"common": {
 		"continue": "Continue",
-		"choose": "Choose"
+		"name": "name",
+		"yourName": "Your Name",
+		"choose": "Choose",
+		"password": "Password"
 	},
 	"onboarding": {
 		"yourPhoneNumber": "Your Phone Number",

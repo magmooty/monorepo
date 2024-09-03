@@ -1,14 +1,9 @@
 <script>
-	import Button from 'components/common/button/Button.svelte';
-	import HoverableAction from 'components/common/hoverableAction/HoverableAction.svelte';
-	import { ExclamationCircleSolid } from 'flowbite-svelte-icons';
+	import SetSignUpRemotePassword from 'components/SetSignUpRemotePassword.svelte';
 </script>
 
-<h1>Home</h1>
-
-<HoverableAction imageSrc="images/connect_to_master.svg" class="m-3">
-	<span class="jusitfy-center m-3 flex items-center">
-		<ExclamationCircleSolid class="m-1" />
-		Connect to master
-	</span>
-</HoverableAction>
+<div class="m-auto w-1/2">
+	<div class="mt-4">
+		<SetSignUpRemotePassword />
+	</div>
+</div>

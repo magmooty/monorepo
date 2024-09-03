@@ -1,7 +1,10 @@
 {
 	"common": {
 		"continue": "المتابعة",
-		"choose": "اختر"
+		"name": "الاسم",
+		"yourName": "اسمك",
+		"choose": "اختر",
+		"password": "كلمة المرور"
 	},
 	"onboarding": {
 		"yourPhoneNumber": "رقم هاتفك",
@@ -10,6 +13,10 @@
 		"signIn": "تسجيل الدخول",
 		"isSignedIn": "تم تسجيل دخول المستخدم",
 		"academicYear": "العام الدراسي",
-		"academicYearQuestion": "العام الدراسي؟"
+		"academicYearQuestion": "العام الدراسي؟",
+		"passwordIsRequired": "كلمة المرور مطلوبة",
+		"passwordMinLength": "يجب أن تكون كلمة المرور 8 أحرف على الأقل",
+		"nameIsRequired": "الاسم مطلوب"
+
 	}
 }
