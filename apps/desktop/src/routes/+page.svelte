@@ -1,9 +1,6 @@
 <script>
-	import SetSignUpRemotePassword from 'components/SetSignUpRemotePassword.svelte';
+	import Button from 'components/common/button/Button.svelte';
 </script>
 
-<div class="m-auto w-1/2">
-	<div class="mt-4">
-		<SetSignUpRemotePassword />
-	</div>
-</div>
+<h1>Home</h1>
+<Button href="/onboarding/set_remote_password">Set Remote Password</Button>
