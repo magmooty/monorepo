@@ -17,7 +17,7 @@
 		"passwordIsRequired": "Password is required",
 		"passwordMinLength": "Password must be at least 8 characters",
 		"nameIsRequired": "Name is required",
-		 "welcomeHeader":  "Welcome to Magmooty!",
-		 "setRemotePasswordSubHeader": "You are now the center manager, please enter a new password to login later."
+		"welcomeHeader": "Welcome to Magmooty!",
+		"setRemotePasswordSubHeader": "You are now the center manager, please enter a new password to login later."
 	}
 }
