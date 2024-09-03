@@ -18,6 +18,6 @@
 		"passwordMinLength": "يجب أن تكون كلمة المرور 8 أحرف على الأقل",
 		"nameIsRequired": "الاسم مطلوب",
 		"welcomeHeader": "مرحبا بك في مجموعتي!",
-		"setRemotePasswordSubHeader": "انت الان مدير السنتر برجاء ادخال كلمة مرور جديدة لتسجيل الدخول لاحقا"
+		"setRemotePasswordSubHeader": ".انت الان مدير السنتر برجاء ادخال كلمة مرور جديدة لتسجيل الدخول لاحقا"
 	}
 }
