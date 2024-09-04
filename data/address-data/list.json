@@ -1,0 +1,1982 @@
+[
+  {
+    "display": "15 مايو - القاهرة",
+    "city": "15_may",
+    "governorate": "cairo"
+  },
+  {
+    "display": "الازبكية - القاهرة",
+    "city": "al_azbakeyah",
+    "governorate": "cairo"
+  },
+  {
+    "display": "البساتين - القاهرة",
+    "city": "al_basatin",
+    "governorate": "cairo"
+  },
+  {
+    "display": "التبين - القاهرة",
+    "city": "tebin",
+    "governorate": "cairo"
+  },
+  {
+    "display": "الخليفة - القاهرة",
+    "city": "el-khalifa",
+    "governorate": "cairo"
+  },
+  {
+    "display": "الدراسة - القاهرة",
+    "city": "el_darrasa",
+    "governorate": "cairo"
+  },
+  {
+    "display": "الدرب الاحمر - القاهرة",
+    "city": "aldarb_alahmar",
+    "governorate": "cairo"
+  },
+  {
+    "display": "الزاوية الحمراء - القاهرة",
+    "city": "zawya_al-hamra",
+    "governorate": "cairo"
+  },
+  {
+    "display": "الزيتون - القاهرة",
+    "city": "el-zaytoun",
+    "governorate": "cairo"
+  },
+  {
+    "display": "الساحل - القاهرة",
+    "city": "sahel",
+    "governorate": "cairo"
+  },
+  {
+    "display": "السلام - القاهرة",
+    "city": "el_salam",
+    "governorate": "cairo"
+  },
+  {
+    "display": "السيدة زينب - القاهرة",
+    "city": "sayeda_zeinab",
+    "governorate": "cairo"
+  },
+  {
+    "display": "الشرابية - القاهرة",
+    "city": "el_sharabeya",
+    "governorate": "cairo"
+  },
+  {
+    "display": "مدينة الشروق - القاهرة",
+    "city": "shorouk",
+    "governorate": "cairo"
+  },
+  {
+    "display": "الظاهر - القاهرة",
+    "city": "el_daher",
+    "governorate": "cairo"
+  },
+  {
+    "display": "العتبة - القاهرة",
+    "city": "ataba",
+    "governorate": "cairo"
+  },
+  {
+    "display": "القاهرة الجديدة - القاهرة",
+    "city": "new_cairo",
+    "governorate": "cairo"
+  },
+  {
+    "display": "المرج - القاهرة",
+    "city": "el_marg",
+    "governorate": "cairo"
+  },
+  {
+    "display": "عزبة النخل - القاهرة",
+    "city": "ezbet_el_nakhl",
+    "governorate": "cairo"
+  },
+  {
+    "display": "المطرية - القاهرة",
+    "city": "matareya",
+    "governorate": "cairo"
+  },
+  {
+    "display": "المعادى - القاهرة",
+    "city": "maadi",
+    "governorate": "cairo"
+  },
+  {
+    "display": "المعصرة - القاهرة",
+    "city": "maasara",
+    "governorate": "cairo"
+  },
+  {
+    "display": "المقطم - القاهرة",
+    "city": "mokattam",
+    "governorate": "cairo"
+  },
+  {
+    "display": "المنيل - القاهرة",
+    "city": "manyal",
+    "governorate": "cairo"
+  },
+  {
+    "display": "الموسكى - القاهرة",
+    "city": "mosky",
+    "governorate": "cairo"
+  },
+  {
+    "display": "النزهة - القاهرة",
+    "city": "nozha",
+    "governorate": "cairo"
+  },
+  {
+    "display": "الوايلى - القاهرة",
+    "city": "waily",
+    "governorate": "cairo"
+  },
+  {
+    "display": "باب الشعرية - القاهرة",
+    "city": "bab_al-shereia",
+    "governorate": "cairo"
+  },
+  {
+    "display": "بولاق - القاهرة",
+    "city": "bolaq",
+    "governorate": "cairo"
+  },
+  {
+    "display": "جاردن سيتى - القاهرة",
+    "city": "garden_city",
+    "governorate": "cairo"
+  },
+  {
+    "display": "حدائق القبة - القاهرة",
+    "city": "hadayek_el-kobba",
+    "governorate": "cairo"
+  },
+  {
+    "display": "حلوان - القاهرة",
+    "city": "helwan",
+    "governorate": "cairo"
+  },
+  {
+    "display": "دار السلام - القاهرة",
+    "city": "dar_al_salam",
+    "governorate": "cairo"
+  },
+  {
+    "display": "شبرا - القاهرة",
+    "city": "shubra",
+    "governorate": "cairo"
+  },
+  {
+    "display": "طره - القاهرة",
+    "city": "tura",
+    "governorate": "cairo"
+  },
+  {
+    "display": "عابدين - القاهرة",
+    "city": "abdeen",
+    "governorate": "cairo"
+  },
+  {
+    "display": "عباسية - القاهرة",
+    "city": "abaseya",
+    "governorate": "cairo"
+  },
+  {
+    "display": "عين شمس - القاهرة",
+    "city": "ain_shams",
+    "governorate": "cairo"
+  },
+  {
+    "display": "مدينة نصر - القاهرة",
+    "city": "nasr_city",
+    "governorate": "cairo"
+  },
+  {
+    "display": "مصر الجديدة - القاهرة",
+    "city": "new_heliopolis",
+    "governorate": "cairo"
+  },
+  {
+    "display": "مصر القديمة - القاهرة",
+    "city": "masr_al_qadima",
+    "governorate": "cairo"
+  },
+  {
+    "display": "منشية ناصر - القاهرة",
+    "city": "mansheya_nasir",
+    "governorate": "cairo"
+  },
+  {
+    "display": "مدينة بدر - القاهرة",
+    "city": "badr_city",
+    "governorate": "cairo"
+  },
+  {
+    "display": "مدينة العبور - القاهرة",
+    "city": "obour_city",
+    "governorate": "cairo"
+  },
+  {
+    "display": "وسط البلد - القاهرة",
+    "city": "cairo_downtown",
+    "governorate": "cairo"
+  },
+  {
+    "display": "الزمالك - القاهرة",
+    "city": "zamalek",
+    "governorate": "cairo"
+  },
+  {
+    "display": "قصر النيل - القاهرة",
+    "city": "kasr_el_nile",
+    "governorate": "cairo"
+  },
+  {
+    "display": "الرحاب - القاهرة",
+    "city": "rehab",
+    "governorate": "cairo"
+  },
+  {
+    "display": "القطامية - القاهرة",
+    "city": "katameya",
+    "governorate": "cairo"
+  },
+  {
+    "display": "مدينتي - القاهرة",
+    "city": "madinty",
+    "governorate": "cairo"
+  },
+  {
+    "display": "روض الفرج - القاهرة",
+    "city": "rod_alfarag",
+    "governorate": "cairo"
+  },
+  {
+    "display": "شيراتون - القاهرة",
+    "city": "sheraton",
+    "governorate": "cairo"
+  },
+  {
+    "display": "الجمالية - القاهرة",
+    "city": "el-gamaleya",
+    "governorate": "cairo"
+  },
+  {
+    "display": "العاشر من رمضان - القاهرة",
+    "city": "10th_of_ramadan_city",
+    "governorate": "cairo"
+  },
+  {
+    "display": "الحلمية - القاهرة",
+    "city": "helmeyat_alzaytoun",
+    "governorate": "cairo"
+  },
+  {
+    "display": "النزهة الجديدة - القاهرة",
+    "city": "new_nozha",
+    "governorate": "cairo"
+  },
+  {
+    "display": "العاصمة الإدارية - القاهرة",
+    "city": "capital_new",
+    "governorate": "cairo"
+  },
+  {
+    "display": "الجيزة - الجيزة",
+    "city": "giza",
+    "governorate": "giza"
+  },
+  {
+    "display": "السادس من أكتوبر - الجيزة",
+    "city": "sixth_of_october",
+    "governorate": "giza"
+  },
+  {
+    "display": "الشيخ زايد - الجيزة",
+    "city": "cheikh_zayed",
+    "governorate": "giza"
+  },
+  {
+    "display": "الحوامدية - الجيزة",
+    "city": "hawamdiyah",
+    "governorate": "giza"
+  },
+  {
+    "display": "البدرشين - الجيزة",
+    "city": "al_badrasheen",
+    "governorate": "giza"
+  },
+  {
+    "display": "الصف - الجيزة",
+    "city": "saf",
+    "governorate": "giza"
+  },
+  {
+    "display": "أطفيح - الجيزة",
+    "city": "atfih",
+    "governorate": "giza"
+  },
+  {
+    "display": "العياط - الجيزة",
+    "city": "al_ayat",
+    "governorate": "giza"
+  },
+  {
+    "display": "الباويطي - الجيزة",
+    "city": "al-bawaiti",
+    "governorate": "giza"
+  },
+  {
+    "display": "منشأة القناطر - الجيزة",
+    "city": "manshiyetal_qanater",
+    "governorate": "giza"
+  },
+  {
+    "display": "أوسيم - الجيزة",
+    "city": "oaseem",
+    "governorate": "giza"
+  },
+  {
+    "display": "كرداسة - الجيزة",
+    "city": "kerdasa",
+    "governorate": "giza"
+  },
+  {
+    "display": "أبو النمرس - الجيزة",
+    "city": "abu_nomros",
+    "governorate": "giza"
+  },
+  {
+    "display": "كفر غطاطي - الجيزة",
+    "city": "kafr_ghati",
+    "governorate": "giza"
+  },
+  {
+    "display": "منشأة البكاري - الجيزة",
+    "city": "manshiyet_al_bakari",
+    "governorate": "giza"
+  },
+  {
+    "display": "الدقى - الجيزة",
+    "city": "dokki",
+    "governorate": "giza"
+  },
+  {
+    "display": "العجوزة - الجيزة",
+    "city": "agouza",
+    "governorate": "giza"
+  },
+  {
+    "display": "الهرم - الجيزة",
+    "city": "haram",
+    "governorate": "giza"
+  },
+  {
+    "display": "الوراق - الجيزة",
+    "city": "warraq",
+    "governorate": "giza"
+  },
+  {
+    "display": "امبابة - الجيزة",
+    "city": "imbaba",
+    "governorate": "giza"
+  },
+  {
+    "display": "بولاق الدكرور - الجيزة",
+    "city": "boulaq_dakrour",
+    "governorate": "giza"
+  },
+  {
+    "display": "الواحات البحرية - الجيزة",
+    "city": "al_wahat_al_baharia",
+    "governorate": "giza"
+  },
+  {
+    "display": "العمرانية - الجيزة",
+    "city": "omraneya",
+    "governorate": "giza"
+  },
+  {
+    "display": "المنيب - الجيزة",
+    "city": "moneeb",
+    "governorate": "giza"
+  },
+  {
+    "display": "بين السرايات - الجيزة",
+    "city": "bin_alsarayat",
+    "governorate": "giza"
+  },
+  {
+    "display": "الكيت كات - الجيزة",
+    "city": "kit_kat",
+    "governorate": "giza"
+  },
+  {
+    "display": "المهندسين - الجيزة",
+    "city": "mohandessin",
+    "governorate": "giza"
+  },
+  {
+    "display": "فيصل - الجيزة",
+    "city": "faisal",
+    "governorate": "giza"
+  },
+  {
+    "display": "أبو رواش - الجيزة",
+    "city": "abu_rawash",
+    "governorate": "giza"
+  },
+  {
+    "display": "حدائق الأهرام - الجيزة",
+    "city": "hadayek_alahram",
+    "governorate": "giza"
+  },
+  {
+    "display": "الحرانية - الجيزة",
+    "city": "haraneya",
+    "governorate": "giza"
+  },
+  {
+    "display": "حدائق اكتوبر - الجيزة",
+    "city": "hadayek_october",
+    "governorate": "giza"
+  },
+  {
+    "display": "صفط اللبن - الجيزة",
+    "city": "saft_allaban",
+    "governorate": "giza"
+  },
+  {
+    "display": "القرية الذكية - الجيزة",
+    "city": "smart_village",
+    "governorate": "giza"
+  },
+  {
+    "display": "ارض اللواء - الجيزة",
+    "city": "ard_ellwaa",
+    "governorate": "giza"
+  },
+  {
+    "display": "ابو قير - الأسكندرية",
+    "city": "abu_qir",
+    "governorate": "alexandria"
+  },
+  {
+    "display": "الابراهيمية - الأسكندرية",
+    "city": "al_ibrahimeyah",
+    "governorate": "alexandria"
+  },
+  {
+    "display": "الأزاريطة - الأسكندرية",
+    "city": "azarita",
+    "governorate": "alexandria"
+  },
+  {
+    "display": "الانفوشى - الأسكندرية",
+    "city": "anfoushi",
+    "governorate": "alexandria"
+  },
+  {
+    "display": "الدخيلة - الأسكندرية",
+    "city": "dekheila",
+    "governorate": "alexandria"
+  },
+  {
+    "display": "السيوف - الأسكندرية",
+    "city": "el_soyof",
+    "governorate": "alexandria"
+  },
+  {
+    "display": "العامرية - الأسكندرية",
+    "city": "ameria",
+    "governorate": "alexandria"
+  },
+  {
+    "display": "اللبان - الأسكندرية",
+    "city": "el_labban",
+    "governorate": "alexandria"
+  },
+  {
+    "display": "المفروزة - الأسكندرية",
+    "city": "al_mafrouza",
+    "governorate": "alexandria"
+  },
+  {
+    "display": "المنتزه - الأسكندرية",
+    "city": "el_montaza",
+    "governorate": "alexandria"
+  },
+  {
+    "display": "المنشية - الأسكندرية",
+    "city": "mansheya",
+    "governorate": "alexandria"
+  },
+  {
+    "display": "الناصرية - الأسكندرية",
+    "city": "naseria",
+    "governorate": "alexandria"
+  },
+  {
+    "display": "امبروزو - الأسكندرية",
+    "city": "ambrozo",
+    "governorate": "alexandria"
+  },
+  {
+    "display": "باب شرق - الأسكندرية",
+    "city": "bab_sharq",
+    "governorate": "alexandria"
+  },
+  {
+    "display": "برج العرب - الأسكندرية",
+    "city": "bourj_alarab",
+    "governorate": "alexandria"
+  },
+  {
+    "display": "ستانلى - الأسكندرية",
+    "city": "stanley",
+    "governorate": "alexandria"
+  },
+  {
+    "display": "سموحة - الأسكندرية",
+    "city": "smouha",
+    "governorate": "alexandria"
+  },
+  {
+    "display": "سيدى بشر - الأسكندرية",
+    "city": "sidi_bishr",
+    "governorate": "alexandria"
+  },
+  {
+    "display": "شدس - الأسكندرية",
+    "city": "shads",
+    "governorate": "alexandria"
+  },
+  {
+    "display": "غيط العنب - الأسكندرية",
+    "city": "gheet_alenab",
+    "governorate": "alexandria"
+  },
+  {
+    "display": "فلمينج - الأسكندرية",
+    "city": "fleming",
+    "governorate": "alexandria"
+  },
+  {
+    "display": "فيكتوريا - الأسكندرية",
+    "city": "victoria",
+    "governorate": "alexandria"
+  },
+  {
+    "display": "كامب شيزار - الأسكندرية",
+    "city": "camp_shizar",
+    "governorate": "alexandria"
+  },
+  {
+    "display": "كرموز - الأسكندرية",
+    "city": "karmooz",
+    "governorate": "alexandria"
+  },
+  {
+    "display": "محطة الرمل - الأسكندرية",
+    "city": "mahta_alraml",
+    "governorate": "alexandria"
+  },
+  {
+    "display": "مينا البصل - الأسكندرية",
+    "city": "mina_el-basal",
+    "governorate": "alexandria"
+  },
+  {
+    "display": "العصافرة - الأسكندرية",
+    "city": "asafra",
+    "governorate": "alexandria"
+  },
+  {
+    "display": "العجمي - الأسكندرية",
+    "city": "agamy",
+    "governorate": "alexandria"
+  },
+  {
+    "display": "بكوس - الأسكندرية",
+    "city": "bakos",
+    "governorate": "alexandria"
+  },
+  {
+    "display": "بولكلي - الأسكندرية",
+    "city": "boulkly",
+    "governorate": "alexandria"
+  },
+  {
+    "display": "كليوباترا - الأسكندرية",
+    "city": "cleopatra",
+    "governorate": "alexandria"
+  },
+  {
+    "display": "جليم - الأسكندرية",
+    "city": "glim",
+    "governorate": "alexandria"
+  },
+  {
+    "display": "المعمورة - الأسكندرية",
+    "city": "al_mamurah",
+    "governorate": "alexandria"
+  },
+  {
+    "display": "المندرة - الأسكندرية",
+    "city": "al_mandara",
+    "governorate": "alexandria"
+  },
+  {
+    "display": "محرم بك - الأسكندرية",
+    "city": "moharam_bek",
+    "governorate": "alexandria"
+  },
+  {
+    "display": "الشاطبي - الأسكندرية",
+    "city": "elshatby",
+    "governorate": "alexandria"
+  },
+  {
+    "display": "سيدي جابر - الأسكندرية",
+    "city": "sidi_gaber",
+    "governorate": "alexandria"
+  },
+  {
+    "display": "الساحل الشمالي - الأسكندرية",
+    "city": "north_coast/sahel",
+    "governorate": "alexandria"
+  },
+  {
+    "display": "الحضرة - الأسكندرية",
+    "city": "alhadra",
+    "governorate": "alexandria"
+  },
+  {
+    "display": "العطارين - الأسكندرية",
+    "city": "alattarin",
+    "governorate": "alexandria"
+  },
+  {
+    "display": "سيدي كرير - الأسكندرية",
+    "city": "sidi_kerir",
+    "governorate": "alexandria"
+  },
+  {
+    "display": "الجمرك - الأسكندرية",
+    "city": "elgomrok",
+    "governorate": "alexandria"
+  },
+  {
+    "display": "المكس - الأسكندرية",
+    "city": "al_max",
+    "governorate": "alexandria"
+  },
+  {
+    "display": "مارينا - الأسكندرية",
+    "city": "marina",
+    "governorate": "alexandria"
+  },
+  {
+    "display": "المنصورة - الدقهلية",
+    "city": "mansoura",
+    "governorate": "dakahlia"
+  },
+  {
+    "display": "طلخا - الدقهلية",
+    "city": "talkha",
+    "governorate": "dakahlia"
+  },
+  {
+    "display": "ميت غمر - الدقهلية",
+    "city": "mitt_ghamr",
+    "governorate": "dakahlia"
+  },
+  {
+    "display": "دكرنس - الدقهلية",
+    "city": "dekernes",
+    "governorate": "dakahlia"
+  },
+  {
+    "display": "أجا - الدقهلية",
+    "city": "aga",
+    "governorate": "dakahlia"
+  },
+  {
+    "display": "منية النصر - الدقهلية",
+    "city": "menia_el_nasr",
+    "governorate": "dakahlia"
+  },
+  {
+    "display": "السنبلاوين - الدقهلية",
+    "city": "sinbillawin",
+    "governorate": "dakahlia"
+  },
+  {
+    "display": "الكردي - الدقهلية",
+    "city": "el_kurdi",
+    "governorate": "dakahlia"
+  },
+  {
+    "display": "بني عبيد - الدقهلية",
+    "city": "bani_ubaid",
+    "governorate": "dakahlia"
+  },
+  {
+    "display": "المنزلة - الدقهلية",
+    "city": "al_manzala",
+    "governorate": "dakahlia"
+  },
+  {
+    "display": "تمي الأمديد - الدقهلية",
+    "city": "tami_al'amdid",
+    "governorate": "dakahlia"
+  },
+  {
+    "display": "الجمالية - الدقهلية",
+    "city": "aljamalia",
+    "governorate": "dakahlia"
+  },
+  {
+    "display": "شربين - الدقهلية",
+    "city": "sherbin",
+    "governorate": "dakahlia"
+  },
+  {
+    "display": "المطرية - الدقهلية",
+    "city": "mataria",
+    "governorate": "dakahlia"
+  },
+  {
+    "display": "بلقاس - الدقهلية",
+    "city": "belqas",
+    "governorate": "dakahlia"
+  },
+  {
+    "display": "ميت سلسيل - الدقهلية",
+    "city": "meet_salsil",
+    "governorate": "dakahlia"
+  },
+  {
+    "display": "جمصة - الدقهلية",
+    "city": "gamasa",
+    "governorate": "dakahlia"
+  },
+  {
+    "display": "محلة دمنة - الدقهلية",
+    "city": "mahalat_damana",
+    "governorate": "dakahlia"
+  },
+  {
+    "display": "نبروه - الدقهلية",
+    "city": "nabroh",
+    "governorate": "dakahlia"
+  },
+  {
+    "display": "الغردقة - البحر الأحمر",
+    "city": "hurghada",
+    "governorate": "red_sea"
+  },
+  {
+    "display": "رأس غارب - البحر الأحمر",
+    "city": "ras_ghareb",
+    "governorate": "red_sea"
+  },
+  {
+    "display": "سفاجا - البحر الأحمر",
+    "city": "safaga",
+    "governorate": "red_sea"
+  },
+  {
+    "display": "القصير - البحر الأحمر",
+    "city": "el_qusiar",
+    "governorate": "red_sea"
+  },
+  {
+    "display": "مرسى علم - البحر الأحمر",
+    "city": "marsa_alam",
+    "governorate": "red_sea"
+  },
+  {
+    "display": "الشلاتين - البحر الأحمر",
+    "city": "shalatin",
+    "governorate": "red_sea"
+  },
+  {
+    "display": "حلايب - البحر الأحمر",
+    "city": "halaib",
+    "governorate": "red_sea"
+  },
+  {
+    "display": "الدهار - البحر الأحمر",
+    "city": "aldahar",
+    "governorate": "red_sea"
+  },
+  {
+    "display": "دمنهور - البحيرة",
+    "city": "damanhour",
+    "governorate": "beheira"
+  },
+  {
+    "display": "كفر الدوار - البحيرة",
+    "city": "kafr_el_dawar",
+    "governorate": "beheira"
+  },
+  {
+    "display": "رشيد - البحيرة",
+    "city": "rashid",
+    "governorate": "beheira"
+  },
+  {
+    "display": "إدكو - البحيرة",
+    "city": "edco",
+    "governorate": "beheira"
+  },
+  {
+    "display": "أبو المطامير - البحيرة",
+    "city": "abu_al-matamir",
+    "governorate": "beheira"
+  },
+  {
+    "display": "أبو حمص - البحيرة",
+    "city": "abu_homs",
+    "governorate": "beheira"
+  },
+  {
+    "display": "الدلنجات - البحيرة",
+    "city": "delengat",
+    "governorate": "beheira"
+  },
+  {
+    "display": "المحمودية - البحيرة",
+    "city": "mahmoudiyah",
+    "governorate": "beheira"
+  },
+  {
+    "display": "الرحمانية - البحيرة",
+    "city": "rahmaniyah",
+    "governorate": "beheira"
+  },
+  {
+    "display": "إيتاي البارود - البحيرة",
+    "city": "itai_baroud",
+    "governorate": "beheira"
+  },
+  {
+    "display": "حوش عيسى - البحيرة",
+    "city": "housh_eissa",
+    "governorate": "beheira"
+  },
+  {
+    "display": "شبراخيت - البحيرة",
+    "city": "shubrakhit",
+    "governorate": "beheira"
+  },
+  {
+    "display": "كوم حمادة - البحيرة",
+    "city": "kom_hamada",
+    "governorate": "beheira"
+  },
+  {
+    "display": "بدر - البحيرة",
+    "city": "badr",
+    "governorate": "beheira"
+  },
+  {
+    "display": "وادي النطرون - البحيرة",
+    "city": "wadi_natrun",
+    "governorate": "beheira"
+  },
+  {
+    "display": "النوبارية الجديدة - البحيرة",
+    "city": "new_nubaria",
+    "governorate": "beheira"
+  },
+  {
+    "display": "النوبارية - البحيرة",
+    "city": "alnoubareya",
+    "governorate": "beheira"
+  },
+  {
+    "display": "الفيوم - الفيوم",
+    "city": "fayoum",
+    "governorate": "fayoum"
+  },
+  {
+    "display": "الفيوم الجديدة - الفيوم",
+    "city": "fayoum_el_gedida",
+    "governorate": "fayoum"
+  },
+  {
+    "display": "طامية - الفيوم",
+    "city": "tamiya",
+    "governorate": "fayoum"
+  },
+  {
+    "display": "سنورس - الفيوم",
+    "city": "snores",
+    "governorate": "fayoum"
+  },
+  {
+    "display": "إطسا - الفيوم",
+    "city": "etsa",
+    "governorate": "fayoum"
+  },
+  {
+    "display": "إبشواي - الفيوم",
+    "city": "epschway",
+    "governorate": "fayoum"
+  },
+  {
+    "display": "يوسف الصديق - الفيوم",
+    "city": "yusuf_el_sediaq",
+    "governorate": "fayoum"
+  },
+  {
+    "display": "الحادقة - الفيوم",
+    "city": "hadqa",
+    "governorate": "fayoum"
+  },
+  {
+    "display": "اطسا - الفيوم",
+    "city": "atsa",
+    "governorate": "fayoum"
+  },
+  {
+    "display": "الجامعة - الفيوم",
+    "city": "algamaa",
+    "governorate": "fayoum"
+  },
+  {
+    "display": "السيالة - الفيوم",
+    "city": "sayala",
+    "governorate": "fayoum"
+  },
+  {
+    "display": "طنطا - الغربية",
+    "city": "tanta",
+    "governorate": "gharbiya"
+  },
+  {
+    "display": "المحلة الكبرى - الغربية",
+    "city": "al_mahalla_al_kobra",
+    "governorate": "gharbiya"
+  },
+  {
+    "display": "كفر الزيات - الغربية",
+    "city": "kafr_el_zayat",
+    "governorate": "gharbiya"
+  },
+  {
+    "display": "زفتى - الغربية",
+    "city": "zefta",
+    "governorate": "gharbiya"
+  },
+  {
+    "display": "السنطة - الغربية",
+    "city": "el_santa",
+    "governorate": "gharbiya"
+  },
+  {
+    "display": "قطور - الغربية",
+    "city": "qutour",
+    "governorate": "gharbiya"
+  },
+  {
+    "display": "بسيون - الغربية",
+    "city": "basion",
+    "governorate": "gharbiya"
+  },
+  {
+    "display": "سمنود - الغربية",
+    "city": "samannoud",
+    "governorate": "gharbiya"
+  },
+  {
+    "display": "الإسماعيلية - الإسماعلية",
+    "city": "ismailia",
+    "governorate": "ismailia"
+  },
+  {
+    "display": "فايد - الإسماعلية",
+    "city": "fayed",
+    "governorate": "ismailia"
+  },
+  {
+    "display": "القنطرة شرق - الإسماعلية",
+    "city": "qantara_sharq",
+    "governorate": "ismailia"
+  },
+  {
+    "display": "القنطرة غرب - الإسماعلية",
+    "city": "qantara_gharb",
+    "governorate": "ismailia"
+  },
+  {
+    "display": "التل الكبير - الإسماعلية",
+    "city": "el_tal_el_kabier",
+    "governorate": "ismailia"
+  },
+  {
+    "display": "أبو صوير - الإسماعلية",
+    "city": "abu_sawir",
+    "governorate": "ismailia"
+  },
+  {
+    "display": "القصاصين الجديدة - الإسماعلية",
+    "city": "kasasien_el_gedida",
+    "governorate": "ismailia"
+  },
+  {
+    "display": "نفيشة - الإسماعلية",
+    "city": "nefesha",
+    "governorate": "ismailia"
+  },
+  {
+    "display": "الشيخ زايد - الإسماعلية",
+    "city": "sheikh_zayed",
+    "governorate": "ismailia"
+  },
+  {
+    "display": "شبين الكوم - المنوفية",
+    "city": "shbeen_el_koom",
+    "governorate": "menofia"
+  },
+  {
+    "display": "مدينة السادات - المنوفية",
+    "city": "sadat_city",
+    "governorate": "menofia"
+  },
+  {
+    "display": "منوف - المنوفية",
+    "city": "menouf",
+    "governorate": "menofia"
+  },
+  {
+    "display": "سرس الليان - المنوفية",
+    "city": "sars_el-layan",
+    "governorate": "menofia"
+  },
+  {
+    "display": "أشمون - المنوفية",
+    "city": "ashmon",
+    "governorate": "menofia"
+  },
+  {
+    "display": "الباجور - المنوفية",
+    "city": "al_bagor",
+    "governorate": "menofia"
+  },
+  {
+    "display": "قويسنا - المنوفية",
+    "city": "quesna",
+    "governorate": "menofia"
+  },
+  {
+    "display": "بركة السبع - المنوفية",
+    "city": "berkat_el_saba",
+    "governorate": "menofia"
+  },
+  {
+    "display": "تلا - المنوفية",
+    "city": "tala",
+    "governorate": "menofia"
+  },
+  {
+    "display": "الشهداء - المنوفية",
+    "city": "al_shohada",
+    "governorate": "menofia"
+  },
+  {
+    "display": "المنيا - المنيا",
+    "city": "minya",
+    "governorate": "minya"
+  },
+  {
+    "display": "المنيا الجديدة - المنيا",
+    "city": "minya_el_gedida",
+    "governorate": "minya"
+  },
+  {
+    "display": "العدوة - المنيا",
+    "city": "el_adwa",
+    "governorate": "minya"
+  },
+  {
+    "display": "مغاغة - المنيا",
+    "city": "magagha",
+    "governorate": "minya"
+  },
+  {
+    "display": "بني مزار - المنيا",
+    "city": "bani_mazar",
+    "governorate": "minya"
+  },
+  {
+    "display": "مطاي - المنيا",
+    "city": "mattay",
+    "governorate": "minya"
+  },
+  {
+    "display": "سمالوط - المنيا",
+    "city": "samalut",
+    "governorate": "minya"
+  },
+  {
+    "display": "المدينة الفكرية - المنيا",
+    "city": "madinat_el_fekria",
+    "governorate": "minya"
+  },
+  {
+    "display": "ملوي - المنيا",
+    "city": "meloy",
+    "governorate": "minya"
+  },
+  {
+    "display": "دير مواس - المنيا",
+    "city": "deir_mawas",
+    "governorate": "minya"
+  },
+  {
+    "display": "ابو قرقاص - المنيا",
+    "city": "abu_qurqas",
+    "governorate": "minya"
+  },
+  {
+    "display": "ارض سلطان - المنيا",
+    "city": "ard_sultan",
+    "governorate": "minya"
+  },
+  {
+    "display": "بنها - القليوبية",
+    "city": "banha",
+    "governorate": "qaliubiya"
+  },
+  {
+    "display": "قليوب - القليوبية",
+    "city": "qalyub",
+    "governorate": "qaliubiya"
+  },
+  {
+    "display": "شبرا الخيمة - القليوبية",
+    "city": "shubra_al_khaimah",
+    "governorate": "qaliubiya"
+  },
+  {
+    "display": "القناطر الخيرية - القليوبية",
+    "city": "al_qanater_charity",
+    "governorate": "qaliubiya"
+  },
+  {
+    "display": "الخانكة - القليوبية",
+    "city": "khanka",
+    "governorate": "qaliubiya"
+  },
+  {
+    "display": "كفر شكر - القليوبية",
+    "city": "kafr_shukr",
+    "governorate": "qaliubiya"
+  },
+  {
+    "display": "طوخ - القليوبية",
+    "city": "tukh",
+    "governorate": "qaliubiya"
+  },
+  {
+    "display": "قها - القليوبية",
+    "city": "qaha",
+    "governorate": "qaliubiya"
+  },
+  {
+    "display": "العبور - القليوبية",
+    "city": "obour",
+    "governorate": "qaliubiya"
+  },
+  {
+    "display": "الخصوص - القليوبية",
+    "city": "khosous",
+    "governorate": "qaliubiya"
+  },
+  {
+    "display": "شبين القناطر - القليوبية",
+    "city": "shibin_al_qanater",
+    "governorate": "qaliubiya"
+  },
+  {
+    "display": "مسطرد - القليوبية",
+    "city": "mostorod",
+    "governorate": "qaliubiya"
+  },
+  {
+    "display": "الخارجة - الوادي الجديد",
+    "city": "el_kharga",
+    "governorate": "new_valley"
+  },
+  {
+    "display": "باريس - الوادي الجديد",
+    "city": "paris",
+    "governorate": "new_valley"
+  },
+  {
+    "display": "موط - الوادي الجديد",
+    "city": "mout",
+    "governorate": "new_valley"
+  },
+  {
+    "display": "الفرافرة - الوادي الجديد",
+    "city": "farafra",
+    "governorate": "new_valley"
+  },
+  {
+    "display": "بلاط - الوادي الجديد",
+    "city": "balat",
+    "governorate": "new_valley"
+  },
+  {
+    "display": "الداخلة - الوادي الجديد",
+    "city": "dakhla",
+    "governorate": "new_valley"
+  },
+  {
+    "display": "السويس - السويس",
+    "city": "suez",
+    "governorate": "suez"
+  },
+  {
+    "display": "الجناين - السويس",
+    "city": "alganayen",
+    "governorate": "suez"
+  },
+  {
+    "display": "عتاقة - السويس",
+    "city": "ataqah",
+    "governorate": "suez"
+  },
+  {
+    "display": "العين السخنة - السويس",
+    "city": "ain_sokhna",
+    "governorate": "suez"
+  },
+  {
+    "display": "فيصل - السويس",
+    "city": "faysal",
+    "governorate": "suez"
+  },
+  {
+    "display": "أسوان - اسوان",
+    "city": "aswan",
+    "governorate": "aswan"
+  },
+  {
+    "display": "أسوان الجديدة - اسوان",
+    "city": "aswan_el_gedida",
+    "governorate": "aswan"
+  },
+  {
+    "display": "دراو - اسوان",
+    "city": "drau",
+    "governorate": "aswan"
+  },
+  {
+    "display": "كوم أمبو - اسوان",
+    "city": "kom_ombo",
+    "governorate": "aswan"
+  },
+  {
+    "display": "نصر النوبة - اسوان",
+    "city": "nasr_al_nuba",
+    "governorate": "aswan"
+  },
+  {
+    "display": "كلابشة - اسوان",
+    "city": "kalabsha",
+    "governorate": "aswan"
+  },
+  {
+    "display": "إدفو - اسوان",
+    "city": "edfu",
+    "governorate": "aswan"
+  },
+  {
+    "display": "الرديسية - اسوان",
+    "city": "al-radisiyah",
+    "governorate": "aswan"
+  },
+  {
+    "display": "البصيلية - اسوان",
+    "city": "al_basilia",
+    "governorate": "aswan"
+  },
+  {
+    "display": "السباعية - اسوان",
+    "city": "al_sibaeia",
+    "governorate": "aswan"
+  },
+  {
+    "display": "ابوسمبل السياحية - اسوان",
+    "city": "abo_simbl_al_siyahia",
+    "governorate": "aswan"
+  },
+  {
+    "display": "مرسى علم - اسوان",
+    "city": "marsa_alam",
+    "governorate": "aswan"
+  },
+  {
+    "display": "أسيوط - اسيوط",
+    "city": "assiut",
+    "governorate": "assiut"
+  },
+  {
+    "display": "أسيوط الجديدة - اسيوط",
+    "city": "assiut_el_gedida",
+    "governorate": "assiut"
+  },
+  {
+    "display": "ديروط - اسيوط",
+    "city": "dayrout",
+    "governorate": "assiut"
+  },
+  {
+    "display": "منفلوط - اسيوط",
+    "city": "manfalut",
+    "governorate": "assiut"
+  },
+  {
+    "display": "القوصية - اسيوط",
+    "city": "qusiya",
+    "governorate": "assiut"
+  },
+  {
+    "display": "أبنوب - اسيوط",
+    "city": "abnoub",
+    "governorate": "assiut"
+  },
+  {
+    "display": "أبو تيج - اسيوط",
+    "city": "abu_tig",
+    "governorate": "assiut"
+  },
+  {
+    "display": "الغنايم - اسيوط",
+    "city": "el_ghanaim",
+    "governorate": "assiut"
+  },
+  {
+    "display": "ساحل سليم - اسيوط",
+    "city": "sahel_selim",
+    "governorate": "assiut"
+  },
+  {
+    "display": "البداري - اسيوط",
+    "city": "el_badari",
+    "governorate": "assiut"
+  },
+  {
+    "display": "صدفا - اسيوط",
+    "city": "sidfa",
+    "governorate": "assiut"
+  },
+  {
+    "display": "بني سويف - بني سويف",
+    "city": "bani_sweif",
+    "governorate": "beni_suef"
+  },
+  {
+    "display": "بني سويف الجديدة - بني سويف",
+    "city": "beni_suef_el_gedida",
+    "governorate": "beni_suef"
+  },
+  {
+    "display": "الواسطى - بني سويف",
+    "city": "al_wasta",
+    "governorate": "beni_suef"
+  },
+  {
+    "display": "ناصر - بني سويف",
+    "city": "naser",
+    "governorate": "beni_suef"
+  },
+  {
+    "display": "إهناسيا - بني سويف",
+    "city": "ehnasia",
+    "governorate": "beni_suef"
+  },
+  {
+    "display": "ببا - بني سويف",
+    "city": "beba",
+    "governorate": "beni_suef"
+  },
+  {
+    "display": "الفشن - بني سويف",
+    "city": "fashn",
+    "governorate": "beni_suef"
+  },
+  {
+    "display": "سمسطا - بني سويف",
+    "city": "somasta",
+    "governorate": "beni_suef"
+  },
+  {
+    "display": "الاباصيرى - بني سويف",
+    "city": "alabbaseri",
+    "governorate": "beni_suef"
+  },
+  {
+    "display": "مقبل - بني سويف",
+    "city": "mokbel",
+    "governorate": "beni_suef"
+  },
+  {
+    "display": "بورسعيد - بورسعيد",
+    "city": "porsaid",
+    "governorate": "port_said"
+  },
+  {
+    "display": "بورفؤاد - بورسعيد",
+    "city": "port_fouad",
+    "governorate": "port_said"
+  },
+  {
+    "display": "العرب - بورسعيد",
+    "city": "alarab",
+    "governorate": "port_said"
+  },
+  {
+    "display": "حى الزهور - بورسعيد",
+    "city": "zohour",
+    "governorate": "port_said"
+  },
+  {
+    "display": "حى الشرق - بورسعيد",
+    "city": "alsharq",
+    "governorate": "port_said"
+  },
+  {
+    "display": "حى الضواحى - بورسعيد",
+    "city": "aldawahi",
+    "governorate": "port_said"
+  },
+  {
+    "display": "حى المناخ - بورسعيد",
+    "city": "almanakh",
+    "governorate": "port_said"
+  },
+  {
+    "display": "حى مبارك - بورسعيد",
+    "city": "mubarak",
+    "governorate": "port_said"
+  },
+  {
+    "display": "دمياط - دمياط",
+    "city": "damietta",
+    "governorate": "damietta"
+  },
+  {
+    "display": "دمياط الجديدة - دمياط",
+    "city": "new_damietta",
+    "governorate": "damietta"
+  },
+  {
+    "display": "رأس البر - دمياط",
+    "city": "ras_el_bar",
+    "governorate": "damietta"
+  },
+  {
+    "display": "فارسكور - دمياط",
+    "city": "faraskour",
+    "governorate": "damietta"
+  },
+  {
+    "display": "الزرقا - دمياط",
+    "city": "zarqa",
+    "governorate": "damietta"
+  },
+  {
+    "display": "السرو - دمياط",
+    "city": "alsaru",
+    "governorate": "damietta"
+  },
+  {
+    "display": "الروضة - دمياط",
+    "city": "alruwda",
+    "governorate": "damietta"
+  },
+  {
+    "display": "كفر البطيخ - دمياط",
+    "city": "kafr_el-batikh",
+    "governorate": "damietta"
+  },
+  {
+    "display": "عزبة البرج - دمياط",
+    "city": "azbet_al_burg",
+    "governorate": "damietta"
+  },
+  {
+    "display": "ميت أبو غالب - دمياط",
+    "city": "meet_abou_ghalib",
+    "governorate": "damietta"
+  },
+  {
+    "display": "كفر سعد - دمياط",
+    "city": "kafr_saad",
+    "governorate": "damietta"
+  },
+  {
+    "display": "الزقازيق - الشرقية",
+    "city": "zagazig",
+    "governorate": "sharkia"
+  },
+  {
+    "display": "العاشر من رمضان - الشرقية",
+    "city": "al_ashr_men_ramadan",
+    "governorate": "sharkia"
+  },
+  {
+    "display": "منيا القمح - الشرقية",
+    "city": "minya_al_qamh",
+    "governorate": "sharkia"
+  },
+  {
+    "display": "بلبيس - الشرقية",
+    "city": "belbeis",
+    "governorate": "sharkia"
+  },
+  {
+    "display": "مشتول السوق - الشرقية",
+    "city": "mashtoul_el_souq",
+    "governorate": "sharkia"
+  },
+  {
+    "display": "القنايات - الشرقية",
+    "city": "qenaiat",
+    "governorate": "sharkia"
+  },
+  {
+    "display": "أبو حماد - الشرقية",
+    "city": "abu_hammad",
+    "governorate": "sharkia"
+  },
+  {
+    "display": "القرين - الشرقية",
+    "city": "el_qurain",
+    "governorate": "sharkia"
+  },
+  {
+    "display": "ههيا - الشرقية",
+    "city": "hehia",
+    "governorate": "sharkia"
+  },
+  {
+    "display": "أبو كبير - الشرقية",
+    "city": "abu_kabir",
+    "governorate": "sharkia"
+  },
+  {
+    "display": "فاقوس - الشرقية",
+    "city": "faccus",
+    "governorate": "sharkia"
+  },
+  {
+    "display": "الصالحية الجديدة - الشرقية",
+    "city": "el_salihia_el_gedida",
+    "governorate": "sharkia"
+  },
+  {
+    "display": "الإبراهيمية - الشرقية",
+    "city": "al_ibrahimiyah",
+    "governorate": "sharkia"
+  },
+  {
+    "display": "ديرب نجم - الشرقية",
+    "city": "deirb_negm",
+    "governorate": "sharkia"
+  },
+  {
+    "display": "كفر صقر - الشرقية",
+    "city": "kafr_saqr",
+    "governorate": "sharkia"
+  },
+  {
+    "display": "أولاد صقر - الشرقية",
+    "city": "awlad_saqr",
+    "governorate": "sharkia"
+  },
+  {
+    "display": "الحسينية - الشرقية",
+    "city": "husseiniya",
+    "governorate": "sharkia"
+  },
+  {
+    "display": "صان الحجر القبلية - الشرقية",
+    "city": "san_alhajar_alqablia",
+    "governorate": "sharkia"
+  },
+  {
+    "display": "منشأة أبو عمر - الشرقية",
+    "city": "manshayat_abu_omar",
+    "governorate": "sharkia"
+  },
+  {
+    "display": "الطور - جنوب سيناء",
+    "city": "al_toor",
+    "governorate": "south_sinai"
+  },
+  {
+    "display": "شرم الشيخ - جنوب سيناء",
+    "city": "sharm_el-shaikh",
+    "governorate": "south_sinai"
+  },
+  {
+    "display": "دهب - جنوب سيناء",
+    "city": "dahab",
+    "governorate": "south_sinai"
+  },
+  {
+    "display": "نويبع - جنوب سيناء",
+    "city": "nuweiba",
+    "governorate": "south_sinai"
+  },
+  {
+    "display": "طابا - جنوب سيناء",
+    "city": "taba",
+    "governorate": "south_sinai"
+  },
+  {
+    "display": "سانت كاترين - جنوب سيناء",
+    "city": "saint_catherine",
+    "governorate": "south_sinai"
+  },
+  {
+    "display": "أبو رديس - جنوب سيناء",
+    "city": "abu_redis",
+    "governorate": "south_sinai"
+  },
+  {
+    "display": "أبو زنيمة - جنوب سيناء",
+    "city": "abu_zenaima",
+    "governorate": "south_sinai"
+  },
+  {
+    "display": "رأس سدر - جنوب سيناء",
+    "city": "ras_sidr",
+    "governorate": "south_sinai"
+  },
+  {
+    "display": "كفر الشيخ - كفر الشيخ",
+    "city": "kafr_el_sheikh",
+    "governorate": "kafr_al_sheikh"
+  },
+  {
+    "display": "وسط البلد كفر الشيخ - كفر الشيخ",
+    "city": "kafr_el_sheikh_downtown",
+    "governorate": "kafr_al_sheikh"
+  },
+  {
+    "display": "دسوق - كفر الشيخ",
+    "city": "desouq",
+    "governorate": "kafr_al_sheikh"
+  },
+  {
+    "display": "فوه - كفر الشيخ",
+    "city": "fooh",
+    "governorate": "kafr_al_sheikh"
+  },
+  {
+    "display": "مطوبس - كفر الشيخ",
+    "city": "metobas",
+    "governorate": "kafr_al_sheikh"
+  },
+  {
+    "display": "برج البرلس - كفر الشيخ",
+    "city": "burg_al_burullus",
+    "governorate": "kafr_al_sheikh"
+  },
+  {
+    "display": "بلطيم - كفر الشيخ",
+    "city": "baltim",
+    "governorate": "kafr_al_sheikh"
+  },
+  {
+    "display": "مصيف بلطيم - كفر الشيخ",
+    "city": "masief_baltim",
+    "governorate": "kafr_al_sheikh"
+  },
+  {
+    "display": "الحامول - كفر الشيخ",
+    "city": "hamol",
+    "governorate": "kafr_al_sheikh"
+  },
+  {
+    "display": "بيلا - كفر الشيخ",
+    "city": "bella",
+    "governorate": "kafr_al_sheikh"
+  },
+  {
+    "display": "الرياض - كفر الشيخ",
+    "city": "riyadh",
+    "governorate": "kafr_al_sheikh"
+  },
+  {
+    "display": "سيدي سالم - كفر الشيخ",
+    "city": "sidi_salm",
+    "governorate": "kafr_al_sheikh"
+  },
+  {
+    "display": "قلين - كفر الشيخ",
+    "city": "qellen",
+    "governorate": "kafr_al_sheikh"
+  },
+  {
+    "display": "سيدي غازي - كفر الشيخ",
+    "city": "sidi_ghazi",
+    "governorate": "kafr_al_sheikh"
+  },
+  {
+    "display": "مرسى مطروح - مطروح",
+    "city": "marsa_matrouh",
+    "governorate": "matrouh"
+  },
+  {
+    "display": "الحمام - مطروح",
+    "city": "el_hamam",
+    "governorate": "matrouh"
+  },
+  {
+    "display": "العلمين - مطروح",
+    "city": "alamein",
+    "governorate": "matrouh"
+  },
+  {
+    "display": "الضبعة - مطروح",
+    "city": "dabaa",
+    "governorate": "matrouh"
+  },
+  {
+    "display": "النجيلة - مطروح",
+    "city": "al-nagila",
+    "governorate": "matrouh"
+  },
+  {
+    "display": "سيدي براني - مطروح",
+    "city": "sidi_brani",
+    "governorate": "matrouh"
+  },
+  {
+    "display": "السلوم - مطروح",
+    "city": "salloum",
+    "governorate": "matrouh"
+  },
+  {
+    "display": "سيوة - مطروح",
+    "city": "siwa",
+    "governorate": "matrouh"
+  },
+  {
+    "display": "مارينا - مطروح",
+    "city": "marina",
+    "governorate": "matrouh"
+  },
+  {
+    "display": "الساحل الشمالى - مطروح",
+    "city": "north_coast",
+    "governorate": "matrouh"
+  },
+  {
+    "display": "الأقصر - الأقصر",
+    "city": "luxor",
+    "governorate": "luxor"
+  },
+  {
+    "display": "الأقصر الجديدة - الأقصر",
+    "city": "new_luxor",
+    "governorate": "luxor"
+  },
+  {
+    "display": "إسنا - الأقصر",
+    "city": "esna",
+    "governorate": "luxor"
+  },
+  {
+    "display": "طيبة الجديدة - الأقصر",
+    "city": "new_tiba",
+    "governorate": "luxor"
+  },
+  {
+    "display": "الزينية - الأقصر",
+    "city": "al_ziynia",
+    "governorate": "luxor"
+  },
+  {
+    "display": "البياضية - الأقصر",
+    "city": "al_bayadieh",
+    "governorate": "luxor"
+  },
+  {
+    "display": "القرنة - الأقصر",
+    "city": "al_qarna",
+    "governorate": "luxor"
+  },
+  {
+    "display": "أرمنت - الأقصر",
+    "city": "armant",
+    "governorate": "luxor"
+  },
+  {
+    "display": "الطود - الأقصر",
+    "city": "al_tud",
+    "governorate": "luxor"
+  },
+  {
+    "display": "قنا - قنا",
+    "city": "qena",
+    "governorate": "qena"
+  },
+  {
+    "display": "قنا الجديدة - قنا",
+    "city": "new_qena",
+    "governorate": "qena"
+  },
+  {
+    "display": "ابو طشت - قنا",
+    "city": "abu_tesht",
+    "governorate": "qena"
+  },
+  {
+    "display": "نجع حمادي - قنا",
+    "city": "nag_hammadi",
+    "governorate": "qena"
+  },
+  {
+    "display": "دشنا - قنا",
+    "city": "deshna",
+    "governorate": "qena"
+  },
+  {
+    "display": "الوقف - قنا",
+    "city": "alwaqf",
+    "governorate": "qena"
+  },
+  {
+    "display": "قفط - قنا",
+    "city": "qaft",
+    "governorate": "qena"
+  },
+  {
+    "display": "نقادة - قنا",
+    "city": "naqada",
+    "governorate": "qena"
+  },
+  {
+    "display": "فرشوط - قنا",
+    "city": "farshout",
+    "governorate": "qena"
+  },
+  {
+    "display": "قوص - قنا",
+    "city": "quos",
+    "governorate": "qena"
+  },
+  {
+    "display": "العريش - شمال سيناء",
+    "city": "arish",
+    "governorate": "north_sinai"
+  },
+  {
+    "display": "الشيخ زويد - شمال سيناء",
+    "city": "sheikh_zowaid",
+    "governorate": "north_sinai"
+  },
+  {
+    "display": "نخل - شمال سيناء",
+    "city": "nakhl",
+    "governorate": "north_sinai"
+  },
+  {
+    "display": "رفح - شمال سيناء",
+    "city": "rafah",
+    "governorate": "north_sinai"
+  },
+  {
+    "display": "بئر العبد - شمال سيناء",
+    "city": "bir_al-abed",
+    "governorate": "north_sinai"
+  },
+  {
+    "display": "الحسنة - شمال سيناء",
+    "city": "al_hasana",
+    "governorate": "north_sinai"
+  },
+  {
+    "display": "سوهاج - سوهاج",
+    "city": "sohag",
+    "governorate": "sohag"
+  },
+  {
+    "display": "سوهاج الجديدة - سوهاج",
+    "city": "sohag_el_gedida",
+    "governorate": "sohag"
+  },
+  {
+    "display": "أخميم - سوهاج",
+    "city": "akhmeem",
+    "governorate": "sohag"
+  },
+  {
+    "display": "أخميم الجديدة - سوهاج",
+    "city": "akhmim_el_gedida",
+    "governorate": "sohag"
+  },
+  {
+    "display": "البلينا - سوهاج",
+    "city": "albalina",
+    "governorate": "sohag"
+  },
+  {
+    "display": "المراغة - سوهاج",
+    "city": "el_maragha",
+    "governorate": "sohag"
+  },
+  {
+    "display": "المنشأة - سوهاج",
+    "city": "almunsha'a",
+    "governorate": "sohag"
+  },
+  {
+    "display": "دار السلام - سوهاج",
+    "city": "dar_aisalaam",
+    "governorate": "sohag"
+  },
+  {
+    "display": "جرجا - سوهاج",
+    "city": "gerga",
+    "governorate": "sohag"
+  },
+  {
+    "display": "جهينة الغربية - سوهاج",
+    "city": "jahina_al_gharbia",
+    "governorate": "sohag"
+  },
+  {
+    "display": "ساقلته - سوهاج",
+    "city": "saqilatuh",
+    "governorate": "sohag"
+  },
+  {
+    "display": "طما - سوهاج",
+    "city": "tama",
+    "governorate": "sohag"
+  },
+  {
+    "display": "طهطا - سوهاج",
+    "city": "tahta",
+    "governorate": "sohag"
+  },
+  {
+    "display": "الكوثر - سوهاج",
+    "city": "alkawthar",
+    "governorate": "sohag"
+  }
+]
