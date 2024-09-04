@@ -1,7 +1,10 @@
 {
 	"common": {
 		"continue": "Continue",
-		"choose": "Choose"
+		"name": "Name",
+		"yourName": "Your Name",
+		"choose": "Choose",
+		"password": "Password"
 	},
 	"onboarding": {
 		"yourPhoneNumber": "Your Phone Number",
@@ -10,6 +13,11 @@
 		"signIn": "Sign In",
 		"isSignedIn": "User Is Signed In",
 		"academicYear": "Academic Year",
-		"academicYearQuestion": "Academic Year?"
+		"academicYearQuestion": "Academic Year?",
+		"passwordIsRequired": "Password is required",
+		"passwordMinLength": "Password must be at least 8 characters",
+		"nameIsRequired": "Name is required",
+		"welcomeHeader": "Welcome to Magmooty!",
+		"setRemotePasswordSubHeader": "You are now the center manager, please enter a new password to login later."
 	}
 }
