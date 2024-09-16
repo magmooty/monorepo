@@ -14,12 +14,12 @@
 				<Heading
 					tag="h1"
 					class="text-base text-[#0B8CD2] sm:text-xl md:block md:text-2xl lg:text-3xl xl:text-4xl"
-					>{$_('localSignIn.welcomeAgain')}</Heading
+					>{$_('localOnboarding.welcomeAgain')}</Heading
 				>
 				<Heading
 					tag="h1"
 					class="text-base text-[#0B8CD2] sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl"
-					>{$_('localSignIn.chooseAccountToSignIn')}</Heading
+					>{$_('localOnboarding.chooseAccountToSignIn')}</Heading
 				>
 			</div>
 		</div>
@@ -27,7 +27,7 @@
 			<slot name="user-selector"></slot>
 			<div class="h-[93px] w-[274px]">
 				<Button class="mb-[20px] w-[274px] bg-[#0B8CD2] hover:bg-[#1EA8F3]">
-					{$_('localSignIn.connectToMaster')}
+					{$_('localOnboarding.connectToMaster')}
 				</Button>
 				<a href="/your-link" class="text-[#0B8CD2] underline hover:text-[#1EA8F3]"
 					>{$_('common.connectUs')}</a
@@ -37,7 +37,7 @@
 				class="h-[48px] w-[274px] border  border-[gray/200] bg-transparent text-black hover:bg-gray-200"
 			>
 				<ExclamationCircleSolid class="ml-2 mr-2 h-5 w-5 text-black " />
-				{$_('localSignIn.recoverData')}
+				{$_('localOnboarding.recoverData')}
 			</Button>
 		</div>
 	</div>

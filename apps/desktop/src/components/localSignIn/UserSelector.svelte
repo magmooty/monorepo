@@ -1,20 +1,8 @@
 <script lang="ts">
 	import { Listgroup, Avatar } from 'flowbite-svelte';
-	import { app } from 'sdk';
 	import type { PublicUserInfo } from 'sdk/auth';
-
 	import { _ } from 'svelte-i18n';
-	let users: PublicUserInfo[] = [];
-	async function fetchUsers() {
-		try {
-			const fetchedUsers = await app.auth.listUsers();
-			users = fetchedUsers;
-		} catch (error) {
-			//TODO: Handle error
-			console.error('Failed to fetch users:', error);
-		}
-	}
-	fetchUsers();
+	export let users: PublicUserInfo[];
 </script>
 
 <div class=" h-[365px] overflow-y-auto">
