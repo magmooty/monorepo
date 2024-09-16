@@ -5,7 +5,7 @@
 	import type { PublicUserInfo } from 'sdk/auth';
 	let users: PublicUserInfo[] = [];
 
-	async function fetchUsers() {
+	async function fetchUsers(phoneNumber: string) {
 		try {
 			const fetchedUsers = await app.auth.listUsers();
 			users = fetchedUsers;

@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { Listgroup, Avatar } from 'flowbite-svelte';
-	import type { PublicUserInfo } from 'sdk/auth';
+	import type { PublicUserInfo, LocalUserWithPermissionsToResetPassword } from 'sdk/auth';
 	import { _ } from 'svelte-i18n';
-	export let users: PublicUserInfo[];
+	export let users: PublicUserInfo[] | LocalUserWithPermissionsToResetPassword[];
 </script>
 
-<div class=" h-[365px] overflow-y-auto">
+<div class="max-h-[365px] overflow-y-auto">
 	{#if users.length > 0}
 		<Listgroup items={users} let:item class="border-0 p-0 dark:!bg-transparent">
 			<div

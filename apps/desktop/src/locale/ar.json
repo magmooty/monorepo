@@ -10,7 +10,8 @@
 		"assistantIn": "مساعد لدي",
 		"and": "و",
 		"connectUs": "تواصل بنا",
-		"loading": "...جاري التحميل"
+		"loading": "...جاري التحميل",
+		"back": "العودة"
 	},
 	"onboarding": {
 		"yourPhoneNumber": "رقم هاتفك",
@@ -29,6 +30,7 @@
 		"welcomeAgain": "أهلًا بك مرة أخرى",
 		"chooseAccountToSignIn": "اختر حسابك لتسجيل الدخول",
 		"connectToMaster": "الاتصال بجهاز الماستر",
-		"recoverData": "استرجاع بيانات مفقودة"
+		"recoverData": "استرجاع بيانات مفقودة",
+		"whoCanResetYourPassword": "يمكن للمستخدمين التاليين تغيير كلمة المرور الخاصة بك."
 	}
 }
