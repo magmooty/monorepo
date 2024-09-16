@@ -12,6 +12,7 @@
 		"connectUs": "تواصل بنا",
 		"loading": "...جاري التحميل",
 		"back": "العودة"
+
 	},
 	"onboarding": {
 		"yourPhoneNumber": "رقم هاتفك",
@@ -32,5 +33,6 @@
 		"connectToMaster": "الاتصال بجهاز الماستر",
 		"recoverData": "استرجاع بيانات مفقودة",
 		"whoCanResetYourPassword": "يمكن للمستخدمين التاليين تغيير كلمة المرور الخاصة بك."
+
 	}
 }

@@ -3,6 +3,7 @@
 	import type { PublicUserInfo, LocalUserWithPermissionsToResetPassword } from 'sdk/auth';
 	import { _ } from 'svelte-i18n';
 	export let users: PublicUserInfo[] | LocalUserWithPermissionsToResetPassword[];
+
 </script>
 
 <div class="max-h-[365px] overflow-y-auto">
