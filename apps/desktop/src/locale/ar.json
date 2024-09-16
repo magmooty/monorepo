@@ -4,7 +4,13 @@
 		"name": "الاسم",
 		"yourName": "اسمك",
 		"choose": "اختر",
-		"password": "كلمة المرور"
+		"password": "كلمة المرور",
+		"teacher": "معلم",
+		"manager": "مدير السنتر",
+		"assistantIn": "مساعد لدي",
+		"and": "و",
+		"connectUs": "تواصل بنا",
+		"loading": "...جاري التحميل"
 	},
 	"onboarding": {
 		"yourPhoneNumber": "رقم هاتفك",
@@ -19,5 +25,10 @@
 		"nameIsRequired": "الاسم مطلوب",
 		"welcomeHeader": "مرحبا بك في مجموعتي!",
 		"setRemotePasswordSubHeader": ".انت الان مدير السنتر برجاء ادخال كلمة مرور جديدة لتسجيل الدخول لاحقا"
+	},"localOnboarding": {
+		"welcomeAgain": "أهلًا بك مرة أخرى",
+		"chooseAccountToSignIn": "اختر حسابك لتسجيل الدخول",
+		"connectToMaster": "الاتصال بجهاز الماستر",
+		"recoverData": "استرجاع بيانات مفقودة"
 	}
 }
