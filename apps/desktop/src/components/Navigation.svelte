@@ -15,6 +15,11 @@
 		<BottomNavItem appBtnPosition="middle">
 			<a href="/auth/remote_sign_in">remoteSignIn</a>
 		</BottomNavItem>
+
+		<BottomNavItem appBtnPosition="middle">
+			<a href="/auth/local_sign_in/set_password_local_sign_in">SetPassLocalSignIn</a>
+		</BottomNavItem>
+
 		<BottomNavItem appBtnPosition="right">
 			<a href="/dashboard">Dashboard</a>
 		</BottomNavItem>
