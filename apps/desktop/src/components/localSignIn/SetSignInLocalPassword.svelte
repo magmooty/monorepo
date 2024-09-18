@@ -1,10 +1,11 @@
-<script>
+<script lang="ts">
 	import { createForm } from 'svelte-forms-lib';
 	import { Label, Input } from 'flowbite-svelte';
 
 	import * as yup from 'yup';
 	import { _ } from 'svelte-i18n';
 	import Button from 'components/common/button/Button.svelte';
+	let userName = 'أسماء يونس';
 	const { form, state, handleChange, handleSubmit, errors } = createForm({
 		initialValues: {
 			password: ''
@@ -39,7 +40,10 @@
 		<p class="mt-2 text-sm text-red-500">{$errors.password}</p>
 	{/if}
 	<div class="mb-2 mt-2 flex w-full flex-row items-center justify-between">
-		<p class="text-right text-sm font-medium text-black">{$_('onboarding.singInWith')}</p>
+		<p class="text-right text-sm font-medium text-black">
+			{$_('onboarding.singInWith')}
+			{userName}
+		</p>
 		<Button variant="link"
 			><a href="/auth/local_sign_in">
 				{$_('onboarding.anotherAccount')}
