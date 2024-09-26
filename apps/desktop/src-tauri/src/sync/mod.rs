@@ -1,6 +1,7 @@
 use log::{debug, error, info, warn};
 use serde::{Deserialize, Serialize};
-use serde_json::Value;
+use serde_json::{json, Value};
+use surrealdb::engine::any::Any;
 use surrealdb::sql::{Datetime, Thing};
 use surrealdb::Surreal;
 use tauri::Window;
@@ -13,10 +14,16 @@ static LOG_TARGET: &str = "Sync";
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct SyncEvent {
+    id: Thing,
     record_id: Thing,
     event: String,
     content: Value,
     created_at: Datetime,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct Record {
+    pub id: Thing,
 }
 
 pub struct Syncer {}
@@ -24,6 +31,33 @@ pub struct Syncer {}
 impl Syncer {
     pub fn new() -> Self {
         Self {}
+    }
+
+    pub async fn fetch_sync_events(
+        &self,
+        surreal: &Surreal<Any>,
+    ) -> Result<Vec<SyncEvent>, surrealdb::Error> {
+        let mut response = surreal
+            .query("SELECT * FROM sync WHERE pushed = false LIMIT 100")
+            .await?;
+
+        let sync_events = response.take::<Vec<SyncEvent>>(0)?;
+
+        Ok(sync_events)
+    }
+
+    pub async fn mark_sync_events_as_pushed(
+        surreal: &Surreal<Any>,
+        sync_events: &Vec<SyncEvent>,
+    ) -> Result<(), surrealdb::Error> {
+        for sync_event in sync_events {
+            surreal
+                .update::<Option<Record>>(sync_event.id.clone())
+                .merge(json!({"pushed": true}))
+                .await?;
+        }
+
+        Ok(())
     }
 
     pub async fn start_syncing(&self, window: Window) {

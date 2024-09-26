@@ -27,7 +27,6 @@ static LOG_TARGET: &str = "Database";
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Record {
-    #[allow(dead_code)]
     pub id: Thing,
 }
 
