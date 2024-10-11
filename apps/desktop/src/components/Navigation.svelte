@@ -3,8 +3,8 @@
 	import Locales from './locales.svelte';
 </script>
 
-<div id="dev-nav">
-	<BottomNav position="absolute" navType="application" classInner="grid-cols-5">
+<div id="dev-nav w-[100vw]">
+	<BottomNav position="absolute" classInner="flex justify-center items-center">
 		<BottomNavItem appBtnPosition="left">
 			<a href="/">Home</a>
 		</BottomNavItem>
@@ -19,7 +19,7 @@
 		<BottomNavItem appBtnPosition="middle">
 			<a href="/auth/local_sign_in/forget_password_local">ForgetPassLocal</a>
 		</BottomNavItem>
-    
+
 		<BottomNavItem appBtnPosition="middle">
 			<a href="/auth/local_sign_in/set_password_local_sign_in">SetPassLocalSignIn</a>
 		</BottomNavItem>
