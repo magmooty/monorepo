@@ -10,6 +10,8 @@ use tokio::time::{sleep, Duration};
 use crate::app::{get_global_key, GlobalKey};
 use crate::central::{CentralAPI, CheckSyncAvailabilityError, SyncUploadChunkError};
 
+mod test_sync;
+
 static LOG_TARGET: &str = "Sync";
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -26,6 +28,11 @@ pub struct Record {
     pub id: Thing,
 }
 
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct CountResponse {
+    pub count: i64,
+}
+
 pub struct Syncer {}
 
 impl Syncer {
@@ -33,8 +40,21 @@ impl Syncer {
         Self {}
     }
 
+    pub async fn count_sync_events(surreal: &Surreal<Any>) -> Result<i64, surrealdb::Error> {
+        let mut response = surreal
+            .query("SELECT COUNT() FROM sync WHERE pushed = false GROUP ALL")
+            .await?;
+
+        let count = response.take::<Vec<CountResponse>>(0)?;
+
+        let count = count.get(0).map(|c| c.count).unwrap_or(0);
+
+        info!(target: LOG_TARGET, "Found {} un-synced events", count);
+
+        Ok(count)
+    }
+
     pub async fn fetch_sync_events(
-        &self,
         surreal: &Surreal<Any>,
     ) -> Result<Vec<SyncEvent>, surrealdb::Error> {
         let mut response = surreal
@@ -48,7 +68,7 @@ impl Syncer {
 
     pub async fn mark_sync_events_as_pushed(
         surreal: &Surreal<Any>,
-        sync_events: &Vec<SyncEvent>,
+        sync_events: &[SyncEvent],
     ) -> Result<(), surrealdb::Error> {
         for sync_event in sync_events {
             surreal
@@ -60,13 +80,20 @@ impl Syncer {
         Ok(())
     }
 
-    pub async fn start_syncing(&self, window: Window) {
+    pub async fn start_syncing(&self, window: Window, test_surreal: Option<Surreal<Any>>) {
         debug!(target: LOG_TARGET, "Connecting to SurrealDB");
-        let surreal: Surreal<surrealdb::engine::any::Any> = Surreal::init();
 
-        // Connect to local SurrealDB instance
-        surreal.connect("ws://127.0.0.1:5004/rpc").await.unwrap();
-        surreal.use_ns("local").use_db("local").await.unwrap();
+        let surreal: Surreal<surrealdb::engine::any::Any>;
+
+        if let Some(test_surreal) = test_surreal {
+            surreal = test_surreal;
+        } else {
+            surreal = Surreal::init();
+
+            // Connect to local SurrealDB instance
+            surreal.connect("ws://127.0.0.1:5004/rpc").await.unwrap();
+            surreal.use_ns("local").use_db("local").await.unwrap();
+        }
 
         debug!(target: LOG_TARGET, "Spawning syncing task");
         tokio::spawn(async move {
@@ -137,66 +164,46 @@ impl Syncer {
                     }
                 };
 
-                debug!(target: LOG_TARGET, "Checking if there are changes to push");
-                window
-                    .emit("sync_collecting_changes", "")
-                    .unwrap_or_default();
+                while Self::count_sync_events(&surreal).await.unwrap_or_default() > 0 {
+                    debug!(target: LOG_TARGET, "Checking if there are changes to push");
+                    window
+                        .emit("sync_collecting_changes", "")
+                        .unwrap_or_default();
 
-                let sync_events = match surreal
-                    .query("SELECT * FROM sync WHERE pushed = false LIMIT 100")
-                    .await
-                {
-                    Ok(mut response) => match response.take::<Vec<SyncEvent>>(0) {
+                    let sync_events = match Self::fetch_sync_events(&surreal).await {
                         Ok(sync_events) => {
                             info!(target: LOG_TARGET, "Found {} changes to push", sync_events.len());
                             sync_events
                         }
                         Err(err) => {
-                            error!(target: LOG_TARGET, "Error parsing changes: {:?}", err);
+                            error!(target: LOG_TARGET, "Error querying changes: {:?}", err);
                             window
                                 .emit("sync_collecting_changes_failed", err.to_string())
                                 .unwrap_or_default();
                             continue;
                         }
-                    },
-                    Err(err) => {
-                        error!(target: LOG_TARGET, "Error querying changes: {:?}", err);
-                        window
-                            .emit("sync_collecting_changes_failed", err.to_string())
-                            .unwrap_or_default();
-                        continue;
-                    }
-                };
+                    };
 
-                window
-                    .emit("sync_start", sync_events.len())
-                    .unwrap_or_default();
+                    window
+                        .emit("sync_start", sync_events.len())
+                        .unwrap_or_default();
 
-                debug!(target: LOG_TARGET, "Uploading chunks of data");
-                let mut uploaded = 0;
+                    debug!(target: LOG_TARGET, "Uploading chunks of data");
+                    let mut uploaded = 0;
 
-                for chunk in sync_events.chunks(100) {
-                    uploaded += chunk.len();
+                    for chunk in sync_events.chunks(100) {
+                        uploaded += chunk.len();
 
-                    match CentralAPI::sync_upload_chunk(chunk, &private_key, &center_id).await {
-                        Ok(_) => {
-                            debug!(target: LOG_TARGET, "Chunk uploaded");
-                            window.emit("sync_progress", uploaded).unwrap_or_default();
+                        debug!(target: LOG_TARGET, "Uploading chunk. {}/{} uploaded", uploaded, chunk.len());
+                        match CentralAPI::sync_upload_chunk(chunk, &private_key, &center_id).await {
+                            Ok(_) => {
+                                debug!(target: LOG_TARGET, "Chunk uploaded. {}/{} uploaded", uploaded, chunk.len());
 
-                            debug!(target: LOG_TARGET, "Marking sync events as uploaded");
-                            for sync_event in chunk {
-                                match surreal
-                                    .query(
-                                        format!(
-                                            "UPDATE sync SET pushed = true WHERE record_id = '{}'",
-                                            sync_event.record_id
-                                        )
-                                        .as_str(),
-                                    )
-                                    .await
-                                {
+                                debug!(target: LOG_TARGET, "Marking sync events as uploaded");
+                                match Self::mark_sync_events_as_pushed(&surreal, &chunk).await {
                                     Ok(_) => {
-                                        debug!(target: LOG_TARGET, "Sync event marked as uploaded");
+                                        debug!(target: LOG_TARGET, "Sync events marked as uploaded");
+                                        window.emit("sync_progress", uploaded).unwrap_or_default();
                                     }
                                     Err(err) => {
                                         error!(target: LOG_TARGET, "Error marking sync event as uploaded: {:?}", err);
@@ -207,21 +214,23 @@ impl Syncer {
                                     }
                                 }
                             }
-                        }
-                        Err(error) => {
-                            debug!(target: LOG_TARGET, "Sync failed with error: {:?}", error);
-                            window
-                                .emit(
-                                    "sync_upload_chunk_failed",
-                                    serde_json::to_string(&error).unwrap_or(
-                                        serde_json::to_string(&SyncUploadChunkError::UnknownError)
+                            Err(error) => {
+                                debug!(target: LOG_TARGET, "Sync failed with error: {:?}", error);
+                                window
+                                    .emit(
+                                        "sync_upload_chunk_failed",
+                                        serde_json::to_string(&error).unwrap_or(
+                                            serde_json::to_string(
+                                                &SyncUploadChunkError::UnknownError,
+                                            )
                                             .unwrap(),
-                                    ),
-                                )
-                                .unwrap_or_default();
-                            continue;
-                        }
-                    };
+                                        ),
+                                    )
+                                    .unwrap_or_default();
+                                continue;
+                            }
+                        };
+                    }
                 }
 
                 window.emit("sync_sleep", 60).unwrap_or_default();

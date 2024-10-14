@@ -96,7 +96,7 @@ async fn main() {
             tokio::spawn(async move {
                 info!(target: LOG_TARGET, "Running syncer");
                 let syncer = Syncer::new();
-                syncer.start_syncing(window).await;
+                syncer.start_syncing(window, None).await;
             });
 
             Ok(())
