@@ -23,7 +23,7 @@
 		{$_('localOnboarding.whoCanResetYourPassword')}
 	</h1>
 	<div class="w-max-[247px]">
-		<UserSelector {users} />
+		<UserSelector {users} showSubtext={false} />
 		<Button class="w-full">{$_('common.back')}</Button>
 	</div>
 </div>

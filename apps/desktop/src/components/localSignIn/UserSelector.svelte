@@ -3,7 +3,7 @@
 	import type { PublicUserInfo, LocalUserWithPermissionsToResetPassword } from 'sdk/auth';
 	import { _ } from 'svelte-i18n';
 	export let users: PublicUserInfo[] | LocalUserWithPermissionsToResetPassword[];
-
+	export let showSubtext: boolean = false;
 </script>
 
 <div class="max-h-[365px] overflow-y-auto">
@@ -17,21 +17,23 @@
 					<p class="font-size-[16px] truncate text-gray-900 dark:text-white">
 						{item.name}
 					</p>
-					<p>
-						{#if item.is_center_manager && item.manages_spaces.length > 0}
-							{$_('common.teacher')} {$_('common.and')} {$_('common.manager')}
-						{:else if item.manages_spaces.length > 0}
-							{$_('common.teacher')}
-						{:else}
-							{$_('common.assistantIn') + ' '}
-							{#each item.member_of_spaces as space, index}
-								{space}
-								{#if index < item.member_of_spaces.length - 1}
-									{$_('common.and')}
-								{/if}
-							{/each}
-						{/if}
-					</p>
+					{#if showSubtext}
+						<p>
+							{#if item.is_center_manager && item.manages_spaces.length > 0}
+								{$_('common.teacher')} {$_('common.and')} {$_('common.manager')}
+							{:else if item.manages_spaces.length > 0}
+								{$_('common.teacher')}
+							{:else}
+								{$_('common.assistantIn') + ' '}
+								{#each item.member_of_spaces as space, index}
+									{space}
+									{#if index < item.member_of_spaces.length - 1}
+										{$_('common.and')}
+									{/if}
+								{/each}
+							{/if}
+						</p>
+					{/if}
 				</div>
 			</div>
 		</Listgroup>
