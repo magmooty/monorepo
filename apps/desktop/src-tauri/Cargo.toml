@@ -42,7 +42,7 @@ futures = "0.3.30"
 surrealdb = { git = "https://github.com/ziadalzarka/surrealdb", branch = "magmooty-v1.5.4" }
 once_cell = "1.19.0"
 jsonwebtoken = "9.3.0"
-openssl = "0.10.66"
+openssl = "0.10.70"
 genpdf = "0.2.0"
 arabic_reshaper = "0.4.2"
 unicode-bidi = "0.3.15"
