@@ -40,7 +40,7 @@ telegram-bot = { path = "../telegram-bot" }
 mockall = "0.13.0"
 axum-test = "15.3.0"
 mockall_double = "0.3.1"
-openssl = "0.10.66"
+openssl = "0.10.72"
 serde_variant = "0.1.3"
 serial_test = "3.1.1"
 chrono = "0.4.38"
