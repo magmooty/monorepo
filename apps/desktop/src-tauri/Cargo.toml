@@ -34,7 +34,7 @@ ctrlc = "3.4.0"
 sqlx = { version = "0.8.0", features = ["runtime-tokio-rustls", "sqlite"] }
 log = "0.4.22"
 simple_logger = "5.0.0"
-rsa = { version = "0.9.6", features = ["sha2"] }
+rsa = { version = "0.9.10", features = ["sha2"] }
 rand = "0.8.5"
 base64 = "0.22.1"
 pnet = "0.35.0"
