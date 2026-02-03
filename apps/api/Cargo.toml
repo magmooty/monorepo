@@ -26,7 +26,7 @@ regex = "1.10.5"
 rand = "0.8.5"
 tower-http = { version = "0.5.2", features = ["catch-panic"] }
 tower = "0.4.13"
-bytes = "1.6.1"
+bytes = "1.11.1"
 http = "1.1.0"
 http-body-util = "0.1.2"
 libc = "0.2.155"
